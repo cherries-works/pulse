@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cherries Pulse</title>
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="shortcut icon" href="./assets/favicon.png" type="image/x-icon">
+    <script defer src="./js/script.js"></script>
+</head>
+<body>
+    <div class="hero">
+        <nav class="header">
+            <div class="title">
+                <img src="./assets/favicon.png" alt="">
+                <p>
+                    cherries.works
+                </p>
+            </div>
+            <section class="name">
+                <p class="emphasis">
+                    Pulse
+                </p>
+            </section>
+            <section class="status">
+                <p>
+                    SYSTEM: <span id="system_status">HEALTHY</span>
+                </p>
+            </section>
+        </nav>
+        <section class="monitor_wrapper">
+            <section class="monitor">
+                <section>
+                    <section>
+                        <div class="title">
+                            <p>
+                                CPU
+                            </p>
+                            <h1 id="cpu_percentage">
+                                4.49%
+                            </h1>
+                        </div>
+                        <div class="data">
+                            <p>
+                                Idle: <span id="cpu_idle">580</span>
+                            </p>
+                            <p>
+                                Total: <span id="cpu_total">580</span>
+                            </p>
+                            <p>
+                                Processes: <span id="cpu_processes">580</span>
+                            </p>
+                        </div>
+                    </section>
+                    <section>
+                        <div class="title">
+                            <p>
+                                Memory
+                            </p>
+                            <h1 id="memory_percentage">
+                                75.65%
+                            </h1>
+                        </div>
+                        <div class="data">
+                            <p>
+                                Used: <span id="memory_usage">12.8GB</span>
+                            </p>
+                            <p>
+                                Total: <span id="memory_total">16.4GB</span>
+                            </p>
+                            <p>
+                                Available: <span id="memory_available">3.8GB</span>
+                            </p>
+                        </div>
+                    </section>
+                    <section>
+                        <div class="title">
+                            <p>
+                                Disk
+                            </p>
+                            <h1 id="disk_percentage">
+                                71.82%
+                            </h1>
+                        </div>
+                        <div class="data">
+                            <p>
+                                Used: <span id="disk_usage">70.11GB</span>
+                            </p>
+                            <p>
+                                Total: <span id="disk_total">97.57GB</span>
+                            </p>
+                            <p>
+                                Available: <span id="disk_available">27.46GB</span>
+                            </p>
+                        </div>
+                    </section>
+                    <section>
+                        <div class="title">
+                            <p>
+                                Network
+                            </p>
+                            <h1>
+                                /
+                            </h1>
+                        </div>
+                        <div class="data">
+                            <p>
+                                RX: <span id="network_rx">0.21KB/s</span>
+                            </p>
+                            <p>
+                                TX: <span id="network_tx">0.00KB/s</span>
+                            </p>
+                        </div>
+                    </section>
+                    <section>
+                        <div class="title">
+                            <p>
+                                IO
+                            </p>
+                            <h1>
+                                /
+                            </h1>
+                        </div>
+                        <div class="data">
+                            <p>
+                                Read: <span id="io_read">0.21KB/s</span>
+                            </p>
+                            <p>
+                                Write: <span id="io_write">0.00KB/s</span>
+                            </p>
+                        </div>
+                    </section>
+                </section>
+                <section>
+                   <section>
+                        <div class="title">
+                            <p>
+                                Load Average
+                            </p>
+                        </div>
+                        <div class="data">
+                            <section class="load">
+                                <div>
+                                    <h1 id="load_1">
+                                        0.58
+                                    </h1>
+                                    <p>
+                                        1 min
+                                    </p>
+                                </div>
+                                <div>
+                                    <h1 id="load_5">
+                                        0.82
+                                    </h1>
+                                    <p>
+                                        5 min
+                                    </p>
+                                </div>
+                                <div>
+                                    <h1 id="load_15">
+                                        0.92
+                                    </h1>
+                                    <p>
+                                        15 min
+                                    </p>
+                                </div>
+                            </section>
+                        </div>
+                    </section>   
+                   <section>
+                        <div class="title">
+                            <p>
+                                System Uptime
+                            </p>
+                            <h1 id="uptime">
+                                1h 23m
+                            </h1>
+                        </div>
+                    </section>   
+                </section>
+                <section>
+                    <section>
+                        <div class="title">
+                            <p>
+                                Top Processes
+                            </p>
+                        </div>
+                        <div class="data">
+                            <div class="process_keys">
+                                <p>
+                                    PID
+                                </p>
+                                <p>
+                                    CPU
+                                </p>
+                                <p>
+                                    RAM
+                                </p>
+                                <p>
+                                    NAME
+                                </p>
+                            </div>
+                            <div class="processes">
+                                <div class="process">
+                                    <p>
+                                        (4985)
+                                    </p>
+                                    <p>
+                                        508
+                                    </p>
+                                    <p>
+                                        403.23 MB
+                                    </p>
+                                    <p>
+                                        code
+                                    </p>
+                                </div>
+                                <div class="process">
+                                    <p>
+                                        (2382)
+                                    </p>
+                                    <p>
+                                        3382
+                                    </p>
+                                    <p>
+                                        203.21 MB
+                                    </p>
+                                    <p>
+                                        chrome
+                                    </p>
+                                </div>
+                                <div class="process">
+                                    <p>
+                                        (8821)
+                                    </p>
+                                    <p>
+                                        21021
+                                    </p>
+                                    <p>
+                                        223.6 MB
+                                    </p>
+                                    <p>
+                                        Isolated Web Co
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+                </section>
+            </section>
+        </section>
+    </div>
+</body>
+</html>
