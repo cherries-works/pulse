@@ -7,4 +7,5 @@ http = src/http/server.c src/http/request.c src/http/routes.c
 app = src/app/routes.c
 
 pulse: main.c $(core) $(utils) $(http) $(app)
+	mkdir -p dist
 	$(CC) $(CFLAGS) -o dist/pulse main.c $(core) $(utils) $(http) $(app)
