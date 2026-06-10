@@ -1,3 +1,6 @@
+#ifndef REQUEST_H
+#define REQUEST_H
+
 enum REQUEST_METHOD {
     GET,
     POST,
@@ -12,3 +15,5 @@ struct Request {
 };
 
 extern struct Request parseRequest(char *buffer);
+
+#endif

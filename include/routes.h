@@ -1,5 +1,8 @@
 #include "request.h"
 
+#ifndef ROUTES_H
+#define ROUTES_H
+
 typedef void (*RouteFn)(
     int socket,
     char *response
@@ -26,3 +29,5 @@ extern void route(
 extern void routeJSON(int new_socket, char *response, char *fmt, ...);
 extern void routeStatic(int new_socket, char *response, char *file_path);
 extern void handle(struct RouteHandler handler, struct Request request, int new_socket, char *response);
+
+#endif

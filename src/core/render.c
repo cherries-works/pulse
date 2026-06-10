@@ -3,18 +3,18 @@
 #include "parse.h"
 #include "utils.h"
 
-char *RED = "\u001b[31m";
-char *GREEN = "\u001b[32m";
-char *YELLOW = "\u001b[33m";
-char *BLUE = "\u001b[34m";
-char *WHITE = "\u001b[37m";
+char *RED = "\033[31m";
+char *GREEN = "\033[32m";
+char *YELLOW = "\033[33m";
+char *BLUE = "\033[34m";
+char *WHITE = "\033[37m";
 
-char *BOLD = "\u001b[1m";
-char *DIM = "\u001b[2m";
-char *ITALIC = "\u001b[3m";
-char *UNDERLINE = "\u001b[4m";
+char *BOLD = "\033[1m";
+char *DIM = "\033[2m";
+char *ITALIC = "\033[3m";
+char *UNDERLINE = "\033[4m";
 
-char *RESET = "\u001b[0m";
+char *RESET = "\033[0m";
 
 char *ONE_BARS =    "█░░░░░░░░░";
 char *TWO_BARS =    "██░░░░░░░░";
