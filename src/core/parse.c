@@ -402,7 +402,6 @@ void getProcesses(
         procName[nameSize - 1] = '\0';
 
         for(int i = 0; i < 3; i++) {
-            // struct Process process = processes[i];
             if(processes[i].ram < procRAM) {
                 for(int j = 1; j > i; j--) {
                     processes[j] = processes[j - 1];
@@ -412,8 +411,6 @@ void getProcesses(
                 processes[i].cpu = procCPU;
                 processes[i].ram = procRAM;
                 strcpy(processes[i].name, procName);
-
-                // processes[i].name = procName;
                 break;
             } else {
                 continue;
