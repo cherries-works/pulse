@@ -7,24 +7,23 @@
 #include "parse.h"
 #include "render.h"
 #include "utils.h"
-#include "server.h"
+#include "http.h"
 
-#include "app_routes.h"
+#include "app.h"
 
-
-struct pulseArgs {
+struct PulseArgs {
     int web;
     int help;
     unsigned short sleep;
     unsigned short port;
 };
 
-struct pulseArgs parseArgs(int argc, char* argv[]) {
-    struct pulseArgs p = {
-        0, // web
-        0, // help
-        1, // 1 second sleep
-        8080, // http port
+struct PulseArgs parseArgs(int argc, char* argv[]) {
+    struct PulseArgs p = {
+        .web = 0,
+        .help = 0,
+        .sleep = 1,
+        .port = 8080,
     };
 
     for(int i = 0; i < argc; i++) {
@@ -60,7 +59,7 @@ struct pulseArgs parseArgs(int argc, char* argv[]) {
 
 
 int main(int argc, char* argv[]) {
-    struct pulseArgs args = parseArgs(argc, argv);
+    struct PulseArgs args = parseArgs(argc, argv);
     if(args.help == 1) {
         help();
         return 0;
