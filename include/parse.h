@@ -1,3 +1,6 @@
+#ifndef PARSE_H
+#define PARSE_H
+
 struct Cpu {
     unsigned long idle;
     unsigned long total;
@@ -60,6 +63,15 @@ struct System {
 
 extern struct NetworkAverage parseNetworkUsage(struct Network snapshot2, struct Network snapshot1);
 extern struct IoAverage parseIoUsage(struct Disk snapshot2, struct Disk snapshot1);
-extern float parseCpuUsage(struct Cpu snapshot2, struct Cpu snapshot1);
 
+extern struct Cpu getCpu(size_t size, char *buffer);
+extern struct Network getNetwork(size_t size, char *buffer);
+extern struct Load getLoad(size_t size, char *buffer);
+extern struct Disk getDisk(size_t size, char *buffer);
 extern struct System getSystem();
+
+extern unsigned long parseMemoryKey(char *buffer, char *target_key);
+extern float parseCpuUsage(struct Cpu snapshot2, struct Cpu snapshot1);
+extern void getProcesses(size_t size, char *buffer, struct Process processes[]);
+
+#endif
