@@ -1,8 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "request.h"
-#include "constants.h"
+#include "http.h"
+#include "utils.h"
 
 struct Request parseRequest(char *buffer) {
     char *line = buffer;

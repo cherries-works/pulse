@@ -5,11 +5,9 @@
 #include <netinet/in.h>
 #include <time.h>
 
-#include "request.h"
-#include "server.h"
+#include "utils.h"
 #include "parse.h"
-#include "routes.h"
-#include "constants.h"
+#include "http.h"
 
 struct Server serverContsructor(
     struct RouteHandler *routeHandler,

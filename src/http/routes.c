@@ -6,11 +6,15 @@
 #include <stdarg.h>
 #include <time.h>
 
-#include "routes.h"
-#include "request.h"
 #include "utils.h"
-#include "constants.h"
 #include "parse.h"
+#include "http.h"
+
+char *getFileExtension(char *file_path) {
+    char *dot = strrchr(file_path, '.');
+    if(!dot || dot == file_path) return "";
+    return dot + 1;
+}
 
 void routeNotFound(int new_socket, char *response) {
     sprintf(response,
@@ -42,76 +46,83 @@ void routeInvalidMethod(int new_socket, char *response) {
     write(new_socket, response, strlen(response));
 }
 
-char *getFileExtension(char *file_path) {
-    char *dot = strrchr(file_path, '.');
-    if(!dot || dot == file_path) return "";
-    return dot + 1;
-}
-
 void routeHTML(char *file_path, int new_socket, char *response) {
     int file_buffer_size = BUFFER_ONE_KB * 16;
     char file_buffer[file_buffer_size];
-    int file_size = readFile(file_path, file_buffer_size, file_buffer);
-
+    
+    long file_size = sizeFile(file_path);
     sprintf(response,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/html\r\n"
-        "Content-Length: %d\r\n\r\n"
-        "%s",
-        file_size,
-        file_buffer
+        "Content-Length: %d\r\n\r\n",
+        file_size
     );
-
     write(new_socket, response, strlen(response));
+    
+    FILE *file_ptr = fopen(file_path, "r");
+    size_t size = fread(file_buffer, 1, file_buffer_size - 1, file_ptr);
+    file_buffer[size - 1] = '\0';
+    
+    write(new_socket, file_buffer, size);
 }
 
 void routeCSS(char *file_path, int new_socket, char *response) {
-    int file_buffer_size = BUFFER_ONE_KB * 8;
+    int file_buffer_size = BUFFER_ONE_KB * 16;
     char file_buffer[file_buffer_size];
-    int file_size = readFile(file_path, file_buffer_size, file_buffer);
 
+    long file_size = sizeFile(file_path);
     sprintf(response,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/css\r\n"
-        "Content-Length: %d\r\n\r\n"
-        "%s",
-        file_size,
-        file_buffer
+        "Content-Length: %d\r\n\r\n",
+        file_size
     );
-
     write(new_socket, response, strlen(response));
+
+    FILE *file_ptr = fopen(file_path, "r");
+    size_t size = fread(file_buffer, 1, file_buffer_size - 1, file_ptr);
+    file_buffer[size - 1] = '\0';
+    
+    write(new_socket, file_buffer, size);
 }
 
 void routeJS(char *file_path, int new_socket, char *response) {
-    int file_buffer_size = BUFFER_ONE_KB * 8;
+    int file_buffer_size = BUFFER_ONE_KB * 16;
     char file_buffer[file_buffer_size];
-    int file_size = readFile(file_path, file_buffer_size, file_buffer);
 
+    long file_size = sizeFile(file_path);
     sprintf(response,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/js\r\n"
-        "Content-Length: %d\r\n\r\n"
-        "%s",
-        file_size,
-        file_buffer
+        "Content-Length: %d\r\n\r\n",
+        file_size
     );
-
     write(new_socket, response, strlen(response));
+
+    FILE *file_ptr = fopen(file_path, "r");
+    size_t size = fread(file_buffer, 1, file_buffer_size - 1, file_ptr);
+    file_buffer[size - 1] = '\0';
+    
+    write(new_socket, file_buffer, size);
 }
 
 void routeImage(char *file_path, int new_socket, char *response) {
     int file_buffer_size = BUFFER_ONE_KB * 128;
     char file_buffer[file_buffer_size];
-    int file_size = readFile(file_path, file_buffer_size, file_buffer);
 
+    long file_size = sizeFile(file_path);
     sprintf(response,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: image/png\r\n"
         "Content-Length: %ld\r\n\r\n",
         file_size
     );
-
     write(new_socket, response, strlen(response));
+
+    FILE *file_ptr = fopen(file_path, "r");
+    size_t size = fread(file_buffer, 1, file_buffer_size - 1, file_ptr);
+    file_buffer[size - 1] = '\0';
+
     write(new_socket, file_buffer, file_size);
 }
 

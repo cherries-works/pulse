@@ -1,7 +1,7 @@
 #include <stdio.h>
 
 #include "parse.h"
-#include "routes.h"
+#include "http.h"
 #include "time.h"
 
 #define STATIC_ROUTE(fnName, filePath) \
@@ -66,8 +66,6 @@ JSON_ROUTE(indexMetrics, {
         snapshot.load.load5,
         snapshot.load.load15,
 
-
-
         snapshot.processes[0].pid,
         snapshot.processes[0].ram,
         snapshot.processes[0].cpu,
@@ -82,8 +80,6 @@ JSON_ROUTE(indexMetrics, {
         snapshot.processes[2].ram,
         snapshot.processes[2].cpu,
         snapshot.processes[2].name,
-
-
 
         snapshot.uptime
     );
