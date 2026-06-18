@@ -17,4 +17,4 @@ a quick alternative to that.
 Displaying the top 3 processes that take up the most amount of RAM. Terminal and the Web UI both
 display the same metrics. No graphs have yet been implemented (10th June 2026).
 
-The website styling is finished. No media queries added, will be added later. As of now, v0.1 seems to be ready.
+The website styling is finished. No media queries added, will be added later. As of now, v0.1.0 seems to be ready.
