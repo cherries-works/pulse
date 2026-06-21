@@ -65,9 +65,9 @@ extern NetworkAverage parseNetworkUsage(Network snapshot2, Network snapshot1);
 extern IoAverage parseIoUsage(Disk snapshot2, Disk snapshot1);
 
 extern Cpu getCpu(size_t size, char *buffer);
-extern Network getNetwork(size_t size, char *buffer);
-extern Load getLoad(size_t size, char *buffer);
-extern Disk getDisk(size_t size, char *buffer);
+extern Network getNetwork(char *buffer);
+extern Load getLoad(char *buffer);
+extern Disk getDisk(char *buffer);
 extern System getSystem();
 
 extern unsigned long parseMemoryKey(char *buffer, char *target_key);

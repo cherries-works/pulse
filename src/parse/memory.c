@@ -22,6 +22,7 @@ unsigned long parseMemoryKey(char *buffer, char *target_key) {
         // so (var) line, ends there.
         //
         if(next) *next = '\0';
+        else break;
 
         char *colon = strchr(line, ':');
         if (colon) {
@@ -45,9 +46,8 @@ unsigned long parseMemoryKey(char *buffer, char *target_key) {
                 trim(value);
                 break;
             }
-        }
+        } else continue;
 
-        if (next == NULL) break;
         // move the pointer one forward
         // so we skip the NULL pointers
         //
@@ -55,5 +55,5 @@ unsigned long parseMemoryKey(char *buffer, char *target_key) {
     }
 
     if(value == NULL) return 1;
-    return atoi(value);
+    return strtoull(value, NULL, 10);
 }

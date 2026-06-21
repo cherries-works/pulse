@@ -11,12 +11,12 @@
 
 Server serverContsructor(
     RouteHandler *routeHandler,
-    int domain,
-    int port,
+    sa_family_t domain,
+    uint16_t port,
     int service,
     int protocol,
     int backlog,
-    long interface,
+    uint32_t interface,
     void (*launch)(Server *server)
 ) {
     Server server;
@@ -63,27 +63,34 @@ Server serverContsructor(
 };
 
 void serverLaunch(Server *server) {
-    unsigned long bufferSize = BUFFER_ONE_MB;
-    char buffer[bufferSize];
+    unsigned long buffer_size = BUFFER_ONE_MB;
+    char buffer[buffer_size];
 
-    unsigned long responseSize = BUFFER_ONE_KB * 8;
-    char response[responseSize];
+    unsigned long response_size = BUFFER_ONE_KB * 8;
+    char response[response_size];
 
     while(1) {
-        int addrLen = sizeof(server->address);
-        int newSocket = accept(server->socket, (struct sockaddr*)&server->address, (socklen_t*)&addrLen);
-        ssize_t bytesRead = read(newSocket, buffer, bufferSize);
+        struct sockaddr_in client_address;
+        socklen_t address_len = sizeof(client_address);
+        int new_socket = accept(
+            server->socket, 
+            (struct sockaddr*)&client_address,
+            (socklen_t*)&address_len
+        );
+        if(new_socket < 0) continue;
+
+        ssize_t bytes_read = read(new_socket, buffer, buffer_size);
         
-        if(bytesRead < bufferSize && bytesRead >= 0) {
-            buffer[bytesRead] = '\0';
+        if(bytes_read < buffer_size && bytes_read >= 0) {
+            buffer[bytes_read] = '\0';
         } else {
             printf("Error reading buffer...\n");
         }
 
         Request request = parseRequest(buffer);
-        handle(server->routeHandler, request, newSocket, response);
+        handle(server->routeHandler, request, new_socket, response);
 
-        close(newSocket);
+        close(new_socket);
     }
 }
 

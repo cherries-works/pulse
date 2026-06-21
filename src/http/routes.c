@@ -47,10 +47,10 @@ void routeInvalidMethod(int new_socket, char *response) {
 }
 
 void routeHTML(char *file_path, int new_socket, char *response) {
-    int file_buffer_size = BUFFER_ONE_KB * 16;
+    size_t file_buffer_size = BUFFER_ONE_KB * 16;
     char file_buffer[file_buffer_size];
     
-    long file_size = sizeFile(file_path);
+    size_t file_size = sizeFile(file_path);
     sprintf(response,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/html\r\n"
@@ -61,16 +61,17 @@ void routeHTML(char *file_path, int new_socket, char *response) {
     
     FILE *file_ptr = fopen(file_path, "r");
     size_t size = fread(file_buffer, 1, file_buffer_size - 1, file_ptr);
-    file_buffer[size - 1] = '\0';
+    file_buffer[size] = '\0';
     
+    fclose(file_ptr);
     write(new_socket, file_buffer, size);
 }
 
 void routeCSS(char *file_path, int new_socket, char *response) {
-    int file_buffer_size = BUFFER_ONE_KB * 16;
+    size_t file_buffer_size = BUFFER_ONE_KB * 16;
     char file_buffer[file_buffer_size];
 
-    long file_size = sizeFile(file_path);
+    size_t file_size = sizeFile(file_path);
     sprintf(response,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/css\r\n"
@@ -81,16 +82,17 @@ void routeCSS(char *file_path, int new_socket, char *response) {
 
     FILE *file_ptr = fopen(file_path, "r");
     size_t size = fread(file_buffer, 1, file_buffer_size - 1, file_ptr);
-    file_buffer[size - 1] = '\0';
-    
+    file_buffer[size] = '\0';
+
+    fclose(file_ptr);
     write(new_socket, file_buffer, size);
 }
 
 void routeJS(char *file_path, int new_socket, char *response) {
-    int file_buffer_size = BUFFER_ONE_KB * 16;
+    size_t file_buffer_size = BUFFER_ONE_KB * 16;
     char file_buffer[file_buffer_size];
 
-    long file_size = sizeFile(file_path);
+    size_t file_size = sizeFile(file_path);
     sprintf(response,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/js\r\n"
@@ -101,16 +103,17 @@ void routeJS(char *file_path, int new_socket, char *response) {
 
     FILE *file_ptr = fopen(file_path, "r");
     size_t size = fread(file_buffer, 1, file_buffer_size - 1, file_ptr);
-    file_buffer[size - 1] = '\0';
-    
+    file_buffer[size] = '\0';
+
+    fclose(file_ptr);
     write(new_socket, file_buffer, size);
 }
 
 void routeImage(char *file_path, int new_socket, char *response) {
-    int file_buffer_size = BUFFER_ONE_KB * 128;
+    size_t file_buffer_size = BUFFER_ONE_KB * 128;
     char file_buffer[file_buffer_size];
 
-    long file_size = sizeFile(file_path);
+    size_t file_size = sizeFile(file_path);
     sprintf(response,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: image/png\r\n"
@@ -121,8 +124,9 @@ void routeImage(char *file_path, int new_socket, char *response) {
 
     FILE *file_ptr = fopen(file_path, "r");
     size_t size = fread(file_buffer, 1, file_buffer_size - 1, file_ptr);
-    file_buffer[size - 1] = '\0';
+    file_buffer[size] = '\0';
 
+    fclose(file_ptr);
     write(new_socket, file_buffer, file_size);
 }
 

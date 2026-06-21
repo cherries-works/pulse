@@ -10,7 +10,7 @@
 #include "parse.h"
 #include "http.h"
 
-Disk getDisk(size_t size, char *buffer) {
+Disk getDisk(char *buffer) {
     struct statvfs stat;
     statvfs("/", &stat);
 
@@ -21,22 +21,27 @@ Disk getDisk(size_t size, char *buffer) {
     unsigned long written = 0;
 
     char *line = buffer;
-    
+
     //  nvme0n1 41230 7077 4819387 43278 ... 0 3400608 1777 2509 930
     int SECTORS_READ = 6;
     int SECTORS_WRITTEN = 10;
     for(int i = 0; i <= SECTORS_WRITTEN; i++) {
         while (*line == ' ') line++;
-        
+        if(*line == '\0' || *line == '\n') break;
+
         char *next = strchr(line, ' ');
-        *next = '\0';
-        line = next + 1;
-        
-        if(SECTORS_WRITTEN != i && SECTORS_READ != i) continue;
+        if(next) *next = '\0';
+        else line = line + strlen(line);
+
+    
         if(SECTORS_READ == i) {
-            read = atoi(line);
+            read = strtoull(line, NULL, 10);
         } else if (SECTORS_WRITTEN == i) {
-            written = atoi(line);
+            written = strtoull(line, NULL, 10);
+        }
+
+        if(next) {
+            line = next + 1;
         }
     }
 
@@ -46,8 +51,8 @@ Disk getDisk(size_t size, char *buffer) {
 }
 
 IoAverage parseIoUsage(Disk snapshot2, Disk snapshot1) {
-    float r = snapshot2.read - snapshot1.read;
-    float w = snapshot2.write - snapshot1.write;
+    float r = (float)snapshot2.read - (float)snapshot1.read;
+    float w = (float)snapshot2.write - (float)snapshot1.write;
 
     IoAverage io = {
         r,

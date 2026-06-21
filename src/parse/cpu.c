@@ -14,7 +14,9 @@ unsigned long parseCpuKey(char *buffer, char *target_key) {
     char *value = NULL;
     while(*line) {
         char *next = strchr(line, '\n');
+
         if(next) *next = '\0';
+        else break;
 
         char *space = strchr(line, ' ');
         if (space) {
@@ -29,12 +31,11 @@ unsigned long parseCpuKey(char *buffer, char *target_key) {
             }
         }
 
-        if (next == NULL) break;
         line = next + 1; 
     }
 
     if(value == NULL) return 1;
-    return atoi(value);
+    return strtoull(value, NULL, 10);
 }
 
 Cpu getCpu(size_t size, char *buffer) {
@@ -52,43 +53,46 @@ Cpu getCpu(size_t size, char *buffer) {
     unsigned number_position = 0;
     unsigned i = 0;
     unsigned number_index = 0;
-    char number[16];
+    
+    unsigned number_size = 16;
+    char number[number_size];
     while(i < size) {
         char character = buffer[i];
         if(character == '\n') break;
 
         if(character == ' ') {
             if(number_index != i) {
+                number[number_index] = '\0';
                 switch (number_position) {
                     case 0:
-                        user = atoi(number);
+                        user = strtoull(number, NULL, 10);
                         break;
                     case 1:
-                        nice = atoi(number);
+                        nice = strtoull(number, NULL, 10);
                         break;
                     case 2:
-                        system = atoi(number);
+                        system = strtoull(number, NULL, 10);
                         break;
                     case 3:
-                        idle = atoi(number);
+                        idle = strtoull(number, NULL, 10);
                         break;
                     case 4:
-                        iowait = atoi(number);
+                        iowait = strtoull(number, NULL, 10);
                         break;
                     case 5:
-                        irq = atoi(number);
+                        irq = strtoull(number, NULL, 10);
                         break;
                     case 6:
-                        softirq = atoi(number);
+                        softirq = strtoull(number, NULL, 10);
                         break;
                     case 7:
-                        steal = atoi(number);
+                        steal = strtoull(number, NULL, 10);
                         break;
                     case 8:
-                        guest = atoi(number);
+                        guest = strtoull(number, NULL, 10);
                         break;
                     case 9:
-                        guest_nice = atoi(number);
+                        guest_nice = strtoull(number, NULL, 10);
                         break;
                     
                     default:
@@ -105,8 +109,10 @@ Cpu getCpu(size_t size, char *buffer) {
             continue;
         }
 
-        number[number_index] = character;
-        number_index++;
+        if(number_index < number_size - 1) {
+            number[number_index] = character;
+            number_index++;
+        }
         i++;
     }
 

@@ -27,56 +27,71 @@ unsigned long parseUptime(size_t size, char *buffer) {
         i++;
     }
 
-    unsigned long n = atoi(number);
+    unsigned long n = strtoull(number, NULL, 10);
     return n;
 }
 
 
 
 System getSystem() {
-    unsigned statBufferSize = BUFFER_ONE_KB * 6;
-    char statBuffer[statBufferSize];
-    readFile(PROC_STAT_FILE, statBufferSize, statBuffer);
-    Cpu cpu = getCpu(BUFFER_ONE_KB, statBuffer);
+    size_t stat_buffer_size = BUFFER_ONE_KB * 6;
+    char stat_buffer[stat_buffer_size];
+    readFile(PROC_STAT_FILE, stat_buffer_size, stat_buffer);
+    Cpu cpu = getCpu(BUFFER_ONE_KB, stat_buffer);
 
-    unsigned memBufferSize = BUFFER_ONE_KB * 2;
-    char memBuffer[memBufferSize];
+    size_t mem_buffer_size = BUFFER_ONE_KB * 2;
+    char mem_buffer[mem_buffer_size];
 
-    readFile(PROC_MEM_FILE, memBufferSize, memBuffer);
-    unsigned long memoryTotal = parseMemoryKey(memBuffer, "MemTotal");
-    readFile(PROC_MEM_FILE, memBufferSize, memBuffer);
-    unsigned long memoryAvailable = parseMemoryKey(memBuffer, "MemAvailable");
-    Memory memory = { memoryTotal, memoryAvailable };
+    readFile(PROC_MEM_FILE, mem_buffer_size, mem_buffer);
+    unsigned long memory_total = parseMemoryKey(mem_buffer, "MemTotal");
+    readFile(PROC_MEM_FILE, mem_buffer_size, mem_buffer);
+    unsigned long memory_available = parseMemoryKey(mem_buffer, "MemAvailable");
+    Memory memory = { memory_total, memory_available };
    
-    unsigned diskBufferSsize = BUFFER_ONE_KB * 2;
-    char diskBuffer[diskBufferSsize];
-    readFile(PROC_DISK_FILE, diskBufferSsize, diskBuffer);
-    Disk disk = getDisk(diskBufferSsize, diskBuffer);
+    size_t disk_buffer_size = BUFFER_ONE_KB * 2;
+    char disk_buffer[disk_buffer_size];
+    readFile(PROC_DISK_FILE, disk_buffer_size, disk_buffer);
+    Disk disk = getDisk(disk_buffer);
 
-    unsigned loadBufferSize = BUFFER_ONE_KB;
-    char loadBuffer[loadBufferSize];
-    readFile(PROC_LOAD_FILE, loadBufferSize, loadBuffer);
-    Load load = getLoad(loadBufferSize, loadBuffer);
+    size_t load_buffer_size = BUFFER_ONE_KB;
+    char load_buffer[load_buffer_size];
+    readFile(PROC_LOAD_FILE, load_buffer_size, load_buffer);
+    Load load = getLoad(load_buffer);
 
-    unsigned networkBufferSize = BUFFER_ONE_KB * 8;
-    char networkBuffer[networkBufferSize];
-    readFile(PROC_NET_FILE, networkBufferSize, networkBuffer);
-    Network network = getNetwork(networkBufferSize, networkBuffer);
+    size_t network_buffer_size = BUFFER_ONE_KB * 8;
+    char network_buffer[network_buffer_size];
+    readFile(PROC_NET_FILE, network_buffer_size, network_buffer);
+    Network network = getNetwork(network_buffer);
 
     Process processes[3] = {
-        { "", 0, 0, 0 },
-        { "", 0, 0, 0 },
-        { "", 0, 0, 0 }
+        { 
+            .name = "", 
+            .cpu = 0,
+            .ram = 0, 
+            .pid = 0 
+        },
+        { 
+            .name = "", 
+            .cpu = 0,
+            .ram = 0, 
+            .pid = 0 
+        },
+        { 
+            .name = "", 
+            .cpu = 0,
+            .ram = 0, 
+            .pid = 0 
+        }
     };
 
-    unsigned processesBufferSize = BUFFER_ONE_KB * 8;
-    char processesBuffer[processesBufferSize];
-    getProcesses(processesBufferSize, processesBuffer, processes);
+    size_t processes_buffer_size = BUFFER_ONE_KB * 8;
+    char processes_buffer[processes_buffer_size];
+    getProcesses(processes_buffer_size, processes_buffer, processes);
 
-    unsigned uptimeBufferSize = BUFFER_ONE_KB * 2;
-    char uptimeBuffer[uptimeBufferSize];
-    readFile(PROC_UPTIME_FILE, uptimeBufferSize, uptimeBuffer);
-    unsigned long uptime = parseUptime(uptimeBufferSize, uptimeBuffer);
+    size_t uptime_buffer_size = BUFFER_ONE_KB * 2;
+    char uptime_buffer[uptime_buffer_size];
+    readFile(PROC_UPTIME_FILE, uptime_buffer_size, uptime_buffer);
+    unsigned long uptime = parseUptime(uptime_buffer_size, uptime_buffer);
 
     System system = { 
         cpu, 

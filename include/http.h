@@ -62,12 +62,12 @@ typedef struct Server {
 
 extern Server serverContsructor(
     RouteHandler *routeHandler,
-    int domain,
-    int port,
+    sa_family_t domain,
+    uint16_t port,
     int service,
     int protocol,
     int backlog,
-    long interface,
+    uint32_t interface,
     void (*launch)(Server *server)
 );
 

@@ -56,24 +56,24 @@ void render(
     System systemSnapshot, 
     System prevSystemSnapshot
 ) {
-    char uptimeBufferText[64];
-    convertTimeInSecondsToString(systemSnapshot.uptime, uptimeBufferText);
+    char uptime_buffer_text[64];
+    convertTimeInSecondsToString(systemSnapshot.uptime, uptime_buffer_text);
     printf("%s%sCherries Pulse%s ─────────────────────────────────────────── ", BOLD, RED, RESET);
     printf("%-7s %s%-20s%s\n",
         "Uptime:",
         BOLD,
-        uptimeBufferText,
+        uptime_buffer_text,
         RESET
     );
 
     float cpuUsage = parseCpuUsage(systemSnapshot.cpu, prevSystemSnapshot.cpu);
 
-    float memoryTotalFloat = systemSnapshot.memory.total / 1024.0f / 1024.0f;
-    float memoryAvailableFloat = systemSnapshot.memory.available / 1024.0f / 1024.0f;
+    float memoryTotalFloat = (float)systemSnapshot.memory.total / 1024.0f / 1024.0f;
+    float memoryAvailableFloat = (float)systemSnapshot.memory.available / 1024.0f / 1024.0f;
     float ramUsage = 100 - (memoryAvailableFloat / memoryTotalFloat) * 100;
 
-    float diskTotalFloat = systemSnapshot.disk.total / 1024.0f / 1024.0f / 1024.0f;
-    float diskAvailableFloat = systemSnapshot.disk.available / 1024.0f / 1024.0f / 1024.0f;
+    float diskTotalFloat = (float)systemSnapshot.disk.total / 1024.0f / 1024.0f / 1024.0f;
+    float diskAvailableFloat = (float)systemSnapshot.disk.available / 1024.0f / 1024.0f / 1024.0f;
     float diskUsage = 100 - (diskAvailableFloat / diskTotalFloat) * 100; 
 
     NetworkAverage networkUsage = parseNetworkUsage(systemSnapshot.network, prevSystemSnapshot.network);

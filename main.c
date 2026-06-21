@@ -14,8 +14,8 @@
 typedef struct PulseArgs {
     int web;
     int help;
-    unsigned short sleep;
-    unsigned short port;
+    int port;
+    unsigned sleep;
 } PulseArgs;
 
 PulseArgs parseArgs(int argc, char* argv[]) {
@@ -31,14 +31,14 @@ PulseArgs parseArgs(int argc, char* argv[]) {
 
         if(strcmp(arg, "--sleep") == 0) {
             if(i == argc - 1) continue;
-            unsigned sleep = atoi(argv[i + 1]);
+            unsigned sleep = (unsigned)atoi(argv[i + 1]);
             if(sleep <= 0 || sleep > 60) continue;
             p.sleep = sleep;
         }
 
         if(strcmp(arg, "--port") == 0) {
             if(i == argc - 1) continue;
-            unsigned port = atoi(argv[i + 1]);
+            int port = atoi(argv[i + 1]);
             p.web = 1;
             p.port = port;
         }
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
         Server server = serverContsructor(
             &handler,           // route handler
             AF_INET, 
-            args.port,
+            (uint16_t)args.port,
             SOCK_STREAM,
             0,                  // protocol
             10,                 // backlog

@@ -4,16 +4,16 @@
 #include "utils.h"
 
 void trim(char *buffer) {
-    unsigned size = strlen(buffer);
-    unsigned start = 0;
+    size_t size = strlen(buffer);
+    size_t start = 0;
     while(buffer[start] == SPACE_IN_ASCII && start < size) start++;
     
-    unsigned end = size;
+    size_t end = size;
     while(buffer[end] == SPACE_IN_ASCII && end >= 0) end--;
 
 
     // move everything to the left side
-    unsigned i = 0;
+    size_t i = 0;
     while(i < end - start) {
         buffer[i] = buffer[start + i];
         i++;

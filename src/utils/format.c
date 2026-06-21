@@ -1,15 +1,15 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void convertTimeInSecondsToString(unsigned seconds, char* buffer) {
-    unsigned days = seconds / 3600 / 24;
-    unsigned hours = seconds / 3600;
-    unsigned minutes = (seconds % 3600) / 60;
-    unsigned secs = seconds % 60 % 60 % 60;
+void convertTimeInSecondsToString(long unsigned seconds, char* buffer) {
+    long unsigned days = seconds / 3600 / 24;
+    long unsigned hours = seconds / 3600;
+    long unsigned minutes = (seconds % 3600) / 60;
+    long unsigned secs = seconds % 60 % 60 % 60;
 
     if(days > 0) {
         sprintf(
-            buffer, "%dd %dh %dm %ds",
+            buffer, "%ldd %ldh %ldm %lds",
             days,
             hours,
             minutes,
@@ -18,7 +18,7 @@ void convertTimeInSecondsToString(unsigned seconds, char* buffer) {
         return;
     } else if(hours > 0) {
         sprintf(
-            buffer, "%dh %dm %ds",
+            buffer, "%ldh %ldm %lds",
             hours,
             minutes,
             secs
@@ -26,7 +26,7 @@ void convertTimeInSecondsToString(unsigned seconds, char* buffer) {
         return;
     } else {
         sprintf(
-            buffer, "%dm %ds",
+            buffer, "%ldm %lds",
             minutes,
             secs
         );

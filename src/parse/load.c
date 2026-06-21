@@ -9,26 +9,29 @@
 #include "parse.h"
 #include "http.h"
 
-Load getLoad(size_t size, char *buffer) {
+Load getLoad(char *buffer) {
+    Load load = { 0.0f, 0.0f, 0.0f };
     char *line = buffer;
+
     char *next = strchr(line, SPACE_IN_ASCII);
-    *next = '\0';
+    if(next) *next = '\0';
+    else return load;
 
-    float load1 = atof(line);
-
-    line = next + 1;
-    next = strchr(line, SPACE_IN_ASCII);
-    *next = '\0';
-
-    float load5 = atof(line);
+    load.load1 = (float)atof(line);
 
     line = next + 1;
     next = strchr(line, SPACE_IN_ASCII);
-    *next = '\0';
+    if(next) *next = '\0';
+    else return load;
 
-    float load15 = atof(line);
+    load.load5 = (float)atof(line);
 
-    Load snapshot = { load1, load5, load15 };
-    return snapshot;
+    line = next + 1;
+    next = strchr(line, SPACE_IN_ASCII);
+    if(next) *next = '\0';
+    else return load;
+
+    load.load15 = (float)atof(line);
+    return load;
 }
 
