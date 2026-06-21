@@ -1,7 +1,7 @@
 CC=gcc
 LIBS=-lpthread
 INCLUDES=-Iinclude
-FLAGS=-Wall -Werror
+FLAGS=-Wall -Werror -Wconversion -Wno-unused-parameter
 CFLAGS=$(INCLUDES) $(FLAGS)
 LDFLAGS=$(LIBS)
 
