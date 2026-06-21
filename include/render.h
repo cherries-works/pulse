@@ -1,7 +1,7 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-extern void render(struct System systemSnapshot, struct System prevSystemSnapshot);
+extern void render(System systemSnapshot, System prevSystemSnapshot);
 extern void help();
 extern char *getBars(float val);
 extern char* getColor(float value);

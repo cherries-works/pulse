@@ -4,7 +4,7 @@
 #include "http.h"
 #include "utils.h"
 
-struct Request parseRequest(char *buffer) {
+Request parseRequest(char *buffer) {
     char *line = buffer;
     char *split_line = strchr(line, '\n');
     if(split_line) *split_line = '\0'; // \0 byte to finish the first line
@@ -12,7 +12,7 @@ struct Request parseRequest(char *buffer) {
     char *space = strchr(line, ' ');
     if(space) *space = '\0'; // to get the method
 
-    enum REQUEST_METHOD method = GET;
+    REQUEST_METHOD method = GET;
     if (strcmp(line, "POST") == 0) method = POST;
     if (strcmp(line, "DELETE") == 0) method = DELETE;
     if (strcmp(line, "PATCH") == 0) method = PATCH;
@@ -22,6 +22,6 @@ struct Request parseRequest(char *buffer) {
     space = strchr(line, ' ');
     if(space) *space = '\0'; // to get the path
 
-    struct Request req = {method, line};
+    Request req = {method, line};
     return req;
 }

@@ -3,6 +3,6 @@
 
 #include "http.h"
 
-extern void initRoutes(struct RouteHandler *rh);
+extern void initRoutes(RouteHandler *rh);
 
 #endif

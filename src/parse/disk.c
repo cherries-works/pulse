@@ -10,7 +10,7 @@
 #include "parse.h"
 #include "http.h"
 
-struct Disk getDisk(size_t size, char *buffer) {
+Disk getDisk(size_t size, char *buffer) {
     struct statvfs stat;
     statvfs("/", &stat);
 
@@ -41,15 +41,15 @@ struct Disk getDisk(size_t size, char *buffer) {
     }
 
 
-    struct Disk snapshot = { disk_total, disk_available, read, written };
+    Disk snapshot = { disk_total, disk_available, read, written };
     return snapshot;
 }
 
-struct IoAverage parseIoUsage(struct Disk snapshot2, struct Disk snapshot1) {
+IoAverage parseIoUsage(Disk snapshot2, Disk snapshot1) {
     float r = snapshot2.read - snapshot1.read;
     float w = snapshot2.write - snapshot1.write;
 
-    struct IoAverage io = {
+    IoAverage io = {
         r,
         w
     };

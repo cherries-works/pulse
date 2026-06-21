@@ -33,11 +33,11 @@ unsigned long parseUptime(size_t size, char *buffer) {
 
 
 
-struct System getSystem() {
+System getSystem() {
     unsigned statBufferSize = BUFFER_ONE_KB * 6;
     char statBuffer[statBufferSize];
     readFile(PROC_STAT_FILE, statBufferSize, statBuffer);
-    struct Cpu cpu = getCpu(BUFFER_ONE_KB, statBuffer);
+    Cpu cpu = getCpu(BUFFER_ONE_KB, statBuffer);
 
     unsigned memBufferSize = BUFFER_ONE_KB * 2;
     char memBuffer[memBufferSize];
@@ -46,24 +46,24 @@ struct System getSystem() {
     unsigned long memoryTotal = parseMemoryKey(memBuffer, "MemTotal");
     readFile(PROC_MEM_FILE, memBufferSize, memBuffer);
     unsigned long memoryAvailable = parseMemoryKey(memBuffer, "MemAvailable");
-    struct Memory memory = { memoryTotal, memoryAvailable };
+    Memory memory = { memoryTotal, memoryAvailable };
    
     unsigned diskBufferSsize = BUFFER_ONE_KB * 2;
     char diskBuffer[diskBufferSsize];
     readFile(PROC_DISK_FILE, diskBufferSsize, diskBuffer);
-    struct Disk disk = getDisk(diskBufferSsize, diskBuffer);
+    Disk disk = getDisk(diskBufferSsize, diskBuffer);
 
     unsigned loadBufferSize = BUFFER_ONE_KB;
     char loadBuffer[loadBufferSize];
     readFile(PROC_LOAD_FILE, loadBufferSize, loadBuffer);
-    struct Load load = getLoad(loadBufferSize, loadBuffer);
+    Load load = getLoad(loadBufferSize, loadBuffer);
 
     unsigned networkBufferSize = BUFFER_ONE_KB * 8;
     char networkBuffer[networkBufferSize];
     readFile(PROC_NET_FILE, networkBufferSize, networkBuffer);
-    struct Network network = getNetwork(networkBufferSize, networkBuffer);
+    Network network = getNetwork(networkBufferSize, networkBuffer);
 
-    struct Process processes[3] = {
+    Process processes[3] = {
         { "", 0, 0, 0 },
         { "", 0, 0, 0 },
         { "", 0, 0, 0 }
@@ -78,7 +78,7 @@ struct System getSystem() {
     readFile(PROC_UPTIME_FILE, uptimeBufferSize, uptimeBuffer);
     unsigned long uptime = parseUptime(uptimeBufferSize, uptimeBuffer);
 
-    struct System system = { 
+    System system = { 
         cpu, 
         memory, 
         disk,

@@ -9,17 +9,17 @@
 #include "parse.h"
 #include "http.h"
 
-struct Server serverContsructor(
-    struct RouteHandler *routeHandler,
+Server serverContsructor(
+    RouteHandler *routeHandler,
     int domain,
     int port,
     int service,
     int protocol,
     int backlog,
     long interface,
-    void (*launch)(struct Server *server)
+    void (*launch)(Server *server)
 ) {
-    struct Server server;
+    Server server;
 
     server.domain = domain;
     server.port = port;
@@ -62,7 +62,7 @@ struct Server serverContsructor(
     return server;
 };
 
-void serverLaunch(struct Server *server) {
+void serverLaunch(Server *server) {
     unsigned long bufferSize = BUFFER_ONE_MB;
     char buffer[bufferSize];
 
@@ -80,7 +80,7 @@ void serverLaunch(struct Server *server) {
             printf("Error reading buffer...\n");
         }
 
-        struct Request request = parseRequest(buffer);
+        Request request = parseRequest(buffer);
         handle(server->routeHandler, request, newSocket, response);
 
         close(newSocket);

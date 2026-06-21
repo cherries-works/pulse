@@ -18,7 +18,7 @@ STATIC_ROUTE(indexJs, "./src/app/static/js/script.js");
 STATIC_ROUTE(indexFavicon, "./src/app/static/assets/favicon.png");
 
 JSON_ROUTE(indexMetrics, {
-    struct System snapshot = getSystem();
+    System snapshot = getSystem();
 
     char *fmt =
         "HTTP/1.1 200 OK\r\n"
@@ -85,7 +85,7 @@ JSON_ROUTE(indexMetrics, {
     );
 });
 
-void initRoutes(struct RouteHandler *rh) {
+void initRoutes(RouteHandler *rh) {
     route("/", indexHtml, GET, rh);
     route("/css/style.css", indexStyle, GET, rh);
     route("/js/script.js", indexJs, GET, rh);

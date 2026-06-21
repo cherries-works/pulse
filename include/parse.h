@@ -1,77 +1,77 @@
 #ifndef PARSE_H
 #define PARSE_H
 
-struct Cpu {
+typedef struct {
     unsigned long idle;
     unsigned long total;
     unsigned long processes;
-};
+} Cpu;
 
-struct Memory {
+typedef struct {
     unsigned long total;
     unsigned long available;
-};
+} Memory;
 
-struct Disk {
+typedef struct {
     unsigned long long total;
     unsigned long long available;
     unsigned long long read;
     unsigned long long write;
-};
+} Disk;
 
-struct IoAverage {
+typedef struct {
     float r;
     float w;
-};
+} IoAverage;
 
-struct Load {
+typedef struct {
     float load1;
     float load5;
     float load15;
-};
+} Load;
 
-struct Network {
+typedef struct {
     unsigned long rx;
     unsigned long tx;
-};
+} Network;
 
-struct NetworkAverage {
+typedef struct {
     float rx;
     float tx;
-};
+} NetworkAverage;
 
-struct Process {
+typedef struct {
     char name[64];
     int pid;
     
     unsigned long ram;
     unsigned long cpu;
-};
+} Process;
 
-struct System {
-    struct Cpu cpu;
-    struct Memory memory;
-    struct Disk disk;
+typedef struct {
+    Cpu cpu;
+    Memory memory;
+    Disk disk;
     
-    struct Load load;
-    struct Network network;
+    Load load;
+    Network network;
 
-    struct Process processes[3];
+    Process processes[3];
 
     unsigned long uptime;
-};
+} System;
 
-extern struct NetworkAverage parseNetworkUsage(struct Network snapshot2, struct Network snapshot1);
-extern struct IoAverage parseIoUsage(struct Disk snapshot2, struct Disk snapshot1);
+extern NetworkAverage parseNetworkUsage(Network snapshot2, Network snapshot1);
+extern IoAverage parseIoUsage(Disk snapshot2, Disk snapshot1);
 
-extern struct Cpu getCpu(size_t size, char *buffer);
-extern struct Network getNetwork(size_t size, char *buffer);
-extern struct Load getLoad(size_t size, char *buffer);
-extern struct Disk getDisk(size_t size, char *buffer);
-extern struct System getSystem();
+extern Cpu getCpu(size_t size, char *buffer);
+extern Network getNetwork(size_t size, char *buffer);
+extern Load getLoad(size_t size, char *buffer);
+extern Disk getDisk(size_t size, char *buffer);
+extern System getSystem();
 
 extern unsigned long parseMemoryKey(char *buffer, char *target_key);
-extern float parseCpuUsage(struct Cpu snapshot2, struct Cpu snapshot1);
-extern void getProcesses(size_t size, char *buffer, struct Process processes[]);
+extern float parseCpuUsage(Cpu snapshot2, Cpu snapshot1);
+extern void getProcesses(size_t size, char *buffer, Process processes[]);
 
 #endif

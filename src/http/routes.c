@@ -163,10 +163,10 @@ void routeStatic(
 void route(
     char *path,
     RouteFn handler,
-    enum REQUEST_METHOD method,
-    struct RouteHandler *h
+    REQUEST_METHOD method,
+    RouteHandler *h
 ) {
-    struct Route r = { 
+    Route r = { 
         .path = path,
         .handler = handler,
         .method = method,
@@ -177,13 +177,13 @@ void route(
 }
 
 void handle(
-    struct RouteHandler handler,
-    struct Request request,
+    RouteHandler handler,
+    Request request,
     int new_socket,
     char *response
 ) {
     for(int i = 0; i < handler.routesAmount; i++) {
-        struct Route r = handler.routes[i];
+        Route r = handler.routes[i];
 
         if(request.method != r.method) continue;
         if(strcmp(request.path, r.path) != 0) continue;

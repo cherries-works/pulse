@@ -10,7 +10,7 @@
 #include "parse.h"
 #include "http.h"
 
-void getProcesses(size_t size, char *buffer, struct Process processes[]) {
+void getProcesses(size_t size, char *buffer, Process processes[]) {
     struct dirent *procEntry;
     DIR *procDir = opendir(PROC_DIR);
 

@@ -37,7 +37,7 @@ unsigned long parseCpuKey(char *buffer, char *target_key) {
     return atoi(value);
 }
 
-struct Cpu getCpu(size_t size, char *buffer) {
+Cpu getCpu(size_t size, char *buffer) {
     unsigned long user = 0;
     unsigned long nice = 0;
     unsigned long system = 0;
@@ -118,11 +118,11 @@ struct Cpu getCpu(size_t size, char *buffer) {
     unsigned long total_time = user_time + nice_time + system_all_time + idle_all_time + steal + virt_all_time;
 
     unsigned long processes = parseCpuKey(buffer, "processes");
-    struct Cpu snapshot = { idle_all_time, total_time, processes };
+    Cpu snapshot = { idle_all_time, total_time, processes };
     return snapshot;
 }
 
-float parseCpuUsage(struct Cpu snapshot2, struct Cpu snapshot1) {
+float parseCpuUsage(Cpu snapshot2, Cpu snapshot1) {
     float total_time_float = snapshot2.total == snapshot1.total ? (float)snapshot2.total : (float)snapshot2.total - (float)snapshot1.total;
     float idle_all_time_float = snapshot2.idle == snapshot1.idle ? (float)snapshot2.idle : (float)snapshot2.idle - (float)snapshot1.idle;
 

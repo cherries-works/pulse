@@ -39,8 +39,8 @@ void printTransferRow(
 }
 
 void printProcess(
-    struct Process process,
-    struct System system
+    Process process,
+    System system
 ) {
     printf(
         "│ (%-6d) %-15s RAM %8.2f MB %18s CPU %5.2f%%  │\n",
@@ -53,8 +53,8 @@ void printProcess(
 }
 
 void render(
-    struct System systemSnapshot, 
-    struct System prevSystemSnapshot
+    System systemSnapshot, 
+    System prevSystemSnapshot
 ) {
     char uptimeBufferText[64];
     convertTimeInSecondsToString(systemSnapshot.uptime, uptimeBufferText);
@@ -76,8 +76,8 @@ void render(
     float diskAvailableFloat = systemSnapshot.disk.available / 1024.0f / 1024.0f / 1024.0f;
     float diskUsage = 100 - (diskAvailableFloat / diskTotalFloat) * 100; 
 
-    struct NetworkAverage networkUsage = parseNetworkUsage(systemSnapshot.network, prevSystemSnapshot.network);
-    struct IoAverage ioUsage = parseIoUsage(systemSnapshot.disk, prevSystemSnapshot.disk);
+    NetworkAverage networkUsage = parseNetworkUsage(systemSnapshot.network, prevSystemSnapshot.network);
+    IoAverage ioUsage = parseIoUsage(systemSnapshot.disk, prevSystemSnapshot.disk);
 
     printf("┌── RESOURCES ────────────────────────┐ ┌── SYSTEM LOAD ──────────────────┐\n");
     printMetric("CPU", cpuUsage, "1 min:", systemSnapshot.load.load1);
@@ -94,7 +94,7 @@ void render(
 
     printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
     for(int i = 0; i < 3; i++) {
-        struct Process process = systemSnapshot.processes[i];
+        Process process = systemSnapshot.processes[i];
         printProcess(process, systemSnapshot);
     }
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");

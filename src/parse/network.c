@@ -9,7 +9,7 @@
 #include "parse.h"
 #include "http.h"
 
-struct Network getNetwork(size_t size, char *buffer) {
+Network getNetwork(size_t size, char *buffer) {
     unsigned long rx = 0;
     unsigned long tx = 0;
 
@@ -53,17 +53,17 @@ struct Network getNetwork(size_t size, char *buffer) {
     }
 
 
-    struct Network snapshot = { rx, tx };
+    Network snapshot = { rx, tx };
     return snapshot;
 }
 
 
 
-struct NetworkAverage parseNetworkUsage(struct Network snapshot2, struct Network snapshot1) {
+NetworkAverage parseNetworkUsage(Network snapshot2, Network snapshot1) {
     float rx = snapshot2.rx - snapshot1.rx;
     float tx = snapshot2.tx - snapshot1.tx;
 
-    struct NetworkAverage n = {
+    NetworkAverage n = {
         rx,
         tx
     };

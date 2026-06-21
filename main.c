@@ -11,15 +11,15 @@
 
 #include "app.h"
 
-struct PulseArgs {
+typedef struct PulseArgs {
     int web;
     int help;
     unsigned short sleep;
     unsigned short port;
-};
+} PulseArgs;
 
-struct PulseArgs parseArgs(int argc, char* argv[]) {
-    struct PulseArgs p = {
+PulseArgs parseArgs(int argc, char* argv[]) {
+    PulseArgs p = {
         .web = 0,
         .help = 0,
         .sleep = 1,
@@ -59,22 +59,22 @@ struct PulseArgs parseArgs(int argc, char* argv[]) {
 
 
 int main(int argc, char* argv[]) {
-    struct PulseArgs args = parseArgs(argc, argv);
+    PulseArgs args = parseArgs(argc, argv);
     if(args.help == 1) {
         help();
         return 0;
     }
     
-    struct System systemSnapshot = getSystem();
-    struct System prevSystemSnapshot = systemSnapshot;
+    System systemSnapshot = getSystem();
+    System prevSystemSnapshot = systemSnapshot;
 
     if(args.web == 1) {
         printf("API running on :: %d\n", args.port);
-        struct Route routes[64];
-        struct RouteHandler handler = { 0, routes };
+        Route routes[64];
+        RouteHandler handler = { 0, routes };
         initRoutes(&handler);
 
-        struct Server server = serverContsructor(
+        Server server = serverContsructor(
             &handler,           // route handler
             AF_INET, 
             args.port,

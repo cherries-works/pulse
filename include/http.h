@@ -3,49 +3,49 @@
 
 #include <netinet/in.h>
 
-enum REQUEST_METHOD {
+typedef enum {
     GET,
     POST,
     PUT,
     DELETE,
     PATCH,
-};
+} REQUEST_METHOD;
 
-struct Request {
-    enum REQUEST_METHOD method;
+typedef struct {
+    REQUEST_METHOD method;
     char *path;
-};
+} Request;
 
-extern struct Request parseRequest(char *buffer);
+extern Request parseRequest(char *buffer);
 
 typedef void (*RouteFn)(
     int socket,
     char *response
 );
 
-struct Route {
+typedef struct {
     char *path;
-    enum REQUEST_METHOD method;
+    REQUEST_METHOD method;
     RouteFn handler;
-};
+} Route;
 
-struct RouteHandler {
+typedef struct {
     unsigned short routesAmount;
-    struct Route *routes;
-};
+    Route *routes;
+} RouteHandler;
 
 extern void route(
     char *path, 
     RouteFn handler,
-    enum REQUEST_METHOD method, 
-    struct RouteHandler *h
+    REQUEST_METHOD method, 
+    RouteHandler *h
 );
 
 extern void routeJSON(int new_socket, char *response, char *fmt, ...);
 extern void routeStatic(int new_socket, char *response, char *file_path);
-extern void handle(struct RouteHandler handler, struct Request request, int new_socket, char *response);
+extern void handle(RouteHandler handler, Request request, int new_socket, char *response);
 
-struct Server {
+typedef struct Server {
     int domain;
     int port;
     int service;
@@ -55,23 +55,23 @@ struct Server {
 
     int socket;
     struct sockaddr_in address;
-    struct RouteHandler routeHandler;
+    RouteHandler routeHandler;
 
     void (*launch)(struct Server *server);
-};
+} Server;
 
-extern struct Server serverContsructor(
-    struct RouteHandler *routeHandler,
+extern Server serverContsructor(
+    RouteHandler *routeHandler,
     int domain,
     int port,
     int service,
     int protocol,
     int backlog,
     long interface,
-    void (*launch)(struct Server *server)
+    void (*launch)(Server *server)
 );
 
-extern void serverLaunch(struct Server *server);
+extern void serverLaunch(Server *server);
 extern void *serverLaunchThread(void *arg);
 
 #endif
