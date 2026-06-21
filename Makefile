@@ -1,5 +1,5 @@
 CC=gcc
-CFLAGS=-I include -lpthread
+CFLAGS=-I include -lpthread -Wall -Werror
 
 utils = src/utils/constants.c src/utils/file.c src/utils/terminal.c src/utils/strings.c src/utils/format.c
 parse = src/parse/cpu.c src/parse/disk.c src/parse/load.c src/parse/memory.c src/parse/network.c src/parse/process.c src/parse/system.c
