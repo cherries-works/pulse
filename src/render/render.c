@@ -46,11 +46,9 @@ void printProcess(
         "│ (%-6d) %-15s RAM %8.2f MB %18s CPU %5.2f%%  │\n",
         process.pid,
         process.name,
-        
         ((float)process.ram) / 1024.0f,
         "",
-        ((float)process.cpu / (float)system.cpu.total) * 100,
-        ""
+        ((float)process.cpu / (float)system.cpu.total) * 100
     );
 }
 

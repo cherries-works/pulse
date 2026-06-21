@@ -54,7 +54,7 @@ void routeHTML(char *file_path, int new_socket, char *response) {
     sprintf(response,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/html\r\n"
-        "Content-Length: %d\r\n\r\n",
+        "Content-Length: %ld\r\n\r\n",
         file_size
     );
     write(new_socket, response, strlen(response));
@@ -74,7 +74,7 @@ void routeCSS(char *file_path, int new_socket, char *response) {
     sprintf(response,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/css\r\n"
-        "Content-Length: %d\r\n\r\n",
+        "Content-Length: %ld\r\n\r\n",
         file_size
     );
     write(new_socket, response, strlen(response));
@@ -94,7 +94,7 @@ void routeJS(char *file_path, int new_socket, char *response) {
     sprintf(response,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/js\r\n"
-        "Content-Length: %d\r\n\r\n",
+        "Content-Length: %ld\r\n\r\n",
         file_size
     );
     write(new_socket, response, strlen(response));
