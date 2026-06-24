@@ -17,7 +17,7 @@ extern const size_t BUFFER_ONE_MB;
 
 extern void trim(char *buffer);
 extern void clearLine();
-extern void clearLines(unsigned i);
+extern void clearLines(short i);
 extern void convertTimeInSecondsToString(long unsigned seconds, char* buffer);
 
 extern size_t readFile(const char *file_name, size_t size, char *buffer);

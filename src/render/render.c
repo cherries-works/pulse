@@ -106,5 +106,4 @@ void help() {
     printf("     %-20s %-20s\n", "--web", "Hosts website (and API) on default port 8080.");
     printf("     %-20s %-20s\n", "--sleep", "How many seconds the program sleeps before updating (TUI only).");
     printf("     %-20s %-20s\n\n", "--help", "Prints this.");
-
 }

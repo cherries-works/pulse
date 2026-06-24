@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
+#include <stdbool.h>
 
 #include "parse.h"
 #include "render.h"
@@ -12,16 +13,17 @@
 #include "app.h"
 
 typedef struct PulseArgs {
-    int web;
-    int help;
+    bool web;
+    bool help;
+    
     int port;
     unsigned sleep;
 } PulseArgs;
 
 PulseArgs parseArgs(int argc, char* argv[]) {
     PulseArgs p = {
-        .web = 0,
-        .help = 0,
+        .web = false,
+        .help = false,
         .sleep = 1,
         .port = 8080,
     };
@@ -44,11 +46,11 @@ PulseArgs parseArgs(int argc, char* argv[]) {
         }
 
         if(strcmp(arg, "--web") == 0) {
-            p.web = 1;
+            p.web = true;
         }
 
         if(strcmp(arg, "--help") == 0) {
-            p.help = 1;
+            p.help = true;
             break;
         }
     }
@@ -60,7 +62,7 @@ PulseArgs parseArgs(int argc, char* argv[]) {
 
 int main(int argc, char* argv[]) {
     PulseArgs args = parseArgs(argc, argv);
-    if(args.help == 1) {
+    if(args.help) {
         help();
         return 0;
     }
@@ -68,7 +70,7 @@ int main(int argc, char* argv[]) {
     System systemSnapshot = getSystem();
     System prevSystemSnapshot = systemSnapshot;
 
-    if(args.web == 1) {
+    if(args.web) {
         printf("API running on :: %d\n", args.port);
         Route routes[64];
         RouteHandler handler = { 0, routes };
@@ -89,12 +91,11 @@ int main(int argc, char* argv[]) {
         pthread_create(&serverThread, NULL, serverLaunchThread, &server);
     }
 
-    unsigned short TRUTHY_LOOP = 1;
-    unsigned short LOOP_STARTED = 0;
-    unsigned short TOTAL_LINES = 15;
-    while(TRUTHY_LOOP) {
-        if(LOOP_STARTED == 0) {
-            LOOP_STARTED = 1;
+    bool LOOP_STARTED = false;
+    short TOTAL_LINES = 15;
+    while(true) {
+        if(!LOOP_STARTED) {
+            LOOP_STARTED = true;
         } else {
             clearLines(TOTAL_LINES);
         }
