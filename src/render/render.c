@@ -53,12 +53,17 @@ void printProcess(
 }
 
 void render(
-    System systemSnapshot, 
-    System prevSystemSnapshot
+    PulseArgs args,
+    System system,
+    Metrics metrics 
 ) {
     char uptime_buffer_text[64];
-    convertTimeInSecondsToString(systemSnapshot.uptime, uptime_buffer_text);
-    printf("%s%sCherries Pulse%s ─────────────────────────────────────────── ", BOLD, RED, RESET);
+    convertTimeInSecondsToString(system.uptime, uptime_buffer_text);
+    if(args.web) {
+        printf("%s%sCherries Pulse%s ──────────── port :: %d ──────────────── ", BOLD, RED, RESET, args.port);
+    } else {
+        printf("%s%sCherries Pulse%s ─────────────────────────────────────────── ", BOLD, RED, RESET);
+    }
     printf("%-7s %s%-20s%s\n",
         "Uptime:",
         BOLD,
@@ -66,36 +71,23 @@ void render(
         RESET
     );
 
-    float cpuUsage = parseCpuUsage(systemSnapshot.cpu, prevSystemSnapshot.cpu);
-
-    float memoryTotalFloat = (float)systemSnapshot.memory.total / 1024.0f / 1024.0f;
-    float memoryAvailableFloat = (float)systemSnapshot.memory.available / 1024.0f / 1024.0f;
-    float ramUsage = 100 - (memoryAvailableFloat / memoryTotalFloat) * 100;
-
-    float diskTotalFloat = (float)systemSnapshot.disk.total / 1024.0f / 1024.0f / 1024.0f;
-    float diskAvailableFloat = (float)systemSnapshot.disk.available / 1024.0f / 1024.0f / 1024.0f;
-    float diskUsage = 100 - (diskAvailableFloat / diskTotalFloat) * 100; 
-
-    NetworkAverage networkUsage = parseNetworkUsage(systemSnapshot.network, prevSystemSnapshot.network);
-    IoAverage ioUsage = parseIoUsage(systemSnapshot.disk, prevSystemSnapshot.disk);
-
     printf("┌── RESOURCES ────────────────────────┐ ┌── SYSTEM LOAD ──────────────────┐\n");
-    printMetric("CPU", cpuUsage, "1 min:", systemSnapshot.load.load1);
-    printMetric("RAM", ramUsage, "5 min:", systemSnapshot.load.load5);
-    printMetric("DISK", diskUsage, "15 min:", systemSnapshot.load.load15);
+    printMetric("CPU", metrics.cpuUsage, "1 min:", system.load.load1);
+    printMetric("RAM", metrics.ramUsage, "5 min:", system.load.load5);
+    printMetric("DISK", metrics.diskUsage, "15 min:", system.load.load15);
     printf("└─────────────────────────────────────┘ └─────────────────────────────────┘\n");
 
 
     printf("┌── NETWORK ──────────────────────────┐ ┌── DISK I/O ─────────────────────┐\n");
-    printTransferRow("RX:", networkUsage.rx / 1024.0f, "READ:", (ioUsage.r * 512.0f) / 1024.0f);
-    printTransferRow("TX:", networkUsage.tx / 1024.0f, "WRITE:", (ioUsage.w * 512.0f) / 1024.0f);
+    printTransferRow("RX:", metrics.rx, "READ:", metrics.read);
+    printTransferRow("TX:", metrics.tx / 1024.0f, "WRITE:", metrics.write);
     printf("└─────────────────────────────────────┘ └─────────────────────────────────┘\n");
 
 
     printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
     for(int i = 0; i < 3; i++) {
-        Process process = systemSnapshot.processes[i];
-        printProcess(process, systemSnapshot);
+        Process process = system.processes[i];
+        printProcess(process, system);
     }
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
 }

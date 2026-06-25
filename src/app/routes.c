@@ -1,8 +1,15 @@
 #include <stdio.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <ctype.h>
+#include <string.h>
 
 #include "parse.h"
 #include "http.h"
 #include "time.h"
+#include "utils.h"
+#include "daemon.h"
 
 #define STATIC_ROUTE(fnName, filePath) \
 void fnName(int socket, char *response) { \
@@ -18,7 +25,8 @@ STATIC_ROUTE(indexJs, "./src/app/static/js/script.js");
 STATIC_ROUTE(indexFavicon, "./src/app/static/assets/favicon.png");
 
 JSON_ROUTE(indexMetrics, {
-    System snapshot = getSystem();
+    System snapshot;
+    readDaemonS(&snapshot);
 
     char *fmt =
         "HTTP/1.1 200 OK\r\n"
