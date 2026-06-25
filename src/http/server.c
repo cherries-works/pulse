@@ -4,6 +4,7 @@
 #include <string.h>
 #include <netinet/in.h>
 #include <time.h>
+#include <stdbool.h>
 
 #include "utils.h"
 #include "parse.h"
@@ -69,7 +70,7 @@ void serverLaunch(Server *server) {
     unsigned long response_size = BUFFER_ONE_KB * 8;
     char response[response_size];
 
-    while(1) {
+    while(true) {
         struct sockaddr_in client_address;
         socklen_t address_len = sizeof(client_address);
         int new_socket = accept(
@@ -92,9 +93,4 @@ void serverLaunch(Server *server) {
 
         close(new_socket);
     }
-}
-
-void *serverLaunchThread(void *arg) {
-    serverLaunch(arg);
-    return NULL;
 }
