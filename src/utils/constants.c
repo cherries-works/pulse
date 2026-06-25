@@ -14,3 +14,7 @@ const unsigned ASCII_INT_TO_STRING_NUMNER = 48;
 const size_t BUFFER_ONE_KB = 1024;
 const size_t BUFFER_ONE_MB = BUFFER_ONE_KB * BUFFER_ONE_KB;
 
+const char* CHERRIES_FOLDER = "~/.cherries-works";
+const char* CHERRIES_FOLDER_PULSE = "~/.cherries-works/pulse";
+const char* R_CHERRIES_FOLDER = ".cherries-works";
+const char* R_CHERRIES_FOLDER_PULSE = ".cherries-works/pulse";
