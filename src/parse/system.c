@@ -32,7 +32,6 @@ unsigned long parseUptime(size_t size, char *buffer) {
 }
 
 
-
 System getSystem() {
     size_t stat_buffer_size = BUFFER_ONE_KB * 6;
     char stat_buffer[stat_buffer_size];
@@ -111,4 +110,31 @@ System getSystem() {
     };
 
     return system;
+}
+
+Metrics getMetrics(System system2, System system1) {
+    float cpuUsage = parseCpuUsage(system1.cpu, system2.cpu);
+
+    float memoryTotalFloat = (float)system1.memory.total / 1024.0f / 1024.0f;
+    float memoryAvailableFloat = (float)system1.memory.available / 1024.0f / 1024.0f;
+    float ramUsage = 100 - (memoryAvailableFloat / memoryTotalFloat) * 100;
+
+    float diskTotalFloat = (float)system1.disk.total / 1024.0f / 1024.0f / 1024.0f;
+    float diskAvailableFloat = (float)system1.disk.available / 1024.0f / 1024.0f / 1024.0f;
+    float diskUsage = 100 - (diskAvailableFloat / diskTotalFloat) * 100; 
+
+    NetworkAverage networkUsage = parseNetworkUsage(system1.network, system2.network);
+    IoAverage ioUsage = parseIoUsage(system1.disk, system2.disk);
+
+    Metrics metrics = {
+        .cpuUsage = cpuUsage,
+        .ramUsage = ramUsage,
+        .diskUsage = diskUsage,
+        .rx = networkUsage.rx / 1024.0f,
+        .tx = networkUsage.tx / 1024.0f,
+        .read = (ioUsage.r * 512.0f) / 1024.0f,
+        .write = (ioUsage.w * 512.0f) / 1024.0f
+    };
+
+    return metrics;
 }

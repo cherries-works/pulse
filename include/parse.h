@@ -61,6 +61,17 @@ typedef struct {
     unsigned long uptime;
 } System;
 
+typedef struct {
+    float cpuUsage;
+    float ramUsage;
+    float diskUsage;
+    float rx;
+    float tx;
+    float read;
+    float write;
+} Metrics;
+
+
 extern NetworkAverage parseNetworkUsage(Network snapshot2, Network snapshot1);
 extern IoAverage parseIoUsage(Disk snapshot2, Disk snapshot1);
 
@@ -69,6 +80,7 @@ extern Network getNetwork(char *buffer);
 extern Load getLoad(char *buffer);
 extern Disk getDisk(char *buffer);
 extern System getSystem();
+extern Metrics getMetrics(System system2, System system1);
 
 extern unsigned long parseMemoryKey(char *buffer, char *target_key);
 extern float parseCpuUsage(Cpu snapshot2, Cpu snapshot1);
