@@ -1,7 +1,15 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-extern void render(System systemSnapshot, System prevSystemSnapshot);
+#include <stdlib.h>
+#include "utils.h"
+
+extern void startRender(PulseArgs args);
+extern void render(
+    PulseArgs args,
+    System system,
+    Metrics metrics
+);
 extern void help();
 extern char *getBars(float val);
 extern char* getColor(float value);

@@ -1,6 +1,8 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#include <stdint.h>
+
 extern const char *PROC_DIR;
 extern const char *PROC_UPTIME_FILE;
 extern const char *PROC_MEM_FILE;
@@ -22,5 +24,25 @@ extern void convertTimeInSecondsToString(long unsigned seconds, char* buffer);
 
 extern size_t readFile(const char *file_name, size_t size, char *buffer);
 extern size_t sizeFile(const char *file_name);
+
+extern const char* CHERRIES_FOLDER;
+extern const char* CHERRIES_FOLDER_PULSE;
+extern const char* R_CHERRIES_FOLDER;
+extern const char* R_CHERRIES_FOLDER_PULSE;
+
+typedef struct {
+    volatile bool running;
+    
+    bool web;
+    bool help;
+    bool headless;
+
+    bool stop; // stop the current running processes
+    
+    uint16_t port;
+    unsigned sleep;
+} PulseArgs;
+
+extern PulseArgs parseArgs(int argc, char* argv[]);
 
 #endif

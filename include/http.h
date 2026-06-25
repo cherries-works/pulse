@@ -1,6 +1,8 @@
 #ifndef HTTP_H
 #define HTTP_H
 
+#include "utils.h"
+
 #include <netinet/in.h>
 
 typedef enum {
@@ -72,6 +74,5 @@ extern Server serverContsructor(
 );
 
 extern void serverLaunch(Server *server);
-extern void *serverLaunchThread(void *arg);
 
 #endif
