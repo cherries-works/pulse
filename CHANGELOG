@@ -1,3 +1,10 @@
+v0.1.1 (26th June 2026)
+- Daemon running separately
+- Website fetching data via shm
+- Directory creation at ~/.cherries-works/pulse/
+- Added tests for shm
+
+
 v0.1.0 (10th June 2026)
 - CPU usage
 - Memory usage
