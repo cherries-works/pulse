@@ -29,11 +29,10 @@ void stop() {
     }
 
     char path_dir[512];
-    sprintf(path_dir, "%s/%s", home, R_CHERRIES_FOLDER_PULSE);
+    sprintf(path_dir, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
     mkdir(path_dir, 0755);
 
     char file_path[1028];
-
 
     DIR *dir = opendir(path_dir);
     struct dirent *entry;

@@ -41,6 +41,38 @@ int setup() {
     } else {
         closedir(dir);
     }
+    
+    sprintf(path, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
+    dir = opendir(path);
+    if(!dir) {
+        mkdir(path, 0755);
+    } else {
+        closedir(dir);
+    }
+    
+    sprintf(path, "%s/%s/persistent", home, R_CHERRIES_FOLDER_PULSE);
+    dir = opendir(path);
+    if(!dir) {
+        mkdir(path, 0755);
+    } else {
+        closedir(dir);
+    }
+
+    sprintf(path, "%s/%s/logs", home, R_CHERRIES_FOLDER_PULSE);
+    dir = opendir(path);
+    if(!dir) {
+        mkdir(path, 0755);
+    } else {
+        closedir(dir);
+    }
+
+    sprintf(path, "%s/%s/history", home, R_CHERRIES_FOLDER_PULSE);
+    dir = opendir(path);
+    if(!dir) {
+        mkdir(path, 0755);
+    } else {
+        closedir(dir);
+    }
 
     return 0;
 }

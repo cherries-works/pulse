@@ -34,11 +34,14 @@ void setupDaemon(pid_t pid) {
     }
 
     char path_dir[512];
-    sprintf(path_dir, "%s/%s", home, R_CHERRIES_FOLDER_PULSE);
+    sprintf(path_dir, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
     mkdir(path_dir, 0755);
 
     char daemon_path[1028];
     sprintf(daemon_path, "%s/daemon.%d", path_dir, pid);
+
+    FILE *f = fopen(daemon_path, "a");
+    fclose(f);
 
     shm_unlink("/cherries_pulse");
     int shm_fd = shm_open("/cherries_pulse", O_CREAT | O_EXCL | O_RDWR, 0600);
@@ -166,7 +169,7 @@ pid_t check() {
     }
 
     char path_dir[512];
-    sprintf(path_dir, "%s/%s", home, R_CHERRIES_FOLDER_PULSE);
+    sprintf(path_dir, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
     mkdir(path_dir, 0755);
 
     char file_path[1028];
