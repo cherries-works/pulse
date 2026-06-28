@@ -4,8 +4,14 @@
 #include <string.h>
 
 #include "utils.h"
+#include "log.h"
 
 PulseArgs parseArgs(int argc, char* argv[]) {
+    _log(
+        INFO,
+        "Parsing CLI arguments"
+    );
+
     PulseArgs p = {
         .web = false,
         .help = false,

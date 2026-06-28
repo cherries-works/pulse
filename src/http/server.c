@@ -9,6 +9,7 @@
 #include "utils.h"
 #include "parse.h"
 #include "http.h"
+#include "log.h"
 
 Server serverContsructor(
     RouteHandler *routeHandler,
@@ -85,7 +86,11 @@ void serverLaunch(Server *server) {
         if(bytes_read < buffer_size && bytes_read >= 0) {
             buffer[bytes_read] = '\0';
         } else {
-            printf("Error reading buffer...\n");
+            _log(
+                ERROR,
+                "Failed to read buffer"
+            );
+            continue;;
         }
 
         Request request = parseRequest(buffer);

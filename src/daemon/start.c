@@ -22,6 +22,7 @@
 #include "app.h"
 #include "utils.h"
 #include "daemon.h"
+#include "log.h"
 
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -29,7 +30,10 @@
 void setupDaemon(pid_t pid) {
     char *home = getenv("HOME");
     if(home == NULL) {
-        printf("Error: No HOME enviroment variable...");
+        _log(
+            ERROR,
+            "No HOME environment variable"
+        );
         return;
     }
 
@@ -74,14 +78,20 @@ void setupDaemon(pid_t pid) {
 void readDaemonSM(System *system, Metrics *metrics) {
     int fd = shm_open("/cherries_pulse", O_RDWR, 0);
     if(fd == -1) {
-        printf("SHM open failed.\n");
+        _log(
+            ERROR,
+            "SHM open failed"
+        );
         exit(EXIT_FAILURE);
     }
 
     struct shmbuf *shmp;
     shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (shmp == MAP_FAILED) {
-        printf("Mapping object failed.\n");
+        _log(
+            ERROR,
+            "Mapping object failed"
+        );
         exit(EXIT_FAILURE);
     }
 
@@ -89,14 +99,20 @@ void readDaemonSM(System *system, Metrics *metrics) {
     memcpy(system, &shmp->system, sizeof(System));
     /* Tell peer that it can now access shared memory.  */
     if (sem_post(&shmp->sem1) == -1) {
-        printf("Posting access to modifieable data failed (sem 1).\n");
+        _log(
+            ERROR,
+            "Posting access via sem1 failed"
+        );
         exit(EXIT_FAILURE);
     }
 
     /* Wait until peer says that it has finished accessing
         the shared memory.  */
     if (sem_wait(&shmp->sem2) == -1) {
-        printf("Posting access finished failed (sem 2).\n");
+        _log(
+            ERROR,
+            "Posting access via sem2 failed"
+        );
         exit(EXIT_FAILURE);
     }
 }
@@ -105,28 +121,40 @@ void readDaemonSM(System *system, Metrics *metrics) {
 void readDaemonS(System *system) {
     int fd = shm_open("/cherries_pulse", O_RDWR, 0);
     if(fd == -1) {
-        printf("SHM open failed.\n");
+        _log(
+            ERROR,
+            "SHM open failed"
+        );
         exit(EXIT_FAILURE);
     }
 
     struct shmbuf *shmp;
     shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (shmp == MAP_FAILED) {
-        printf("Mapping object failed.\n");
+        _log(
+            ERROR,
+            "Mapping object failed"
+        );
         exit(EXIT_FAILURE);
     }
 
     memcpy(system, &shmp->system, sizeof(System));
     /* Tell peer that it can now access shared memory.  */
     if (sem_post(&shmp->sem1) == -1) {
-        printf("Posting access to modifieable data failed (sem 1).\n");
+        _log(
+            ERROR,
+            "Posting access via sem1 failed"
+        );
         exit(EXIT_FAILURE);
     }
 
     /* Wait until peer says that it has finished accessing
         the shared memory.  */
     if (sem_wait(&shmp->sem2) == -1) {
-        printf("Posting access finished failed (sem 2).\n");
+        _log(
+            ERROR,
+            "Posting access via sem2 failed"
+        );
         exit(EXIT_FAILURE);
     }
 }
@@ -134,28 +162,40 @@ void readDaemonS(System *system) {
 void readDaemonM(Metrics *metrics) {
     int fd = shm_open("/cherries_pulse", O_RDWR, 0);
     if(fd == -1) {
-        printf("SHM open failed.\n");
+        _log(
+            ERROR,
+            "SHM open failed"
+        );
         exit(EXIT_FAILURE);
     }
 
     struct shmbuf *shmp;
     shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (shmp == MAP_FAILED) {
-        printf("Mapping object failed.\n");
+        _log(
+            ERROR,
+            "Mapping object failed"
+        );
         exit(EXIT_FAILURE);
     }
 
     memcpy(metrics, &shmp->metrics, sizeof(Metrics));
     /* Tell peer that it can now access shared memory.  */
     if (sem_post(&shmp->sem1) == -1) {
-        printf("Posting access to modifieable data failed (sem 1).\n");
+        _log(
+            ERROR,
+            "Posting access via sem1 failed"
+        );
         exit(EXIT_FAILURE);
     }
 
     /* Wait until peer says that it has finished accessing
         the shared memory.  */
     if (sem_wait(&shmp->sem2) == -1) {
-        printf("Posting access finished failed (sem 2).\n");
+        _log(
+            ERROR,
+            "Posting access via sem2 failed"
+        );
         exit(EXIT_FAILURE);
     }
 }
@@ -164,7 +204,10 @@ void readDaemonM(Metrics *metrics) {
 pid_t check() {
     char *home = getenv("HOME");
     if(home == NULL) {
-        printf("Error: No HOME enviroment variable...");
+        _log(
+            ERROR,
+            "No HOME environment variable"
+        );
         return -1;
     }
 
@@ -199,8 +242,21 @@ pid_t check() {
 }
 
 void startDaemon(PulseArgs args) {
+    _log(
+        INFO,
+        "Starting Daemon"
+    );
+
+
     pid_t pid = check();
-    if(pid > 0) return;
+    if(pid > 0) {
+        _log(
+            INFO,
+            "Attached to previous Daemon"
+        );
+
+        return;
+    }
 
     pid = fork();
 
@@ -209,14 +265,20 @@ void startDaemon(PulseArgs args) {
 
         int shm_fd = shm_open("/cherries_pulse", O_RDWR, 0);
         if(shm_fd == -1) {
-            printf("DAEMON SHM open failed.\n");
+        _log(
+            ERROR,
+            "SHM open failed"
+        );
             exit(EXIT_FAILURE);
         }
 
         struct shmbuf *shmp;
         shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
         if (shmp == MAP_FAILED) {
-            printf("Mapping object failed.\n");
+        _log(
+            ERROR,
+            "Mapping object failed"
+        );
             exit(EXIT_FAILURE);
         }
 
@@ -234,13 +296,19 @@ void startDaemon(PulseArgs args) {
         /* Post 'sem2' to tell the peer that it can now
             access the modified data in shared memory.  */
         if (sem_post(&shmp->sem2) == -1) {
-            printf("Posting access to modifieable data failed (sem 2).\n");
+            _log(
+                ERROR,
+                "Posting access via sem1 failed"
+            );
             exit(EXIT_FAILURE);
         }
 
         while(true) {
             if (sem_wait(&shmp->sem1) == -1) {
-                printf("Waiting semaphore 1 failed.\n");
+                _log(
+                    ERROR,
+                    "Waiting for sem1 failed"
+                );
                 exit(EXIT_FAILURE);
             }
 
@@ -253,7 +321,10 @@ void startDaemon(PulseArgs args) {
             shmp->system = system_snapshot;
 
             if (sem_post(&shmp->sem2) == -1) {
-                printf("Posting access to modifieable data failed (sem 2).\n");
+                _log(
+                    ERROR,
+                    "Posting access via sem1 failed"
+                );
                 exit(EXIT_FAILURE);
             }
 

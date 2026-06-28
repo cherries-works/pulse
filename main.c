@@ -17,21 +17,24 @@
 #include "utils.h"
 #include "http.h"
 #include "daemon.h"
+#include "log.h"
 
 #include "app.h"
 #include "setup.h"
 
 void stop() {
+    printf("stopping...\n");
     char *home = getenv("HOME");
     if(home == NULL) {
-        printf("Error: No HOME enviroment variable...");
+        // _log(
+        //     ERROR,
+        //     "No HOME environment variable"
+        // );
         return;
     }
 
     char path_dir[512];
     sprintf(path_dir, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
-    mkdir(path_dir, 0755);
-
     char file_path[1028];
 
     DIR *dir = opendir(path_dir);
@@ -52,22 +55,32 @@ void stop() {
         remove(file_path);
     }
 
+    sprintf(file_path, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
+    remove(file_path);
+
     closedir(dir);
 }
 
 void term(int sig) {
+    printf("exiting...\n");
+    
     running = 0;
     stop();
     exit(0);
 }
 
 int main(int argc, char* argv[]) {    
-    signal(SIGTERM, term);
+    signal(SIGINT, term);
+
     int s = setup();
     if(s < 0) {
-        printf("Failed to run setup.\n");
+        // _log(
+        //     ERROR,
+        //     "Setup failed."
+        // );
         return -1;
     }
+    setupLog();
 
     PulseArgs args = parseArgs(argc, argv);
     if(args.help) {
@@ -79,7 +92,7 @@ int main(int argc, char* argv[]) {
         stop();
         return 0;
     }
-    
+
     startDaemon(args);
     if(args.headless && !args.web) return 0;
 

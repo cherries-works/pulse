@@ -16,11 +16,15 @@
 #include "app.h"
 #include "setup.h"
 #include "app.h"
+#include "log.h"
 
 void setupWebsite(pid_t pid) {
     char *home = getenv("HOME");
     if(home == NULL) {
-        printf("Error: No HOME enviroment variable...");
+        _log(
+            ERROR,
+            "No HOME environment variable"
+        );
         return;
     }
 
@@ -38,6 +42,11 @@ void setupWebsite(pid_t pid) {
 
 
 void startWebsite(PulseArgs args) {
+    _log(
+        INFO,
+        "Starting Website"
+    );
+
     pid_t pid = fork();
 
     if (pid == 0) {

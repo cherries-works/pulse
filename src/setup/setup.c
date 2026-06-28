@@ -13,13 +13,22 @@
 
 #include "utils.h"
 #include "daemon.h"
+#include "log.h"
 
 volatile sig_atomic_t running = 1;
 
 int setup() {
+    // _log(
+    //     INFO,
+    //     "Setting up Pulse"
+    // );
+
     char *home = getenv("HOME");
     if(home == NULL) {
-        printf("Error: No HOME enviroment variable...");
+        // _log(
+        //     ERROR,
+        //     "No HOME environment variable"
+        // );
         return -1;
     }
 
@@ -50,14 +59,6 @@ int setup() {
         closedir(dir);
     }
     
-    sprintf(path, "%s/%s/persistent", home, R_CHERRIES_FOLDER_PULSE);
-    dir = opendir(path);
-    if(!dir) {
-        mkdir(path, 0755);
-    } else {
-        closedir(dir);
-    }
-
     sprintf(path, "%s/%s/logs", home, R_CHERRIES_FOLDER_PULSE);
     dir = opendir(path);
     if(!dir) {
