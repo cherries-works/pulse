@@ -13,7 +13,7 @@ void setupLog() {
         printf("No HOME enviroment variable...");
         return;
     }
-    
+
     char current_file[1024];
     sprintf(current_file, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
     if(access(current_file, F_OK) == 0) {
@@ -27,7 +27,7 @@ void setupLog() {
     time_t _time = time(NULL);
     char log_file[1024];
     sprintf(log_file, "%s/%s/logs/%ld.log", home, R_CHERRIES_FOLDER_PULSE, _time);
-    
+
     FILE *f = fopen(log_file, "a");
     if(f == NULL) {
         printf("Creating log file failed.");
@@ -41,11 +41,11 @@ void setupLog() {
         printf("Creating log file failed.");
         return;
     }
+
     char buffer[128];
     sprintf(buffer, "%ld", _time);
     fwrite(buffer, strlen(buffer), 1, f);
     fclose(f);
-
 
     _log(
         INFO,
@@ -64,7 +64,7 @@ unsigned long getCurrentLog() {
     char buffer[128];
     size_t n = fread(buffer, 1, sizeof(buffer) - 1, f);
     fclose(f);
-    
+
     buffer[n] = '\0';
     unsigned long t = strtoul(buffer, NULL, 10);
     return t;
