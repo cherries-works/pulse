@@ -30,8 +30,7 @@ void setupWebsite(pid_t pid) {
     fclose(f);
 }
 
-
-void startWebsite(PulseArgs args) {
+pid_t startWebsite(PulseArgs args) {
     _log(
         INFO,
         "Starting Website"

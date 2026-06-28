@@ -18,4 +18,6 @@ const char* CHERRIES_FOLDER = "~/.cherries-works";
 const char* CHERRIES_FOLDER_PULSE = "~/.cherries-works/pulse";
 const char* R_CHERRIES_FOLDER = ".cherries-works";
 const char* R_CHERRIES_FOLDER_PULSE = ".cherries-works/pulse";
+
 const char* CHERRIES_PULSE_SHM = "/cherries_pulse";
+const char* CHERRIES_PULSE_READY_SEM = "/cherries_pulse_ready";

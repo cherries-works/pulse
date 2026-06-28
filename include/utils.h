@@ -31,6 +31,7 @@ extern const char* CHERRIES_FOLDER_PULSE;
 extern const char* R_CHERRIES_FOLDER;
 extern const char* R_CHERRIES_FOLDER_PULSE;
 extern const char* CHERRIES_PULSE_SHM;
+extern const char* CHERRIES_PULSE_READY_SEM;
 
 typedef struct {
     volatile bool running;

@@ -52,11 +52,8 @@ void setupDaemon(pid_t pid) {
     if (sem_init(&shmp->sem1, 1, 0) == -1) {
         exit(EXIT_FAILURE);
     }
-    if (sem_init(&shmp->sem2, 1, 0) == -1) {
-        exit(EXIT_FAILURE);
-    }
 
-    if (sem_wait(&shmp->sem1) == -1) {
+    if (sem_init(&shmp->sem2, 1, 0) == -1) {
         exit(EXIT_FAILURE);
     }
 }
@@ -83,7 +80,7 @@ void readDaemonSM(System *system, Metrics *metrics) {
 
     memcpy(metrics, &shmp->metrics, sizeof(Metrics));
     memcpy(system, &shmp->system, sizeof(System));
-    /* Tell peer that it can now access shared memory.  */
+
     if (sem_post(&shmp->sem1) == -1) {
         _log(
             ERROR,
@@ -92,8 +89,6 @@ void readDaemonSM(System *system, Metrics *metrics) {
         exit(EXIT_FAILURE);
     }
 
-    /* Wait until peer says that it has finished accessing
-        the shared memory.  */
     if (sem_wait(&shmp->sem2) == -1) {
         _log(
             ERROR,
@@ -102,7 +97,6 @@ void readDaemonSM(System *system, Metrics *metrics) {
         exit(EXIT_FAILURE);
     }
 }
-
 
 void readDaemonS(System *system) {
     int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
@@ -227,12 +221,11 @@ pid_t check() {
     return -1;
 }
 
-void startDaemon(PulseArgs args) {
+pid_t startDaemon(PulseArgs args) {
     _log(
         INFO,
         "Starting Daemon"
     );
-
 
     pid_t pid = check();
     if(pid > 0) {
@@ -247,24 +240,37 @@ void startDaemon(PulseArgs args) {
     pid = fork();
 
     if (pid == 0) {
+        _log(
+            INFO,
+            "Setting up Daemon."
+        );
         setupDaemon(getpid());
+
+        sem_t *ready_sem = sem_open(CHERRIES_PULSE_READY_SEM, 0);
+        if (ready_sem == SEM_FAILED) {
+            _log(ERROR, "Failed to open ready semaphore");
+            exit(EXIT_FAILURE);
+        }
+        sem_post(ready_sem);
+        sem_close(ready_sem);
+
 
         int shm_fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
         if(shm_fd == -1) {
-        _log(
-            ERROR,
-            "SHM open failed"
-        );
+            _log(
+                ERROR,
+                "SHM open failed"
+            );
             exit(EXIT_FAILURE);
         }
 
         struct shmbuf *shmp;
         shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
         if (shmp == MAP_FAILED) {
-        _log(
-            ERROR,
-            "Mapping object failed"
-        );
+            _log(
+                ERROR,
+                "Mapping object failed"
+            );
             exit(EXIT_FAILURE);
         }
 
@@ -289,6 +295,10 @@ void startDaemon(PulseArgs args) {
             exit(EXIT_FAILURE);
         }
 
+        _log(
+            INFO,
+            "Now starting sem1 wait."
+        );
         while(true) {
             if (sem_wait(&shmp->sem1) == -1) {
                 _log(
@@ -301,7 +311,7 @@ void startDaemon(PulseArgs args) {
             prev_system_snapshot = system_snapshot;
             system_snapshot = getSystem();
     
-            Metrics metrics = getMetrics(prev_system_snapshot, system_snapshot);
+            metrics = getMetrics(prev_system_snapshot, system_snapshot);
 
             shmp->metrics = metrics;
             shmp->system = system_snapshot;
@@ -309,7 +319,7 @@ void startDaemon(PulseArgs args) {
             if (sem_post(&shmp->sem2) == -1) {
                 _log(
                     ERROR,
-                    "Posting access via sem1 failed"
+                    "Posting access via sem2 failed"
                 );
                 exit(EXIT_FAILURE);
             }
@@ -321,5 +331,5 @@ void startDaemon(PulseArgs args) {
         exit(EXIT_SUCCESS);
     }
 
-    return;
+    return pid;
 }

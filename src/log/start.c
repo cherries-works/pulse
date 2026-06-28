@@ -74,7 +74,7 @@ unsigned long getCurrentLog() {
 void failureLog() {
     char *home = getenv("HOME");
     if(home == NULL) {
-        printf("Error: No HOME enviroment variable...");
+        printf("Exited :: No HOME enviroment variable...");
         return;
     }
 
@@ -82,7 +82,7 @@ void failureLog() {
     char path_file[1024];
     sprintf(path_file, "%s/%s/logs/%ld.log", home, R_CHERRIES_FOLDER_PULSE, t);
     
-    printf("Error :: See %s, for logs.\n", path_file);
+    printf("Error :: %s\n", path_file);
 }
 
 

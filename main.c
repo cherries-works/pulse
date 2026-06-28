@@ -23,7 +23,6 @@
 #include "setup.h"
 
 void stop() {
-    printf("stopping...\n");
     char *home = getenv("HOME");
     if(home == NULL) {
         // _log(
@@ -62,7 +61,7 @@ void stop() {
 }
 
 void term(int sig) {
-    printf("exiting...\n");
+    failureLog();
     
     running = 0;
     stop();
@@ -74,10 +73,6 @@ int main(int argc, char* argv[]) {
 
     int s = setup();
     if(s < 0) {
-        // _log(
-        //     ERROR,
-        //     "Setup failed."
-        // );
         return -1;
     }
     setupLog();
@@ -93,10 +88,23 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
+    // clean up any leftover from a crash
+    sem_unlink(CHERRIES_PULSE_READY_SEM);
+    sem_t *ready_sem = sem_open(CHERRIES_PULSE_READY_SEM, O_CREAT | O_EXCL, 0600, 0);
+    if (ready_sem == SEM_FAILED) {
+        _log(ERROR, "Failed to create ready semaphore");
+        exit(EXIT_FAILURE);
+    }
+
     startDaemon(args);
+    
+    sem_wait(ready_sem);
+    sem_post(ready_sem);
+    sem_close(ready_sem);
+    sem_unlink(CHERRIES_PULSE_READY_SEM);
+
     if(args.headless && !args.web) return 0;
 
-    sleep(1); // to prevent shm_open failing 
     if(args.web) {
         startWebsite(args);
     }

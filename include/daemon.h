@@ -8,13 +8,11 @@
 #include "utils.h"
 
 struct shmbuf {
-    sem_t  sem1;            /* POSIX unnamed semaphore */
-    sem_t  sem2;            /* POSIX unnamed semaphore */
-    size_t cnt;             /* Number of bytes used in 'buf' */
+    sem_t  sem1;
+    sem_t  sem2;
 
     Metrics metrics;
     System system;
-    // char   buf[BUF_SIZE];   /* Data being transferred */
 };
 
 

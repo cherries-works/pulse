@@ -7,13 +7,11 @@
 #include "render.h"
 #include "log.h"
 
-
 void startRender(PulseArgs args) {
     _log(
         INFO,
         "Starting Renderer"
     );
-
 
     System snapshot;
     Metrics metrics;
@@ -29,6 +27,5 @@ void startRender(PulseArgs args) {
 
         readDaemonSM(&snapshot, &metrics);
         render(args, snapshot, metrics);
-        sleep(1);
     }
 }
