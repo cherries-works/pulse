@@ -8,7 +8,6 @@
 #include "log.h"
 
 void setupLog() {
-    const char *info = "Logging initted.";
     char *home = getenv("HOME");
     if(home == NULL) {
         printf("No HOME enviroment variable...");
@@ -20,7 +19,7 @@ void setupLog() {
     if(access(current_file, F_OK) == 0) {
         _log(
             INFO,
-            info
+            "Logging initted."
         );
         return;
     }
@@ -50,7 +49,7 @@ void setupLog() {
 
     _log(
         INFO,
-        info
+        "Logging initted."
     );
 }
 
