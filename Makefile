@@ -16,10 +16,11 @@ parse = src/parse/cpu.c src/parse/disk.c src/parse/load.c src/parse/memory.c src
 http = src/http/server.c src/http/request.c src/http/routes.c
 render = src/render/render.c src/render/utils.c src/render/start.c
 daemon = src/daemon/start.c
+log = src/log/start.c
 app = src/app/routes.c src/app/start.c
 setup = src/setup/setup.c
 
-src = $(render) $(parse) $(utils) $(http) $(setup) $(daemon) $(app) $(main)
+src = $(render) $(parse) $(utils) $(http) $(setup) $(daemon) $(log) $(app) $(main)
 
 obj = $(src:%.c=$(build)/%.o)
 dep = $(obj:.o=.d)
