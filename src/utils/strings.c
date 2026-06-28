@@ -9,7 +9,7 @@ void trim(char *buffer) {
     while(buffer[start] == SPACE_IN_ASCII && start < size) start++;
     
     size_t end = size;
-    while(buffer[end] == SPACE_IN_ASCII && end >= 0) end--;
+    while(buffer[end] == SPACE_IN_ASCII) end--;
 
 
     // move everything to the left side
