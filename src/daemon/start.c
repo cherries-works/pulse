@@ -9,6 +9,7 @@
 #include <fcntl.h>
 #include <dirent.h>
 
+#include "utils.h"
 #include "daemon.h"
 #include "log.h"
 
@@ -32,8 +33,8 @@ void setupDaemon(pid_t pid) {
     FILE *f = fopen(daemon_path, "a");
     fclose(f);
 
-    shm_unlink("/cherries_pulse");
-    int shm_fd = shm_open("/cherries_pulse", O_CREAT | O_EXCL | O_RDWR, 0600);
+    shm_unlink(CHERRIES_PULSE_SHM);
+    int shm_fd = shm_open(CHERRIES_PULSE_SHM, O_CREAT | O_EXCL | O_RDWR, 0600);
     if (shm_fd == -1) {
         exit(EXIT_FAILURE);
     }
@@ -61,7 +62,7 @@ void setupDaemon(pid_t pid) {
 }
 
 void readDaemonSM(System *system, Metrics *metrics) {
-    int fd = shm_open("/cherries_pulse", O_RDWR, 0);
+    int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
     if(fd == -1) {
         _log(
             ERROR,
@@ -104,7 +105,7 @@ void readDaemonSM(System *system, Metrics *metrics) {
 
 
 void readDaemonS(System *system) {
-    int fd = shm_open("/cherries_pulse", O_RDWR, 0);
+    int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
     if(fd == -1) {
         _log(
             ERROR,
@@ -145,7 +146,7 @@ void readDaemonS(System *system) {
 }
 
 void readDaemonM(Metrics *metrics) {
-    int fd = shm_open("/cherries_pulse", O_RDWR, 0);
+    int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
     if(fd == -1) {
         _log(
             ERROR,
@@ -248,7 +249,7 @@ void startDaemon(PulseArgs args) {
     if (pid == 0) {
         setupDaemon(getpid());
 
-        int shm_fd = shm_open("/cherries_pulse", O_RDWR, 0);
+        int shm_fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
         if(shm_fd == -1) {
         _log(
             ERROR,
@@ -316,7 +317,7 @@ void startDaemon(PulseArgs args) {
             sleep(args.sleep);
         }
 
-        shm_unlink("/cherries_pulse");
+        shm_unlink(CHERRIES_PULSE_SHM);
         exit(EXIT_SUCCESS);
     }
 

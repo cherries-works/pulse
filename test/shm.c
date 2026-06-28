@@ -3,11 +3,12 @@
 #include <fcntl.h>
 #include <sys/un.h>
 
+#include "utils.h"
 #include "daemon.h"
 
 void testReadDaemonS() {
     System system;
-    int fd = shm_open("/cherries_pulse", O_RDWR, 0);
+    int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
     if(fd == -1) {
         printf("SHM open failed.\n");
         exit(EXIT_FAILURE);
@@ -40,7 +41,7 @@ void testReadDaemonS() {
 
 void testReadDaemonM() {
     Metrics metrics;
-    int fd = shm_open("/cherries_pulse", O_RDWR, 0);
+    int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
     if(fd == -1) {
         printf("SHM open failed.\n");
         exit(EXIT_FAILURE);
