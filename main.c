@@ -24,17 +24,11 @@
 
 void stop() {
     char *home = getenv("HOME");
-    if(home == NULL) {
-        // _log(
-        //     ERROR,
-        //     "No HOME environment variable"
-        // );
-        return;
-    }
+    if(home == NULL) return;
 
+    char file_path[1028];
     char path_dir[512];
     sprintf(path_dir, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
-    char file_path[1028];
 
     DIR *dir = opendir(path_dir);
     struct dirent *entry;
@@ -60,15 +54,22 @@ void stop() {
     closedir(dir);
 }
 
+pid_t website_pid = 0;
+pid_t daemon_pid = 0;
+pid_t render_pid = 0;
+
 void term(int sig) {
-    failureLog();
-    
+    if(render_pid == getpid()) {
+        failureLog();
+    }
+
     running = 0;
     stop();
     exit(0);
 }
 
-int main(int argc, char* argv[]) {    
+int main(int argc, char* argv[]) {
+    render_pid = getpid();
     signal(SIGINT, term);
 
     int s = setup();
@@ -96,7 +97,7 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    startDaemon(args);
+    daemon_pid = startDaemon(args);
     
     sem_wait(ready_sem);
     sem_post(ready_sem);
@@ -106,7 +107,7 @@ int main(int argc, char* argv[]) {
     if(args.headless && !args.web) return 0;
 
     if(args.web) {
-        startWebsite(args);
+        website_pid = startWebsite(args);
     }
 
     if(!args.headless) {

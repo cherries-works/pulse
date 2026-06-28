@@ -4,7 +4,8 @@
 #include "http.h"
 #include "utils.h"
 
+extern pid_t startWebsite(PulseArgs args);
+
 extern void initRoutes(RouteHandler *rh);
-extern void startWebsite(PulseArgs args);
 
 #endif

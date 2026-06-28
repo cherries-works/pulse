@@ -5,7 +5,8 @@ v0.1.1 (26th June 2026)
 - Added tests for shm
 
 - Logging added
-
+- No sleep(1) in main
+- Better printing
 
 v0.1.0 (10th June 2026)
 - CPU usage

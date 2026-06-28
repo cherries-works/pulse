@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <time.h>
 
 #include <sys/mman.h>
 #include <sys/stat.h>
@@ -16,10 +17,7 @@
 void setupDaemon(pid_t pid) {
     char *home = getenv("HOME");
     if(home == NULL) {
-        _log(
-            ERROR,
-            "No HOME environment variable"
-        );
+        _log(ERROR, "No HOME environment variable");
         return;
     }
 
@@ -58,25 +56,24 @@ void setupDaemon(pid_t pid) {
     }
 }
 
-void readDaemonSM(System *system, Metrics *metrics) {
+static struct shmbuf *openSHM() {
     int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
-    if(fd == -1) {
-        _log(
-            ERROR,
-            "SHM open failed"
-        );
+    if (fd == -1) {
+        _log(ERROR, "SHM open failed");
         exit(EXIT_FAILURE);
     }
 
-    struct shmbuf *shmp;
-    shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    struct shmbuf *shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (shmp == MAP_FAILED) {
-        _log(
-            ERROR,
-            "Mapping object failed"
-        );
+        _log(ERROR, "Mapping object failed");
         exit(EXIT_FAILURE);
     }
+
+    return shmp;
+}
+
+void readDaemonSM(System *system, Metrics *metrics) {
+    struct shmbuf *shmp = openSHM();
 
     memcpy(metrics, &shmp->metrics, sizeof(Metrics));
     memcpy(system, &shmp->system, sizeof(System));
@@ -99,27 +96,10 @@ void readDaemonSM(System *system, Metrics *metrics) {
 }
 
 void readDaemonS(System *system) {
-    int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
-    if(fd == -1) {
-        _log(
-            ERROR,
-            "SHM open failed"
-        );
-        exit(EXIT_FAILURE);
-    }
-
-    struct shmbuf *shmp;
-    shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if (shmp == MAP_FAILED) {
-        _log(
-            ERROR,
-            "Mapping object failed"
-        );
-        exit(EXIT_FAILURE);
-    }
+    struct shmbuf *shmp = openSHM();
 
     memcpy(system, &shmp->system, sizeof(System));
-    /* Tell peer that it can now access shared memory.  */
+
     if (sem_post(&shmp->sem1) == -1) {
         _log(
             ERROR,
@@ -128,8 +108,6 @@ void readDaemonS(System *system) {
         exit(EXIT_FAILURE);
     }
 
-    /* Wait until peer says that it has finished accessing
-        the shared memory.  */
     if (sem_wait(&shmp->sem2) == -1) {
         _log(
             ERROR,
@@ -140,27 +118,10 @@ void readDaemonS(System *system) {
 }
 
 void readDaemonM(Metrics *metrics) {
-    int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
-    if(fd == -1) {
-        _log(
-            ERROR,
-            "SHM open failed"
-        );
-        exit(EXIT_FAILURE);
-    }
-
-    struct shmbuf *shmp;
-    shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if (shmp == MAP_FAILED) {
-        _log(
-            ERROR,
-            "Mapping object failed"
-        );
-        exit(EXIT_FAILURE);
-    }
+    struct shmbuf *shmp = openSHM();
 
     memcpy(metrics, &shmp->metrics, sizeof(Metrics));
-    /* Tell peer that it can now access shared memory.  */
+
     if (sem_post(&shmp->sem1) == -1) {
         _log(
             ERROR,
@@ -169,8 +130,6 @@ void readDaemonM(Metrics *metrics) {
         exit(EXIT_FAILURE);
     }
 
-    /* Wait until peer says that it has finished accessing
-        the shared memory.  */
     if (sem_wait(&shmp->sem2) == -1) {
         _log(
             ERROR,
@@ -178,6 +137,151 @@ void readDaemonM(Metrics *metrics) {
         );
         exit(EXIT_FAILURE);
     }
+}
+
+void writeHistoryS(System system) {
+    char *home = getenv("HOME");
+    if(home == NULL) {
+        _log(
+            ERROR,
+            "No HOME environment variable"
+        );
+        return;
+    }
+
+    time_t _time = time(NULL);
+
+    char history_path[1028];
+    sprintf(history_path, "%s/%s/history/system.%ld", home, R_CHERRIES_FOLDER_PULSE, _time);
+
+    FILE *f = fopen(history_path, "a");
+    char buffer[256];
+
+    sprintf(buffer, "%ld\n", system.cpu.idle);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%ld\n", system.cpu.processes);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%ld\n", system.cpu.total);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%lld\n", system.disk.available);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%lld\n", system.disk.read);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%lld\n", system.disk.total);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%lld\n", system.disk.write);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%f\n", system.load.load1);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%f\n", system.load.load5);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%f\n", system.load.load15);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%ld\n", system.memory.available);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%ld\n", system.network.rx);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%ld\n", system.network.tx);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+
+    sprintf(buffer, "%s\n", system.processes[0].name);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%ld\n", system.processes[0].cpu);
+    fwrite(buffer, strlen(buffer), 1, f);
+    
+    sprintf(buffer, "%d\n", system.processes[0].pid);
+    fwrite(buffer, strlen(buffer), 1, f);
+    
+    sprintf(buffer, "%ld\n", system.processes[0].ram);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+
+    sprintf(buffer, "%s\n", system.processes[1].name);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%ld\n", system.processes[1].cpu);
+    fwrite(buffer, strlen(buffer), 1, f);
+    
+    sprintf(buffer, "%d\n", system.processes[1].pid);
+    fwrite(buffer, strlen(buffer), 1, f);
+    
+    sprintf(buffer, "%ld\n", system.processes[1].ram);
+    fwrite(buffer, strlen(buffer), 1, f);
+    
+    
+    sprintf(buffer, "%s\n", system.processes[2].name);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%ld\n", system.processes[2].cpu);
+    fwrite(buffer, strlen(buffer), 1, f);
+    
+    sprintf(buffer, "%d\n", system.processes[2].pid);
+    fwrite(buffer, strlen(buffer), 1, f);
+    
+    sprintf(buffer, "%ld\n", system.processes[2].ram);
+    fwrite(buffer, strlen(buffer), 1, f);
+    
+
+    sprintf(buffer, "%ld", system.uptime);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    fclose(f);
+}
+
+void writeHistoryM(Metrics metrics) {
+    char *home = getenv("HOME");
+    if(home == NULL) {
+        _log(
+            ERROR,
+            "No HOME environment variable"
+        );
+        return;
+    }
+
+    time_t _time = time(NULL);
+
+    char history_path[1028];
+    sprintf(history_path, "%s/%s/history/metrics.%ld", home, R_CHERRIES_FOLDER_PULSE, _time);
+
+    FILE *f = fopen(history_path, "a");
+    char buffer[256];
+
+    sprintf(buffer, "%f\n", metrics.cpuUsage);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%f\n", metrics.diskUsage);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%f\n", metrics.ramUsage);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%f\n", metrics.read);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%f\n", metrics.write);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%f\n", metrics.rx);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    sprintf(buffer, "%f", metrics.tx);
+    fwrite(buffer, strlen(buffer), 1, f);
+
+    fclose(f);
 }
 
 // check if there is already daemon running
@@ -229,21 +333,14 @@ pid_t startDaemon(PulseArgs args) {
 
     pid_t pid = check();
     if(pid > 0) {
-        _log(
-            INFO,
-            "Attached to previous Daemon"
-        );
+        _log(INFO, "Attached to previous Daemon");
 
-        return;
+        return pid;
     }
 
     pid = fork();
-
     if (pid == 0) {
-        _log(
-            INFO,
-            "Setting up Daemon."
-        );
+        _log(INFO, "Setting up Daemon.");
         setupDaemon(getpid());
 
         sem_t *ready_sem = sem_open(CHERRIES_PULSE_READY_SEM, 0);
@@ -299,7 +396,16 @@ pid_t startDaemon(PulseArgs args) {
             INFO,
             "Now starting sem1 wait."
         );
+
+        short repetition = 0;
         while(true) {
+            if(repetition % 5 == 0) {
+                writeHistoryM(metrics);
+                writeHistoryS(system_snapshot);
+                repetition = 0;
+            }
+
+            repetition++;
             if (sem_wait(&shmp->sem1) == -1) {
                 _log(
                     ERROR,

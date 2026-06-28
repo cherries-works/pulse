@@ -11,10 +11,7 @@
 void setupWebsite(pid_t pid) {
     char *home = getenv("HOME");
     if(home == NULL) {
-        _log(
-            ERROR,
-            "No HOME environment variable"
-        );
+        _log(ERROR, "No HOME environment variable");
         return;
     }
 
@@ -31,10 +28,7 @@ void setupWebsite(pid_t pid) {
 }
 
 pid_t startWebsite(PulseArgs args) {
-    _log(
-        INFO,
-        "Starting Website"
-    );
+    _log(INFO, "Starting Website");
 
     pid_t pid = fork();
 
@@ -59,5 +53,5 @@ pid_t startWebsite(PulseArgs args) {
         exit(EXIT_SUCCESS);
     }
 
-    return;
+    return pid;
 }
