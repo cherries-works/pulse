@@ -1,13 +1,10 @@
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
 #include <netinet/in.h>
 #include <stdarg.h>
 #include <time.h>
 
-#include "utils.h"
-#include "parse.h"
 #include "http.h"
 
 char *getFileExtension(char *file_path) {

@@ -1,14 +1,6 @@
-#include <stdio.h>
-#include <sys/mman.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <ctype.h>
-#include <string.h>
+#include <time.h>
 
-#include "parse.h"
 #include "http.h"
-#include "time.h"
-#include "utils.h"
 #include "daemon.h"
 
 #define STATIC_ROUTE(fnName, filePath) \

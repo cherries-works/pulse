@@ -1,18 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <sys/stat.h>
 #include <dirent.h>
-#include <errno.h>
-#include <stdbool.h>
-#include <sys/types.h>
+#include <sys/stat.h>
 #include <signal.h>
-#include <sys/mman.h>
-#include <fcntl.h>
 
 #include "utils.h"
-#include "daemon.h"
 #include "log.h"
 
 volatile sig_atomic_t running = 1;

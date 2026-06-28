@@ -1,30 +1,9 @@
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <sys/stat.h>
-#include <sys/types.h>
-#include <syslog.h>
-#include <stdbool.h>
-
 #include <sys/mman.h>
-#include <sys/stat.h>
 #include <fcntl.h>
-#include <ctype.h>
-
-#include "parse.h"
-#include "render.h"
-#include "utils.h"
-#include "http.h"
-
-#include "app.h"
-#include "setup.h"
-#include "utils.h"
-#include "daemon.h"
-
-#include <sys/socket.h>
 #include <sys/un.h>
+
+#include "daemon.h"
 
 void testReadDaemonS() {
     System system;

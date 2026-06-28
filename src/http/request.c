@@ -2,7 +2,6 @@
 #include <string.h>
 
 #include "http.h"
-#include "utils.h"
 
 Request parseRequest(char *buffer) {
     char *line = buffer;

@@ -1,14 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <netinet/in.h>
-#include <time.h>
 #include <dirent.h>
 
 #include "utils.h"
 #include "parse.h"
-#include "http.h"
 
 void getProcesses(size_t size, char *buffer, Process processes[]) {
     struct dirent *proc_entry;

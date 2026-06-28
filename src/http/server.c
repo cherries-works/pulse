@@ -1,13 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
-#include <string.h>
-#include <netinet/in.h>
-#include <time.h>
 #include <stdbool.h>
 
-#include "utils.h"
-#include "parse.h"
 #include "http.h"
 #include "log.h"
 

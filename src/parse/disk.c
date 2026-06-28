@@ -1,14 +1,9 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <string.h>
 #include <sys/statvfs.h>
-#include <netinet/in.h>
-#include <time.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "utils.h"
 #include "parse.h"
-#include "http.h"
 
 Disk getDisk(char *buffer) {
     struct statvfs stat;

@@ -1,7 +1,6 @@
 #include <stdio.h>
 
 #include "parse.h"
-#include "utils.h"
 #include "render.h"
 
 void printMetric(

@@ -1,13 +1,8 @@
-#include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <netinet/in.h>
-#include <time.h>
 
 #include "utils.h"
 #include "parse.h"
-#include "http.h"
 
 Load getLoad(char *buffer) {
     Load load = { 0.0f, 0.0f, 0.0f };
