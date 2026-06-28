@@ -18,3 +18,10 @@ Displaying the top 3 processes that take up the most amount of RAM. Terminal and
 display the same metrics. No graphs have yet been implemented (10th June 2026).
 
 The website styling is finished. No media queries added, will be added later. As of now, v0.1.0 seems to be ready.
+
+Now that the logging system was somewhat added, it is important to know how to log what, and when to log. Currently
+the logs are sort of useless, but atleast logs are happening, states are being saved, and there are no race-conditions.
+
+The issue currently is just the fact that when I want to setup the logs, I need to set up the directories first, but I
+want to log the setup as well, however I cant log it if the setupLogs was not called (because I need to setup the main
+cherries.works Pulse directory first).

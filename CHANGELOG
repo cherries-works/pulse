@@ -4,6 +4,8 @@ v0.1.1 (26th June 2026)
 - Directory creation at ~/.cherries-works/pulse/
 - Added tests for shm
 
+- Logging added
+
 
 v0.1.0 (10th June 2026)
 - CPU usage
