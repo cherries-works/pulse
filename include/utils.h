@@ -2,6 +2,7 @@
 #define UTILS_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 extern const char *PROC_DIR;
 extern const char *PROC_UPTIME_FILE;
@@ -29,6 +30,7 @@ extern const char* CHERRIES_FOLDER;
 extern const char* CHERRIES_FOLDER_PULSE;
 extern const char* R_CHERRIES_FOLDER;
 extern const char* R_CHERRIES_FOLDER_PULSE;
+extern const char* CHERRIES_PULSE_SHM = "/cherries_pulse";
 
 typedef struct {
     volatile bool running;
