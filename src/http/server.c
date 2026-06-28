@@ -65,10 +65,10 @@ Server serverContsructor(
 };
 
 void serverLaunch(Server *server) {
-    unsigned long buffer_size = BUFFER_ONE_MB;
+    size_t buffer_size = BUFFER_ONE_MB;
     char buffer[buffer_size];
 
-    unsigned long response_size = BUFFER_ONE_KB * 8;
+    size_t response_size = BUFFER_ONE_KB * 8;
     char response[response_size];
 
     while(true) {
