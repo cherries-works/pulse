@@ -11,7 +11,7 @@ void setupLog() {
     const char *info = "Logging initted.";
     char *home = getenv("HOME");
     if(home == NULL) {
-        printf("Error: No HOME enviroment variable...");
+        printf("No HOME enviroment variable...");
         return;
     }
     
@@ -74,15 +74,15 @@ unsigned long getCurrentLog() {
 void failureLog() {
     char *home = getenv("HOME");
     if(home == NULL) {
-        printf("Exited :: No HOME enviroment variable...");
+        printf("No HOME enviroment variable...");
         return;
     }
 
     unsigned long t = getCurrentLog();
     char path_file[1024];
     sprintf(path_file, "%s/%s/logs/%ld.log", home, R_CHERRIES_FOLDER_PULSE, t);
-    
-    printf("Error :: %s\n", path_file);
+
+    printf("Exited :: %s\n", path_file);
 }
 
 
