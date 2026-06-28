@@ -83,7 +83,7 @@ void serverLaunch(Server *server) {
 
         ssize_t bytes_read = read(new_socket, buffer, buffer_size);
         
-        if(bytes_read < buffer_size && bytes_read >= 0) {
+        if((size_t)bytes_read < buffer_size && bytes_read >= 0) {
             buffer[bytes_read] = '\0';
         } else {
             _log(
