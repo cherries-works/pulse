@@ -25,3 +25,5 @@ the logs are sort of useless, but atleast logs are happening, states are being s
 The issue currently is just the fact that when I want to setup the logs, I need to set up the directories first, but I
 want to log the setup as well, however I cant log it if the setupLogs was not called (because I need to setup the main
 cherries.works Pulse directory first).
+
+History is being tracked currently, however it is not being displayed.
