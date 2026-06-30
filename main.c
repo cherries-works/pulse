@@ -89,6 +89,7 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
+
     // clean up any leftover from a crash
     sem_unlink(CHERRIES_PULSE_READY_SEM);
     sem_t *ready_sem = sem_open(CHERRIES_PULSE_READY_SEM, O_CREAT | O_EXCL, 0600, 0);
@@ -99,6 +100,7 @@ int main(int argc, char* argv[]) {
 
     daemon_pid = startDaemon(args);
     
+    // wait until daemon is ready
     sem_wait(ready_sem);
     sem_post(ready_sem);
     sem_close(ready_sem);

@@ -8,9 +8,7 @@
 #include "utils.h"
 
 struct shmbuf {
-    sem_t  sem1;
-    sem_t  sem2;
-
+    pthread_mutex_t lock;
     Metrics metrics;
     System system;
 };
