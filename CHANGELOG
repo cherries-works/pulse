@@ -1,9 +1,14 @@
+v0.1.2 (30th June 2026)
+- Moved to mutex locks instead of shms
+- No hang, if deployed twice (check guards)
+_Pulse checks if a service is already running before starting it_
+
+
 v0.1.1 (26th June 2026)
 - Daemon running separately
 - Website fetching data via shm
 - Directory creation at ~/.cherries-works/pulse/
 - Added tests for shm
-
 - Logging added
 - No sleep(1) in main
 - Better printing
