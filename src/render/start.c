@@ -27,5 +27,6 @@ void startRender(PulseArgs args) {
 
         readDaemonSM(&snapshot, &metrics);
         render(args, snapshot, metrics);
+        sleep(args.sleep);
     }
 }
