@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <dirent.h>
+#include <string.h>
 #include <sys/stat.h>
 
 #include "parse.h"
@@ -27,10 +29,55 @@ void setupWebsite(pid_t pid) {
     fclose(f);
 }
 
+// check if there is already daemon running
+pid_t checkWebsite() {
+    char *home = getenv("HOME");
+    if(home == NULL) {
+        _log(
+            ERROR,
+            "No HOME environment variable"
+        );
+        return -1;
+    }
+
+    char path_dir[512];
+    sprintf(path_dir, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
+    mkdir(path_dir, 0755);
+
+    char file_path[1028];
+
+    DIR *dir = opendir(path_dir);
+    struct dirent *entry;
+    while((entry = readdir(dir)) != NULL) {
+        char *name = entry->d_name;
+        if(strcmp(name, ".") == 0) continue;
+        if(strcmp(name, "..") == 0) continue;
+        sprintf(file_path, "%s/%s", path_dir, name);
+        
+        char *d = strchr(name, '.');
+        if(d == NULL) continue;
+        *d = '\0';
+
+        if(strcmp(name, "website") != 0) continue;
+        name = d + 1;
+        int pid = atoi(name);
+
+        closedir(dir);
+        return pid;
+    }
+
+    closedir(dir);
+    return -1;
+}
+
+
 pid_t startWebsite(PulseArgs args) {
     _log(INFO, "Starting Website");
 
-    pid_t pid = fork();
+    pid_t pid = checkWebsite();
+    if(pid > 0) return pid;
+
+    pid = fork();
 
     if (pid == 0) {
         setupWebsite(getpid());
