@@ -3,6 +3,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <pthread.h>
 #include <time.h>
 
 #include <sys/mman.h>
@@ -46,14 +47,6 @@ void setupDaemon(pid_t pid) {
     if (shmp == MAP_FAILED) {
         exit(EXIT_FAILURE);
     }
-
-    if (sem_init(&shmp->sem1, 1, 0) == -1) {
-        exit(EXIT_FAILURE);
-    }
-
-    if (sem_init(&shmp->sem2, 1, 0) == -1) {
-        exit(EXIT_FAILURE);
-    }
 }
 
 static struct shmbuf *openSHM() {
@@ -75,68 +68,26 @@ static struct shmbuf *openSHM() {
 void readDaemonSM(System *system, Metrics *metrics) {
     struct shmbuf *shmp = openSHM();
 
+    pthread_mutex_lock(&shmp->lock);
     memcpy(metrics, &shmp->metrics, sizeof(Metrics));
     memcpy(system, &shmp->system, sizeof(System));
-
-    if (sem_post(&shmp->sem1) == -1) {
-        _log(
-            ERROR,
-            "Posting access via sem1 failed"
-        );
-        exit(EXIT_FAILURE);
-    }
-
-    if (sem_wait(&shmp->sem2) == -1) {
-        _log(
-            ERROR,
-            "Posting access via sem2 failed"
-        );
-        exit(EXIT_FAILURE);
-    }
+    pthread_mutex_unlock(&shmp->lock);
 }
 
 void readDaemonS(System *system) {
     struct shmbuf *shmp = openSHM();
 
+    pthread_mutex_lock(&shmp->lock);
     memcpy(system, &shmp->system, sizeof(System));
-
-    if (sem_post(&shmp->sem1) == -1) {
-        _log(
-            ERROR,
-            "Posting access via sem1 failed"
-        );
-        exit(EXIT_FAILURE);
-    }
-
-    if (sem_wait(&shmp->sem2) == -1) {
-        _log(
-            ERROR,
-            "Posting access via sem2 failed"
-        );
-        exit(EXIT_FAILURE);
-    }
+    pthread_mutex_unlock(&shmp->lock);
 }
 
 void readDaemonM(Metrics *metrics) {
     struct shmbuf *shmp = openSHM();
 
+    pthread_mutex_lock(&shmp->lock);
     memcpy(metrics, &shmp->metrics, sizeof(Metrics));
-
-    if (sem_post(&shmp->sem1) == -1) {
-        _log(
-            ERROR,
-            "Posting access via sem1 failed"
-        );
-        exit(EXIT_FAILURE);
-    }
-
-    if (sem_wait(&shmp->sem2) == -1) {
-        _log(
-            ERROR,
-            "Posting access via sem2 failed"
-        );
-        exit(EXIT_FAILURE);
-    }
+    pthread_mutex_unlock(&shmp->lock);
 }
 
 void writeHistoryS(System system) {
@@ -285,7 +236,7 @@ void writeHistoryM(Metrics metrics) {
 }
 
 // check if there is already daemon running
-pid_t check() {
+pid_t checkDaemon() {
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
@@ -331,10 +282,17 @@ pid_t startDaemon(PulseArgs args) {
         "Starting Daemon"
     );
 
-    pid_t pid = check();
+    pid_t pid = checkDaemon();
     if(pid > 0) {
         _log(INFO, "Attached to previous Daemon");
-
+        sem_t *ready_sem = sem_open(CHERRIES_PULSE_READY_SEM, 0);
+        if (ready_sem == SEM_FAILED) {
+            _log(ERROR, "Failed to open ready semaphore");
+            exit(EXIT_FAILURE);
+        }
+        sem_post(ready_sem);
+        sem_close(ready_sem);
+        
         return pid;
     }
 
@@ -382,20 +340,16 @@ pid_t startDaemon(PulseArgs args) {
         memcpy(&shmp->metrics, &metrics, sizeof(Metrics));
         memcpy(&shmp->system, &system_snapshot, sizeof(System));
 
-        /* Post 'sem2' to tell the peer that it can now
-            access the modified data in shared memory.  */
-        if (sem_post(&shmp->sem2) == -1) {
-            _log(
-                ERROR,
-                "Posting access via sem1 failed"
-            );
-            exit(EXIT_FAILURE);
-        }
+        pthread_mutexattr_t attr;
+        pthread_mutexattr_init(&attr);
+        pthread_mutexattr_setpshared(&attr, PTHREAD_PROCESS_SHARED); // cross-process mutex
+        pthread_mutex_init(&shmp->lock, &attr);
+        pthread_mutexattr_destroy(&attr);
 
-        _log(
-            INFO,
-            "Now starting sem1 wait."
-        );
+        // _log(
+        //     INFO,
+        //     "Now starting sem1 wait."
+        // );
 
         short repetition = 0;
         while(true) {
@@ -406,29 +360,16 @@ pid_t startDaemon(PulseArgs args) {
             }
 
             repetition++;
-            if (sem_wait(&shmp->sem1) == -1) {
-                _log(
-                    ERROR,
-                    "Waiting for sem1 failed"
-                );
-                exit(EXIT_FAILURE);
-            }
+
 
             prev_system_snapshot = system_snapshot;
             system_snapshot = getSystem();
-    
             metrics = getMetrics(prev_system_snapshot, system_snapshot);
 
+            pthread_mutex_lock(&shmp->lock);
             shmp->metrics = metrics;
             shmp->system = system_snapshot;
-
-            if (sem_post(&shmp->sem2) == -1) {
-                _log(
-                    ERROR,
-                    "Posting access via sem2 failed"
-                );
-                exit(EXIT_FAILURE);
-            }
+            pthread_mutex_unlock(&shmp->lock);
 
             sleep(args.sleep);
         }
