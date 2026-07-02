@@ -20,9 +20,9 @@ void routeNotFound(int new_socket, char *response) {
         "{"
         "\"error\": \"Not Found\","
         "\"success\":false,"
-        "\"timestamp\":%d"
+        "\"timestamp\":%ld"
         "}",
-        (int)time(NULL)
+        time(NULL)
     );
 
     write(new_socket, response, strlen(response));
@@ -35,9 +35,9 @@ void routeInvalidMethod(int new_socket, char *response) {
         "{"
         "\"error\": \"Invalid Method\","
         "\"success\":false,"
-        "\"timestamp\":%d"
+        "\"timestamp\":%ld"
         "}",
-        (int)time(NULL)
+        time(NULL)
     );
 
     write(new_socket, response, strlen(response));

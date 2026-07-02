@@ -25,8 +25,12 @@ void setupLog() {
     }
 
     time_t _time = time(NULL);
+
+    char log_time_buffer[64];
+    formatTime(log_time_buffer, 64, _time);
+
     char log_file[1024];
-    sprintf(log_file, "%s/%s/logs/%ld.log", home, R_CHERRIES_FOLDER_PULSE, _time);
+    sprintf(log_file, "%s/%s/logs/%s.log", home, R_CHERRIES_FOLDER_PULSE, log_time_buffer);
 
     FILE *f = fopen(log_file, "a");
     if(f == NULL) {
@@ -53,7 +57,7 @@ void setupLog() {
     );
 }
 
-unsigned long getCurrentLog() {
+time_t getCurrentLog() {
     char *home = getenv("HOME");
     if(home == NULL) return 0;
 
@@ -61,12 +65,13 @@ unsigned long getCurrentLog() {
     sprintf(path_file, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
     FILE *f = fopen(path_file, "r");
     if(f == NULL) return 0;
+
     char buffer[128];
     size_t n = fread(buffer, 1, sizeof(buffer) - 1, f);
     fclose(f);
 
     buffer[n] = '\0';
-    unsigned long t = strtoul(buffer, NULL, 10);
+    time_t t = (time_t)strtoul(buffer, NULL, 10);
     return t;
 }
 
@@ -77,9 +82,13 @@ void failureLog() {
         return;
     }
 
-    unsigned long t = getCurrentLog();
+    time_t _time = getCurrentLog();
+    
+    char log_time_buffer[64];
+    formatTime(log_time_buffer, 64, _time);
+    
     char path_file[1024];
-    sprintf(path_file, "%s/%s/logs/%ld.log", home, R_CHERRIES_FOLDER_PULSE, t);
+    sprintf(path_file, "%s/%s/logs/%s.log", home, R_CHERRIES_FOLDER_PULSE, log_time_buffer);
 
     printf("Exited :: %s\n", path_file);
 }
@@ -89,8 +98,8 @@ void _log(
     log_types types, 
     const char *message
 ) {
-    unsigned long t = getCurrentLog();
-    if(t == 0) {
+    time_t _time = getCurrentLog();
+    if(_time == 0) {
         printf("No logger set up...\n");
         return;
     }
@@ -101,8 +110,11 @@ void _log(
         return;
     }
 
+    char log_time_buffer[64];
+    formatTime(log_time_buffer, 64, _time);
+
     char path_file[1024];
-    sprintf(path_file, "%s/%s/logs/%ld.log", home, R_CHERRIES_FOLDER_PULSE, t);
+    sprintf(path_file, "%s/%s/logs/%s.log", home, R_CHERRIES_FOLDER_PULSE, log_time_buffer);
 
     FILE *f = fopen(path_file, "a");
     if(f == NULL) {

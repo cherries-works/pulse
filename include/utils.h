@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <time.h>
 
 extern const char *PROC_DIR;
 extern const char *PROC_UPTIME_FILE;
@@ -21,7 +22,9 @@ extern const size_t BUFFER_ONE_MB;
 extern void trim(char *buffer);
 extern void clearLine();
 extern void clearLines(short i);
-extern void convertTimeInSecondsToString(long unsigned seconds, char* buffer);
+
+extern void formatTimeHumanReadable(long unsigned seconds, char* buffer);
+extern void formatTime(char *buffer, size_t size, time_t _time);
 
 extern size_t readFile(const char *file_name, size_t size, char *buffer);
 extern size_t sizeFile(const char *file_name);
