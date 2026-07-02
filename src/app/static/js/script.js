@@ -92,7 +92,7 @@ const updateSystem = async () => {
     io_write.textContent = `${((io_usage.r * 512) / 1024).toFixed(2)}KB/s`
     io_read.textContent = `${((io_usage.w * 512) / 1024).toFixed(2)}KB/s`
 
-    uptime.textContent = convertTimeInSecondsToString(json.uptime)
+    uptime.textContent = formatTimeHumanReadable(json.uptime)
     
     load_1.textContent = _load.load1
     load_5.textContent = _load.load5
@@ -151,7 +151,7 @@ const parseCpuUsage = (snapshot2, snapshot1) => {
 }
 
 
-const convertTimeInSecondsToString = (seconds) => {
+const formatTimeHumanReadable = (seconds) => {
     let days = seconds / 3600 / 24;
     days = Math.round(days)
 
@@ -174,6 +174,6 @@ const convertTimeInSecondsToString = (seconds) => {
 }
 
 
-setInterval(async () => {
-    await updateSystem()
-}, 1000)
+// setInterval(async () => {
+//     await updateSystem()
+// }, 1000)

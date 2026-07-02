@@ -45,7 +45,145 @@ JSON_ROUTE(indexMetrics, {
         response,
         fmt,
 
-        (long)time(NULL),
+        time(NULL),
+
+        snapshot.cpu.idle,
+        snapshot.cpu.total,
+        snapshot.cpu.processes,
+
+        snapshot.disk.available,
+        snapshot.disk.total,
+        snapshot.disk.read,
+        snapshot.disk.write,
+        
+        snapshot.memory.available,
+        snapshot.memory.total,
+
+        snapshot.network.rx,
+        snapshot.network.tx,
+
+        snapshot.load.load1,
+        snapshot.load.load5,
+        snapshot.load.load15,
+
+        snapshot.processes[0].pid,
+        snapshot.processes[0].ram,
+        snapshot.processes[0].cpu,
+        snapshot.processes[0].name,
+
+        snapshot.processes[1].pid,
+        snapshot.processes[1].ram,
+        snapshot.processes[1].cpu,
+        snapshot.processes[1].name,
+
+        snapshot.processes[2].pid,
+        snapshot.processes[2].ram,
+        snapshot.processes[2].cpu,
+        snapshot.processes[2].name,
+
+        snapshot.uptime
+    );
+});
+
+JSON_ROUTE(indexCPU, {
+    System snapshot;
+    readDaemonS(&snapshot);
+
+    char *fmt =
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: application/json; charset=UTF-8\r\n\r\n"
+        "{"
+        "\"error\":null,"
+        "\"success\":true,"
+        "\"timestamp\":%ld,"
+        "\"cpu\":{\"idle\":%ld,\"total\":%ld,\"processes\":%ld},"
+        "\"disk\":{\"available\":%llu,\"total\":%llu, \"reads\":%llu, \"writes\":%llu},"
+        "\"memory\":{\"available\":%ld,\"total\":%ld},"
+        "\"network\":{\"rx\":%ld,\"tx\":%ld},"
+        "\"load\":{\"load1\":%.2f,\"load5\":%.2f,\"load15\":%.2f},"
+        "\"processes\": ["
+        " {\"pid\":%d,\"ram\":%d,\"cpu\":%d, \"name\": \"%s\"},"
+        " {\"pid\":%d,\"ram\":%d,\"cpu\":%d, \"name\": \"%s\"},"
+        " {\"pid\":%d,\"ram\":%d,\"cpu\":%d, \"name\": \"%s\"}"
+        "],"
+        "\"uptime\":%ld"
+        "}";
+
+    routeJSON(
+        socket,
+        response,
+        fmt,
+
+        time(NULL),
+
+        snapshot.cpu.idle,
+        snapshot.cpu.total,
+        snapshot.cpu.processes,
+
+        snapshot.disk.available,
+        snapshot.disk.total,
+        snapshot.disk.read,
+        snapshot.disk.write,
+        
+        snapshot.memory.available,
+        snapshot.memory.total,
+
+        snapshot.network.rx,
+        snapshot.network.tx,
+
+        snapshot.load.load1,
+        snapshot.load.load5,
+        snapshot.load.load15,
+
+        snapshot.processes[0].pid,
+        snapshot.processes[0].ram,
+        snapshot.processes[0].cpu,
+        snapshot.processes[0].name,
+
+        snapshot.processes[1].pid,
+        snapshot.processes[1].ram,
+        snapshot.processes[1].cpu,
+        snapshot.processes[1].name,
+
+        snapshot.processes[2].pid,
+        snapshot.processes[2].ram,
+        snapshot.processes[2].cpu,
+        snapshot.processes[2].name,
+
+        snapshot.uptime
+    );
+});
+
+JSON_ROUTE(indexRAM, {
+    System snapshot;
+    readDaemonS(&snapshot);
+
+    char *fmt =
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: application/json; charset=UTF-8\r\n\r\n"
+        "{"
+        "\"error\":null,"
+        "\"success\":true,"
+        "\"timestamp\":%ld,"
+        "\"cpu\":{\"idle\":%ld,\"total\":%ld,\"processes\":%ld},"
+        "\"disk\":{\"available\":%llu,\"total\":%llu, \"reads\":%llu, \"writes\":%llu},"
+        "\"memory\":{\"available\":%ld,\"total\":%ld},"
+        "\"network\":{\"rx\":%ld,\"tx\":%ld},"
+        "\"load\":{\"load1\":%.2f,\"load5\":%.2f,\"load15\":%.2f},"
+        "\"processes\": ["
+        " {\"pid\":%d,\"ram\":%d,\"cpu\":%d, \"name\": \"%s\"},"
+        " {\"pid\":%d,\"ram\":%d,\"cpu\":%d, \"name\": \"%s\"},"
+        " {\"pid\":%d,\"ram\":%d,\"cpu\":%d, \"name\": \"%s\"}"
+        "],"
+        "\"uptime\":%ld"
+        "}";
+
+    routeJSON(
+        socket,
+        response,
+        fmt,
+
+        time(NULL),
 
         snapshot.cpu.idle,
         snapshot.cpu.total,
@@ -91,4 +229,6 @@ void initRoutes(RouteHandler *rh) {
     route("/js/script.js", indexJs, GET, rh);
     route("/assets/favicon.png", indexFavicon, GET, rh);
     route("/api/metrics", indexMetrics, GET, rh);
+    route("/api/history/cpu", indexCPU, GET, rh);
+    route("/api/history/ram", indexRAM, GET, rh);
 }
