@@ -57,7 +57,7 @@ void render(
     Metrics metrics 
 ) {
     char uptime_buffer_text[64];
-    convertTimeInSecondsToString(system.uptime, uptime_buffer_text);
+    formatTimeHumanReadable(system.uptime, uptime_buffer_text);
     if(args.web) {
         printf("%s%sCherries Pulse%s ──────────── port :: %d ──────────────── ", BOLD, RED, RESET, args.port);
     } else {
