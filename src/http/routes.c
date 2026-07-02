@@ -13,8 +13,14 @@ char *getFileExtension(char *file_path) {
     return dot + 1;
 }
 
-void routeNotFound(int new_socket, char *response) {
-    sprintf(response,
+void routeNotFound(
+    int new_socket, 
+    char *response,
+    size_t response_size
+) {
+    snprintf(
+        response,
+        response_size,
         "HTTP/1.1 404 Not Found\r\n"
         "Content-Type: application/json; charset=UTF-8\r\n\r\n"
         "{"
@@ -28,8 +34,10 @@ void routeNotFound(int new_socket, char *response) {
     write(new_socket, response, strlen(response));
 }
 
-void routeInvalidMethod(int new_socket, char *response) {
-    sprintf(response,
+void routeInvalidMethod(int new_socket, char *response, size_t response_size) {
+    snprintf(
+        response,
+        response_size,
         "HTTP/1.1 400 Bad Request\r\n"
         "Content-Type: application/json; charset=UTF-8\r\n\r\n"
         "{"
@@ -43,12 +51,14 @@ void routeInvalidMethod(int new_socket, char *response) {
     write(new_socket, response, strlen(response));
 }
 
-void routeHTML(char *file_path, int new_socket, char *response) {
+void routeHTML(char *file_path, int new_socket, char *response, size_t response_size) {
     size_t file_buffer_size = BUFFER_ONE_KB * 16;
     char file_buffer[file_buffer_size];
     
     size_t file_size = sizeFile(file_path);
-    sprintf(response,
+    snprintf(
+        response,
+        response_size,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/html\r\n"
         "Content-Length: %ld\r\n\r\n",
@@ -64,12 +74,14 @@ void routeHTML(char *file_path, int new_socket, char *response) {
     write(new_socket, file_buffer, size);
 }
 
-void routeCSS(char *file_path, int new_socket, char *response) {
+void routeCSS(char *file_path, int new_socket, char *response, size_t response_size) {
     size_t file_buffer_size = BUFFER_ONE_KB * 16;
     char file_buffer[file_buffer_size];
 
     size_t file_size = sizeFile(file_path);
-    sprintf(response,
+    snprintf(
+        response,
+        response_size,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/css\r\n"
         "Content-Length: %ld\r\n\r\n",
@@ -85,12 +97,14 @@ void routeCSS(char *file_path, int new_socket, char *response) {
     write(new_socket, file_buffer, size);
 }
 
-void routeJS(char *file_path, int new_socket, char *response) {
+void routeJS(char *file_path, int new_socket, char *response, size_t response_size) {
     size_t file_buffer_size = BUFFER_ONE_KB * 16;
     char file_buffer[file_buffer_size];
 
     size_t file_size = sizeFile(file_path);
-    sprintf(response,
+    snprintf(
+        response,
+        response_size,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/js\r\n"
         "Content-Length: %ld\r\n\r\n",
@@ -106,12 +120,14 @@ void routeJS(char *file_path, int new_socket, char *response) {
     write(new_socket, file_buffer, size);
 }
 
-void routeImage(char *file_path, int new_socket, char *response) {
+void routeImage(char *file_path, int new_socket, char *response, size_t response_size) {
     size_t file_buffer_size = BUFFER_ONE_KB * 128;
     char file_buffer[file_buffer_size];
 
     size_t file_size = sizeFile(file_path);
-    sprintf(response,
+    snprintf(
+        response,
+        response_size,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: image/png\r\n"
         "Content-Length: %ld\r\n\r\n",
@@ -130,14 +146,16 @@ void routeImage(char *file_path, int new_socket, char *response) {
 void routeJSON(
     int new_socket, 
     char *response,
+    size_t response_size,
     char *fmt,
     ...
 ) {
     va_list args;
     va_start(args, fmt);
 
-    vsprintf(
+    vsnprintf(
         response,
+        response_size,
         fmt,
         args
     );
@@ -149,16 +167,17 @@ void routeJSON(
 
 void routeStatic(
     int new_socket,
+    char *file_path,
     char *response,
-    char *file_path
+    size_t response_size
 ) {
     char *ext = getFileExtension(file_path);
 
-    if(strcmp(ext, "html") == 0) routeHTML(file_path, new_socket, response);
-    else if(strcmp(ext, "css") == 0) routeCSS(file_path, new_socket, response);
-    else if(strcmp(ext, "js") == 0) routeJS(file_path, new_socket, response);
-    else if(strcmp(ext, "png") == 0) routeImage(file_path, new_socket, response);
-    else routeNotFound(new_socket, response);
+    if(strcmp(ext, "html") == 0) routeHTML(file_path, new_socket, response, response_size);
+    else if(strcmp(ext, "css") == 0) routeCSS(file_path, new_socket, response, response_size);
+    else if(strcmp(ext, "js") == 0) routeJS(file_path, new_socket, response, response_size);
+    else if(strcmp(ext, "png") == 0) routeImage(file_path, new_socket, response, response_size);
+    else routeNotFound(new_socket, response, response_size);
 }
 
 void route(
@@ -181,7 +200,8 @@ void handle(
     RouteHandler handler,
     Request request,
     int new_socket,
-    char *response
+    char *response,
+    size_t response_size
 ) {
     for(int i = 0; i < handler.routesAmount; i++) {
         Route r = handler.routes[i];
@@ -189,10 +209,10 @@ void handle(
         if(request.method != r.method) continue;
         if(strcmp(request.path, r.path) != 0) continue;
 
-        r.handler(new_socket, response);
+        r.handler(new_socket, response, response_size);
         return;
     }
 
-    routeNotFound(new_socket, response);
+    routeNotFound(new_socket, response, response_size);
     return;
 }

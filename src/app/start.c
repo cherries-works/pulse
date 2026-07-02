@@ -17,12 +17,12 @@ void setupWebsite(pid_t pid) {
         return;
     }
 
-    char path_dir[512];
-    sprintf(path_dir, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
+    char path_dir[BUFFER_ONE_KB / 2];
+    snprintf(path_dir, BUFFER_ONE_KB / 2, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
     mkdir(path_dir, 0755);
 
-    char website_path[1028];
-    sprintf(website_path, "%s/website.%d", path_dir, pid);
+    char website_path[BUFFER_ONE_KB];
+    snprintf(website_path, BUFFER_ONE_KB, "%s/website.%d", path_dir, pid);
 
     // create website file
     FILE *f = fopen(website_path, "a");
@@ -40,11 +40,11 @@ pid_t checkWebsite() {
         return -1;
     }
 
-    char path_dir[512];
-    sprintf(path_dir, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
+    char path_dir[BUFFER_ONE_KB / 2];
+    snprintf(path_dir, BUFFER_ONE_KB / 2, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
     mkdir(path_dir, 0755);
 
-    char file_path[1028];
+    char file_path[BUFFER_ONE_KB];
 
     DIR *dir = opendir(path_dir);
     struct dirent *entry;
@@ -52,7 +52,7 @@ pid_t checkWebsite() {
         char *name = entry->d_name;
         if(strcmp(name, ".") == 0) continue;
         if(strcmp(name, "..") == 0) continue;
-        sprintf(file_path, "%s/%s", path_dir, name);
+        snprintf(file_path, BUFFER_ONE_KB, "%s/%s", path_dir, name);
         
         char *d = strchr(name, '.');
         if(d == NULL) continue;

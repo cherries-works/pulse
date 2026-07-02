@@ -26,9 +26,15 @@ void stop() {
     char *home = getenv("HOME");
     if(home == NULL) return;
 
-    char file_path[1028];
-    char path_dir[512];
-    sprintf(path_dir, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
+    char file_path[BUFFER_ONE_KB];
+    char path_dir[BUFFER_ONE_KB / 2];
+    snprintf(
+        path_dir,
+        BUFFER_ONE_KB / 2,
+        "%s/%s/state",
+        home, 
+        R_CHERRIES_FOLDER_PULSE
+    );
 
     DIR *dir = opendir(path_dir);
     struct dirent *entry;
@@ -36,7 +42,7 @@ void stop() {
         char *name = entry->d_name;
         if(strcmp(name, ".") == 0) continue;
         if(strcmp(name, "..") == 0) continue;
-        sprintf(file_path, "%s/%s", path_dir, name);
+        snprintf(file_path, BUFFER_ONE_KB, "%s/%s", path_dir, name);
 
         char *d = strchr(name, '.');
         if(d == NULL) continue;
@@ -48,7 +54,7 @@ void stop() {
         remove(file_path);
     }
 
-    sprintf(file_path, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
+    snprintf(file_path, BUFFER_ONE_KB, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
     remove(file_path);
 
     closedir(dir);

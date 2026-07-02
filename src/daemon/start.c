@@ -22,12 +22,12 @@ void setupDaemon(pid_t pid) {
         return;
     }
 
-    char path_dir[512];
-    sprintf(path_dir, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
+    char path_dir[BUFFER_ONE_KB / 2];
+    snprintf(path_dir, BUFFER_ONE_KB / 2, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
     mkdir(path_dir, 0755);
 
-    char daemon_path[1028];
-    sprintf(daemon_path, "%s/daemon.%d", path_dir, pid);
+    char daemon_path[BUFFER_ONE_KB];
+    snprintf(daemon_path, BUFFER_ONE_KB, "%s/daemon.%d", path_dir, pid);
 
     FILE *f = fopen(daemon_path, "a");
     fclose(f);
@@ -102,92 +102,99 @@ void writeHistoryS(System system) {
 
     time_t _time = time(NULL);
 
-    char history_path[1028];
-    sprintf(history_path, "%s/%s/history/system.%ld", home, R_CHERRIES_FOLDER_PULSE, _time);
+    char history_path[BUFFER_ONE_KB];
+    snprintf(
+        history_path, 
+        BUFFER_ONE_KB, 
+        "%s/%s/history/system.%ld", 
+        home, 
+        R_CHERRIES_FOLDER_PULSE, 
+        _time
+    );
 
     FILE *f = fopen(history_path, "a");
-    char buffer[256];
+    char buffer[BUFFER_ONE_KB / 4];
 
-    sprintf(buffer, "%ld\n", system.cpu.idle);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.cpu.idle);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%ld\n", system.cpu.processes);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.cpu.processes);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%ld\n", system.cpu.total);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.cpu.total);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%lld\n", system.disk.available);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%lld\n", system.disk.available);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%lld\n", system.disk.read);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%lld\n", system.disk.read);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%lld\n", system.disk.total);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%lld\n", system.disk.total);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%lld\n", system.disk.write);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%lld\n", system.disk.write);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%f\n", system.load.load1);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", system.load.load1);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%f\n", system.load.load5);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", system.load.load5);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%f\n", system.load.load15);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", system.load.load15);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%ld\n", system.memory.available);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.memory.available);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%ld\n", system.network.rx);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.network.rx);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%ld\n", system.network.tx);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.network.tx);
     fwrite(buffer, strlen(buffer), 1, f);
 
 
-    sprintf(buffer, "%s\n", system.processes[0].name);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%s\n", system.processes[0].name);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%ld\n", system.processes[0].cpu);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.processes[0].cpu);
     fwrite(buffer, strlen(buffer), 1, f);
     
-    sprintf(buffer, "%d\n", system.processes[0].pid);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%d\n", system.processes[0].pid);
     fwrite(buffer, strlen(buffer), 1, f);
     
-    sprintf(buffer, "%ld\n", system.processes[0].ram);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.processes[0].ram);
     fwrite(buffer, strlen(buffer), 1, f);
 
 
-    sprintf(buffer, "%s\n", system.processes[1].name);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%s\n", system.processes[1].name);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%ld\n", system.processes[1].cpu);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.processes[1].cpu);
     fwrite(buffer, strlen(buffer), 1, f);
     
-    sprintf(buffer, "%d\n", system.processes[1].pid);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%d\n", system.processes[1].pid);
     fwrite(buffer, strlen(buffer), 1, f);
     
-    sprintf(buffer, "%ld\n", system.processes[1].ram);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.processes[1].ram);
     fwrite(buffer, strlen(buffer), 1, f);
     
     
-    sprintf(buffer, "%s\n", system.processes[2].name);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%s\n", system.processes[2].name);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%ld\n", system.processes[2].cpu);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.processes[2].cpu);
     fwrite(buffer, strlen(buffer), 1, f);
     
-    sprintf(buffer, "%d\n", system.processes[2].pid);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%d\n", system.processes[2].pid);
     fwrite(buffer, strlen(buffer), 1, f);
     
-    sprintf(buffer, "%ld\n", system.processes[2].ram);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.processes[2].ram);
     fwrite(buffer, strlen(buffer), 1, f);
     
 
-    sprintf(buffer, "%ld", system.uptime);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld", system.uptime);
     fwrite(buffer, strlen(buffer), 1, f);
 
     fclose(f);
@@ -205,31 +212,31 @@ void writeHistoryM(Metrics metrics) {
 
     time_t _time = time(NULL);
 
-    char history_path[1028];
-    sprintf(history_path, "%s/%s/history/metrics.%ld", home, R_CHERRIES_FOLDER_PULSE, _time);
+    char history_path[BUFFER_ONE_KB];
+    snprintf(history_path, BUFFER_ONE_KB, "%s/%s/history/metrics.%ld", home, R_CHERRIES_FOLDER_PULSE, _time);
 
     FILE *f = fopen(history_path, "a");
-    char buffer[256];
+    char buffer[BUFFER_ONE_KB / 4];
 
-    sprintf(buffer, "%f\n", metrics.cpuUsage);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", metrics.cpuUsage);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%f\n", metrics.diskUsage);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", metrics.diskUsage);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%f\n", metrics.ramUsage);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", metrics.ramUsage);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%f\n", metrics.read);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", metrics.read);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%f\n", metrics.write);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", metrics.write);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%f\n", metrics.rx);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", metrics.rx);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    sprintf(buffer, "%f", metrics.tx);
+    snprintf(buffer, BUFFER_ONE_KB / 4, "%f", metrics.tx);
     fwrite(buffer, strlen(buffer), 1, f);
 
     fclose(f);
@@ -246,11 +253,11 @@ pid_t checkDaemon() {
         return -1;
     }
 
-    char path_dir[512];
-    sprintf(path_dir, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
+    char path_dir[BUFFER_ONE_KB / 2];
+    snprintf(path_dir, BUFFER_ONE_KB / 2, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
     mkdir(path_dir, 0755);
 
-    char file_path[1028];
+    char file_path[BUFFER_ONE_KB];
 
     DIR *dir = opendir(path_dir);
     struct dirent *entry;
@@ -258,7 +265,7 @@ pid_t checkDaemon() {
         char *name = entry->d_name;
         if(strcmp(name, ".") == 0) continue;
         if(strcmp(name, "..") == 0) continue;
-        sprintf(file_path, "%s/%s", path_dir, name);
+        snprintf(file_path, BUFFER_ONE_KB, "%s/%s", path_dir, name);
         
         char *d = strchr(name, '.');
         if(d == NULL) continue;

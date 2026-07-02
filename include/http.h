@@ -22,7 +22,8 @@ extern Request parseRequest(char *buffer);
 
 typedef void (*RouteFn)(
     int socket,
-    char *response
+    char *response,
+    size_t response_size
 );
 
 typedef struct {
@@ -43,9 +44,9 @@ extern void route(
     RouteHandler *h
 );
 
-extern void routeJSON(int new_socket, char *response, char *fmt, ...);
-extern void routeStatic(int new_socket, char *response, char *file_path);
-extern void handle(RouteHandler handler, Request request, int new_socket, char *response);
+extern void routeJSON(int new_socket, char *response, size_t response_size, char *fmt, ...);
+extern void routeStatic(int new_socket, char *file_path, char *response, size_t response_size);
+extern void handle(RouteHandler handler, Request request, int new_socket, char *response, size_t response_size);
 
 typedef struct Server {
     int domain;

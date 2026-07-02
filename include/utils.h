@@ -23,8 +23,8 @@ extern void trim(char *buffer);
 extern void clearLine();
 extern void clearLines(short i);
 
-extern void formatTimeHumanReadable(long unsigned seconds, char* buffer);
-extern void formatTime(char *buffer, size_t size, time_t _time);
+extern void formatTimeHumanReadable(long unsigned seconds, char* buffer, size_t size);
+extern void formatTime(time_t _time, char *buffer, size_t size);
 
 extern size_t readFile(const char *file_name, size_t size, char *buffer);
 extern size_t sizeFile(const char *file_name);

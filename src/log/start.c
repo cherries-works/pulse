@@ -14,8 +14,8 @@ void setupLog() {
         return;
     }
 
-    char current_file[1024];
-    sprintf(current_file, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
+    char current_file[BUFFER_ONE_KB];
+    snprintf(current_file, BUFFER_ONE_KB, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
     if(access(current_file, F_OK) == 0) {
         _log(
             INFO,
@@ -26,11 +26,12 @@ void setupLog() {
 
     time_t _time = time(NULL);
 
-    char log_time_buffer[64];
-    formatTime(log_time_buffer, 64, _time);
+    size_t log_time_buffer_size = BUFFER_ONE_KB / 8;
+    char log_time_buffer[log_time_buffer_size];
+    formatTime(_time, log_time_buffer, log_time_buffer_size);
 
-    char log_file[1024];
-    sprintf(log_file, "%s/%s/logs/%s.log", home, R_CHERRIES_FOLDER_PULSE, log_time_buffer);
+    char log_file[BUFFER_ONE_KB];
+    snprintf(log_file, BUFFER_ONE_KB, "%s/%s/logs/%s.log", home, R_CHERRIES_FOLDER_PULSE, log_time_buffer);
 
     FILE *f = fopen(log_file, "a");
     if(f == NULL) {
@@ -46,8 +47,8 @@ void setupLog() {
         return;
     }
 
-    char buffer[128];
-    sprintf(buffer, "%ld", _time);
+    char buffer[BUFFER_ONE_KB / 8];
+    snprintf(buffer, BUFFER_ONE_KB / 8, "%ld", _time);
     fwrite(buffer, strlen(buffer), 1, f);
     fclose(f);
 
@@ -61,8 +62,8 @@ time_t getCurrentLog() {
     char *home = getenv("HOME");
     if(home == NULL) return 0;
 
-    char path_file[1024];
-    sprintf(path_file, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
+    char path_file[BUFFER_ONE_KB];
+    snprintf(path_file, BUFFER_ONE_KB, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
     FILE *f = fopen(path_file, "r");
     if(f == NULL) return 0;
 
@@ -83,12 +84,13 @@ void failureLog() {
     }
 
     time_t _time = getCurrentLog();
+
+    size_t log_time_buffer_size = BUFFER_ONE_KB / 8;
+    char log_time_buffer[log_time_buffer_size];
+    formatTime(_time, log_time_buffer, log_time_buffer_size);
     
-    char log_time_buffer[64];
-    formatTime(log_time_buffer, 64, _time);
-    
-    char path_file[1024];
-    sprintf(path_file, "%s/%s/logs/%s.log", home, R_CHERRIES_FOLDER_PULSE, log_time_buffer);
+    char path_file[BUFFER_ONE_KB];
+    snprintf(path_file, BUFFER_ONE_KB, "%s/%s/logs/%s.log", home, R_CHERRIES_FOLDER_PULSE, log_time_buffer);
 
     printf("Exited :: %s\n", path_file);
 }
@@ -110,11 +112,12 @@ void _log(
         return;
     }
 
-    char log_time_buffer[64];
-    formatTime(log_time_buffer, 64, _time);
+    size_t log_time_buffer_size = BUFFER_ONE_KB / 8;
+    char log_time_buffer[log_time_buffer_size];
+    formatTime(_time, log_time_buffer, log_time_buffer_size);
 
-    char path_file[1024];
-    sprintf(path_file, "%s/%s/logs/%s.log", home, R_CHERRIES_FOLDER_PULSE, log_time_buffer);
+    char path_file[BUFFER_ONE_KB];
+    snprintf(path_file, BUFFER_ONE_KB, "%s/%s/logs/%s.log", home, R_CHERRIES_FOLDER_PULSE, log_time_buffer);
 
     FILE *f = fopen(path_file, "a");
     if(f == NULL) {

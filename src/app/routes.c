@@ -4,12 +4,12 @@
 #include "daemon.h"
 
 #define STATIC_ROUTE(fnName, filePath) \
-void fnName(int socket, char *response) { \
-    routeStatic(socket, response, filePath); \
+void fnName(int socket, char *response, size_t response_size) { \
+    routeStatic(socket, filePath, response, response_size); \
 }
 
 #define JSON_ROUTE(fnName, body) \
-void fnName(int socket, char *response) body
+void fnName(int socket, char *response, size_t response_size) body
 
 STATIC_ROUTE(indexHtml, "./src/app/static/index.html");
 STATIC_ROUTE(indexStyle, "./src/app/static/css/style.css");
@@ -43,8 +43,9 @@ JSON_ROUTE(indexMetrics, {
     routeJSON(
         socket,
         response,
-        fmt,
+        response_size,
 
+        fmt,
         time(NULL),
 
         snapshot.cpu.idle,
@@ -112,8 +113,9 @@ JSON_ROUTE(indexCPU, {
     routeJSON(
         socket,
         response,
-        fmt,
+        response_size,
 
+        fmt,
         time(NULL),
 
         snapshot.cpu.idle,
@@ -181,8 +183,9 @@ JSON_ROUTE(indexRAM, {
     routeJSON(
         socket,
         response,
-        fmt,
+        response_size,
 
+        fmt,
         time(NULL),
 
         snapshot.cpu.idle,

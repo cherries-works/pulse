@@ -33,16 +33,18 @@ void getProcesses(size_t size, char *buffer, Process processes[]) {
         if(pid == 0) continue;
         proc_pid = pid;
 
-        sprintf(
+        snprintf(
             proc_file_name,
+            proc_file_name_size,
             "/proc/%d/status",
             pid
         );
         readFile(proc_file_name, size, buffer);
         proc_ram = parseMemoryKey(buffer, "VmRSS");
 
-        sprintf(
+        snprintf(
             proc_file_name,
+            proc_file_name_size,
             "/proc/%d/stat",
             pid
         );
@@ -66,8 +68,9 @@ void getProcesses(size_t size, char *buffer, Process processes[]) {
         proc_cpu += strtoull(buffer, NULL, 10);
 
 
-        sprintf(
+        snprintf(
             proc_file_name,
+            proc_name_size,
             "/proc/%d/comm",
             pid
         );

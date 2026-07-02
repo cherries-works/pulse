@@ -25,7 +25,7 @@ int setup() {
     }
 
     char path[BUFFER_ONE_KB];
-    sprintf(path, "%s/%s", home, R_CHERRIES_FOLDER);
+    snprintf(path, BUFFER_ONE_KB, "%s/%s", home, R_CHERRIES_FOLDER);
 
     DIR *dir = opendir(path);
     if(!dir) {
@@ -35,7 +35,7 @@ int setup() {
     }
 
     
-    sprintf(path, "%s/%s", home, R_CHERRIES_FOLDER_PULSE);
+    snprintf(path, BUFFER_ONE_KB, "%s/%s", home, R_CHERRIES_FOLDER_PULSE);
     dir = opendir(path);
     if(!dir) {
         mkdir(path, 0755);
@@ -43,7 +43,7 @@ int setup() {
         closedir(dir);
     }
     
-    sprintf(path, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
+    snprintf(path, BUFFER_ONE_KB, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
     dir = opendir(path);
     if(!dir) {
         mkdir(path, 0755);
@@ -51,7 +51,7 @@ int setup() {
         closedir(dir);
     }
     
-    sprintf(path, "%s/%s/logs", home, R_CHERRIES_FOLDER_PULSE);
+    snprintf(path, BUFFER_ONE_KB, "%s/%s/logs", home, R_CHERRIES_FOLDER_PULSE);
     dir = opendir(path);
     if(!dir) {
         mkdir(path, 0755);
@@ -59,7 +59,7 @@ int setup() {
         closedir(dir);
     }
 
-    sprintf(path, "%s/%s/history", home, R_CHERRIES_FOLDER_PULSE);
+    snprintf(path, BUFFER_ONE_KB, "%s/%s/history", home, R_CHERRIES_FOLDER_PULSE);
     dir = opendir(path);
     if(!dir) {
         mkdir(path, 0755);
