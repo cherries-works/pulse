@@ -32,6 +32,26 @@ void setupDaemon(pid_t pid) {
     FILE *f = fopen(daemon_path, "a");
     fclose(f);
 
+
+    size_t time_buffer_size = BUFFER_ONE_KB / 8;
+    char time_buffer[time_buffer_size];
+    time_t log_time = getCurrentLog();
+    formatTime(log_time, time_buffer, time_buffer_size);
+
+    size_t history_path_size = BUFFER_ONE_KB;
+    char history_path[history_path_size];
+    
+    snprintf(history_path, history_path_size, "%s/%s/history/%s", home, R_CHERRIES_FOLDER_PULSE, time_buffer);
+    mkdir(history_path, 0755);
+    
+    snprintf(history_path, history_path_size, "%s/%s/history/%s/system", home, R_CHERRIES_FOLDER_PULSE, time_buffer);
+    mkdir(history_path, 0755);
+
+    snprintf(history_path, history_path_size, "%s/%s/history/%s/metric", home, R_CHERRIES_FOLDER_PULSE, time_buffer);
+    mkdir(history_path, 0755);
+
+
+
     shm_unlink(CHERRIES_PULSE_SHM);
     int shm_fd = shm_open(CHERRIES_PULSE_SHM, O_CREAT | O_EXCL | O_RDWR, 0600);
     if (shm_fd == -1) {
@@ -100,101 +120,110 @@ void writeHistoryS(System system) {
         return;
     }
 
+
+    size_t time_buffer_size = BUFFER_ONE_KB / 8;
+    char time_buffer[time_buffer_size];
+    time_t log_time = getCurrentLog();
+    formatTime(log_time, time_buffer, time_buffer_size);
+
     time_t _time = time(NULL);
 
-    char history_path[BUFFER_ONE_KB];
+    size_t history_path_size = BUFFER_ONE_KB;
+    char history_path[history_path_size];
     snprintf(
-        history_path, 
-        BUFFER_ONE_KB, 
-        "%s/%s/history/system.%ld", 
+        history_path, history_path_size, 
+        "%s/%s/history/%s/system/%ld", 
         home, 
         R_CHERRIES_FOLDER_PULSE, 
+        time_buffer, 
         _time
     );
 
     FILE *f = fopen(history_path, "a");
-    char buffer[BUFFER_ONE_KB / 4];
+    
+    size_t buffer_size = BUFFER_ONE_KB / 4;
+    char buffer[buffer_size];
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.cpu.idle);
+    snprintf(buffer, buffer_size, "%ld\n", system.cpu.idle);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.cpu.processes);
+    snprintf(buffer, buffer_size, "%ld\n", system.cpu.processes);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.cpu.total);
+    snprintf(buffer, buffer_size, "%ld\n", system.cpu.total);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%lld\n", system.disk.available);
+    snprintf(buffer, buffer_size, "%lld\n", system.disk.available);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%lld\n", system.disk.read);
+    snprintf(buffer, buffer_size, "%lld\n", system.disk.read);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%lld\n", system.disk.total);
+    snprintf(buffer, buffer_size, "%lld\n", system.disk.total);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%lld\n", system.disk.write);
+    snprintf(buffer, buffer_size, "%lld\n", system.disk.write);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", system.load.load1);
+    snprintf(buffer, buffer_size, "%f\n", system.load.load1);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", system.load.load5);
+    snprintf(buffer, buffer_size, "%f\n", system.load.load5);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", system.load.load15);
+    snprintf(buffer, buffer_size, "%f\n", system.load.load15);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.memory.available);
+    snprintf(buffer, buffer_size, "%ld\n", system.memory.available);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.network.rx);
+    snprintf(buffer, buffer_size, "%ld\n", system.network.rx);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.network.tx);
+    snprintf(buffer, buffer_size, "%ld\n", system.network.tx);
     fwrite(buffer, strlen(buffer), 1, f);
 
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%s\n", system.processes[0].name);
+    snprintf(buffer, buffer_size, "%s\n", system.processes[0].name);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.processes[0].cpu);
+    snprintf(buffer, buffer_size, "%ld\n", system.processes[0].cpu);
     fwrite(buffer, strlen(buffer), 1, f);
     
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%d\n", system.processes[0].pid);
+    snprintf(buffer, buffer_size, "%d\n", system.processes[0].pid);
     fwrite(buffer, strlen(buffer), 1, f);
     
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.processes[0].ram);
+    snprintf(buffer, buffer_size, "%ld\n", system.processes[0].ram);
     fwrite(buffer, strlen(buffer), 1, f);
 
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%s\n", system.processes[1].name);
+    snprintf(buffer, buffer_size, "%s\n", system.processes[1].name);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.processes[1].cpu);
+    snprintf(buffer, buffer_size, "%ld\n", system.processes[1].cpu);
     fwrite(buffer, strlen(buffer), 1, f);
     
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%d\n", system.processes[1].pid);
+    snprintf(buffer, buffer_size, "%d\n", system.processes[1].pid);
     fwrite(buffer, strlen(buffer), 1, f);
     
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.processes[1].ram);
+    snprintf(buffer, buffer_size, "%ld\n", system.processes[1].ram);
     fwrite(buffer, strlen(buffer), 1, f);
     
     
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%s\n", system.processes[2].name);
+    snprintf(buffer, buffer_size, "%s\n", system.processes[2].name);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.processes[2].cpu);
+    snprintf(buffer, buffer_size, "%ld\n", system.processes[2].cpu);
     fwrite(buffer, strlen(buffer), 1, f);
     
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%d\n", system.processes[2].pid);
+    snprintf(buffer, buffer_size, "%d\n", system.processes[2].pid);
     fwrite(buffer, strlen(buffer), 1, f);
     
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld\n", system.processes[2].ram);
+    snprintf(buffer, buffer_size, "%ld\n", system.processes[2].ram);
     fwrite(buffer, strlen(buffer), 1, f);
     
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%ld", system.uptime);
+    snprintf(buffer, buffer_size, "%ld", system.uptime);
     fwrite(buffer, strlen(buffer), 1, f);
 
     fclose(f);
@@ -210,33 +239,48 @@ void writeHistoryM(Metrics metrics) {
         return;
     }
 
+    size_t time_buffer_size = BUFFER_ONE_KB / 8;
+    char time_buffer[time_buffer_size];
+    time_t log_time = getCurrentLog();
+    formatTime(log_time, time_buffer, time_buffer_size);
+
     time_t _time = time(NULL);
 
-    char history_path[BUFFER_ONE_KB];
-    snprintf(history_path, BUFFER_ONE_KB, "%s/%s/history/metrics.%ld", home, R_CHERRIES_FOLDER_PULSE, _time);
+    size_t history_path_size = BUFFER_ONE_KB;
+    char history_path[history_path_size];
+    snprintf(
+        history_path, history_path_size, 
+        "%s/%s/history/%s/metric/%ld", 
+        home, 
+        R_CHERRIES_FOLDER_PULSE, 
+        time_buffer,
+        _time
+    );
 
     FILE *f = fopen(history_path, "a");
-    char buffer[BUFFER_ONE_KB / 4];
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", metrics.cpuUsage);
+    size_t buffer_size = BUFFER_ONE_KB / 4;
+    char buffer[buffer_size];
+
+    snprintf(buffer, buffer_size, "%f\n", metrics.cpuUsage);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", metrics.diskUsage);
+    snprintf(buffer, buffer_size, "%f\n", metrics.diskUsage);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", metrics.ramUsage);
+    snprintf(buffer, buffer_size, "%f\n", metrics.ramUsage);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", metrics.read);
+    snprintf(buffer, buffer_size, "%f\n", metrics.read);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", metrics.write);
+    snprintf(buffer, buffer_size, "%f\n", metrics.write);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%f\n", metrics.rx);
+    snprintf(buffer, buffer_size, "%f\n", metrics.rx);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, BUFFER_ONE_KB / 4, "%f", metrics.tx);
+    snprintf(buffer, buffer_size, "%f", metrics.tx);
     fwrite(buffer, strlen(buffer), 1, f);
 
     fclose(f);
