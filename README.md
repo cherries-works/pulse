@@ -7,6 +7,7 @@ Pulse collects system metrics directly from Linux and exposes them through a min
 A fast, simple, and efficient monitoring system that just works.
 
 ![Pulse Dashboard](./assets/dashboard.png)
+![Pulse Graph](./assets/graph.png)
 
 ## Features
 
@@ -19,6 +20,9 @@ A fast, simple, and efficient monitoring system that just works.
 * Uptime
 * Running processes
 * Web hosting
+* Graphical display
+* Historical metrics
+* Charts library
 
 ## Philosophy
 
@@ -111,12 +115,53 @@ Example response:
 }
 ```
 
+Historical metrics are available aswell:
+
+```http
+GET /api/history/{cpu | ram | disk}
+```
+
+Example response:
+
+```json
+{
+  "error": null,
+  "success": true,
+  "timestamp": 1783110731,
+  "data": [
+    {
+      "timestamp": 1783110719,
+      "usage": 13.801922
+    },
+    {
+      "timestamp": 1783110721,
+      "usage": 14.735517
+    },
+    {
+      "timestamp": 1783110723,
+      "usage": 10.957178
+    },
+    {
+      "timestamp": 1783110725,
+      "usage": 12.781956
+    },
+    {
+      "timestamp": 1783110727,
+      "usage": 16.316441
+    },
+    {
+      "timestamp": 1783110729,
+      "usage": 10.297767
+    }
+  ]
+}
+```
+
 ## Roadmap
 
 * Process sorting
 * Network throughput
 * Disk throughput
-* Historical metrics
 * Additional system statistics
 * More OS support
 
