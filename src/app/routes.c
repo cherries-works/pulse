@@ -148,9 +148,10 @@ JSON_ROUTE(historyCPU, {
 
         Metrics metric;
         readHistoryM(entry_path, &metric);
-        
+
+        size_t padding = 100;
         size_t len = strlen(entry_storer);
-        if(len >= entry_storer_size) break;
+        if(len >= entry_storer_size - padding) break;
 
         entry = readdir(dir);
         int written = snprintf(
@@ -249,8 +250,9 @@ JSON_ROUTE(historyRAM, {
         Metrics metric;
         readHistoryM(entry_path, &metric);
         
+        size_t padding = 100;
         size_t len = strlen(entry_storer);
-        if(len >= entry_storer_size) break;
+        if(len >= entry_storer_size - padding) break;
 
         entry = readdir(dir);
         int written = snprintf(
@@ -349,8 +351,9 @@ JSON_ROUTE(historyDisk, {
         Metrics metric;
         readHistoryM(entry_path, &metric);
         
+        size_t padding = 100;
         size_t len = strlen(entry_storer);
-        if(len >= entry_storer_size) break;
+        if(len >= entry_storer_size - padding) break;
 
         entry = readdir(dir);
         int written = snprintf(
