@@ -93,7 +93,7 @@ void render(
 }
 
 void help() {
-    printf("%s%sCherries Pulse%s ───────────────────────────────────── v0.1.2 ──── \n\n", BOLD, RED, RESET);
+    printf("%s%sCherries Pulse%s ───────────────────────────────────── v0.2.0 ──── \n\n", BOLD, RED, RESET);
     printf("     %-20s %-20s\n", "--port [number]", "Determine the port where the website will be hosted (omits --web).");
     printf("     %-20s %-20s\n", "--web", "Hosts website (and API) on default port 8080.");
     printf("     %-20s %-20s\n", "--sleep", "How many seconds the program sleeps before updating (TUI only).");

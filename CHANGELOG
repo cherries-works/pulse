@@ -1,3 +1,9 @@
+v0.2.0 (3rd July 2026)
+- Storing historical metrics and system snapshots
+- Displaying RAM, CPU and Disk to Web UI
+- Histories ~/.cherries-works/pulse/history/<- date ->
+- Logs ~/.cherries-works/pulse/logs/<- date ->
+
 v0.1.2 (30th June 2026)
 - Moved to mutex locks instead of shms
 - No hang, if deployed twice (check guards)
