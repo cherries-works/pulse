@@ -233,3 +233,18 @@ body {
     font-size: 1.5rem;
     width: 15rem;
 }
+
+.graphs_wrapper {
+    display: flex;
+    padding: 1rem;
+    gap: 2rem;
+    justify-content: space-between;
+}
+
+cw-chart {
+    border: 2px solid var(--gray);
+    padding: 1rem;
+    display: block;
+    width: 500px;
+    height: 500px;
+}

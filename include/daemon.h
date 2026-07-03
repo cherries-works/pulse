@@ -3,6 +3,7 @@
 
 #include <stdlib.h>
 #include <semaphore.h>
+#include <pthread.h>
 
 #include "parse.h"
 #include "utils.h"
@@ -18,5 +19,8 @@ extern pid_t startDaemon(PulseArgs args);
 extern void readDaemonS(System *system);
 extern void readDaemonM(Metrics *metrics);
 extern void readDaemonSM(System *system, Metrics *metrics);
+
+extern void readHistoryS(char *path, System *system);
+extern void readHistoryM(char *path, Metrics *metric);
 
 #endif

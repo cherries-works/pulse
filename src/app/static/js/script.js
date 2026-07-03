@@ -174,6 +174,6 @@ const formatTimeHumanReadable = (seconds) => {
 }
 
 
-// setInterval(async () => {
-//     await updateSystem()
-// }, 1000)
+setInterval(async () => {
+    await updateSystem()
+}, 1000)

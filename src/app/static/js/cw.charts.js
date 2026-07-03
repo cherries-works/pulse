@@ -1,52 +1,106 @@
 /**
  * Parses a given graph element and data.
  * @param {Element} element - The graphical element.
+ * @param {string} name - The name of the metric.
  * @param {object} data - The data (array) that has the values.
  */
-const parser = (element, data) => {
-    element.style.width = "500px";
-    element.style.height = "500px";
+const parser = (
+    element,
+    name, 
+    data
+) => {
+    const c = element.querySelector("canvas");
+    if (c) c.remove();
 
-    const canvas = document.createElement("canvas")
-    const ctx = canvas.getContext("2d");
+    const size = 500
+
+    const canvas = document.createElement("canvas");
+    canvas.style.width  = "100%";
+    canvas.style.height = "100%";
+    canvas.width = size;
+    canvas.height = size;
+
     element.append(canvas);
+    const ctx = canvas.getContext("2d");
+    ctx.strokeStyle = "white"
+    ctx.lineJoin = "round";
+    ctx.lineCap = "round";
+    ctx.lineWidth = 2;
 
-    if(typeof(data) != "object") return;
-    if(data.length == undefined) return;
-    if(data.length == 0) return;
+    if (typeof data != "object") return;
+    if (data.length == undefined) return;
+    if (data.length == 0) return;
 
-    // 100% on the Y axis
-    const clientY = element.clientHeight;
-    
-    // 100% on the X axis
-    const clientX = element.clientWidth;
-
-    // const maxX = _max(data);
-    ctx.lineWidth = 10;
+    const clientX = canvas.width;
+    const clientY = canvas.height;
 
     const defaultX = 10;
     const defaultY = 10;
 
+    const padding = 20;
+
+    // setup
+    ctx.fillStyle = "#DB324D"
+    ctx.font = "30px monospace";
+    ctx.fillText(name, 10, 50);
+
+    const canvasXOffset = defaultX + padding * 2;
+    const canvasYOffset = defaultY + padding * 2;
+
+    ctx.moveTo(0 + canvasXOffset, defaultY + canvasYOffset);
+    ctx.lineTo(0 + canvasXOffset, canvas.height - defaultY);
+    ctx.stroke()
+
+    const canvasWidth = canvas.width - canvasXOffset;
+    
+    ctx.moveTo(defaultX, canvas.height - canvasYOffset);
+    ctx.lineTo(canvas.width - defaultX, canvas.height - canvasYOffset);
+    ctx.stroke()
+
+    const canvasHeight = canvas.height - canvasYOffset;
+
     ctx.beginPath();
-    ctx.moveTo(defaultX, defaultY);
-    for(let i = 0; i < data.length; i++) {
-        const currentX = (clientX / data.length) * i;
-        const currentY = defaultY + data[i];
-        ctx.lineTo(currentX, currentY);
+
+    // start at the first data point
+    for (let i = 0; i < data.length; i++) {
+        const x = canvasWidth * (i / (Math.max(data.length, 5))) + canvasXOffset;
+        const y = (canvas.height - canvas.height * (data[i] / 100)) - canvasYOffset;
+
+        if (i === 0) {
+            ctx.moveTo(x, y);
+        } else {
+            ctx.lineTo(x, y);
+        }
     }
     ctx.stroke();
-}
+};
 
-setTimeout(async () => {
+const main = async () => {
     const charts = document.querySelectorAll("cw-chart")
     for(let chart of charts) {
         const dataApi = chart.getAttribute("data");
+        const dataName = chart.getAttribute("name");
         const dataMetric = chart.getAttribute("metric");
     
         const fetched = await fetch(dataApi);
         const json = await fetched.json();
-        const data = json.data;
-    
-        parser(chart, data);
+        
+        let data = json.data;
+        data.sort((a,b) => Number(a.timestamp) - Number(b.timestamp))
+        data = data.map(a => {
+            return a.usage
+        })
+
+
+        parser(chart, dataName, data);
     }
-})
+}
+
+async function loop() {
+  await main();
+  setInterval(async () => {
+    await main();
+  }, 2000);
+}
+
+loop();

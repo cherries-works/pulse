@@ -120,7 +120,6 @@ void writeHistoryS(System system) {
         return;
     }
 
-
     size_t time_buffer_size = BUFFER_ONE_KB / 8;
     char time_buffer[time_buffer_size];
     time_t log_time = getCurrentLog();
@@ -177,6 +176,9 @@ void writeHistoryS(System system) {
     snprintf(buffer, buffer_size, "%ld\n", system.memory.available);
     fwrite(buffer, strlen(buffer), 1, f);
 
+    snprintf(buffer, buffer_size, "%ld\n", system.memory.total);
+    fwrite(buffer, strlen(buffer), 1, f);
+
     snprintf(buffer, buffer_size, "%ld\n", system.network.rx);
     fwrite(buffer, strlen(buffer), 1, f);
 
@@ -225,6 +227,245 @@ void writeHistoryS(System system) {
 
     snprintf(buffer, buffer_size, "%ld", system.uptime);
     fwrite(buffer, strlen(buffer), 1, f);
+
+    fclose(f);
+}
+
+void readHistoryS(
+    char *path,
+    System *system
+) {
+    size_t buffer_size = BUFFER_ONE_KB * 4;
+    char buffer[buffer_size];
+
+    FILE *f = fopen(path, "r");
+    if(f == NULL) {
+        _log(ERROR, "History path invalid.");
+        return;
+    }
+
+    size_t size = fread(buffer, 1, buffer_size - 1, f);
+    if(size == 0) {
+        _log(ERROR, "Reading history file failed.");
+        return;
+    }
+
+    buffer[size] = '\0';
+
+    char *buffer_pointer = buffer;
+    char *n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+    
+    system->cpu.idle = strtoul(buffer_pointer, NULL, 10);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+    
+    system->cpu.processes = strtoul(buffer_pointer, NULL, 10);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+
+    system->cpu.total = strtoul(buffer_pointer, NULL, 10);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+    
+    system->disk.available = strtoul(buffer_pointer, NULL, 10);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+
+    system->disk.read = strtoul(buffer_pointer, NULL, 10);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+    
+    system->disk.total = strtoul(buffer_pointer, NULL, 10);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+
+    system->disk.write = strtoul(buffer_pointer, NULL, 10);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+    
+    system->load.load1 = (float)atof(buffer_pointer);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+
+    system->load.load5 = (float)atof(buffer_pointer);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+    
+    system->load.load15 = (float)atof(buffer_pointer);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+
+    system->memory.available = strtoul(buffer_pointer, NULL, 10);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+
+    system->memory.total = strtoul(buffer_pointer, NULL, 10);
+
+    fclose(f);
+}
+
+void readHistoryM(
+    char *path,
+    Metrics *metric
+) {
+    size_t buffer_size = BUFFER_ONE_KB * 4;
+    char buffer[buffer_size];
+
+    FILE *f = fopen(path, "r");
+    if(f == NULL) {
+        _log(ERROR, "History path invalid.");
+        return;
+    }
+
+    size_t size = fread(buffer, 1, buffer_size - 1, f);
+    if(size == 0) {
+        _log(ERROR, "Reading history file failed.");
+        return;
+    }
+
+    buffer[size] = '\0';
+
+    char *buffer_pointer = buffer;
+    char *n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+    
+    metric->cpuUsage = (float)atof(buffer_pointer);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+    
+    metric->diskUsage = (float)atof(buffer_pointer);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+    
+    metric->ramUsage = (float)atof(buffer_pointer);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+    
+    metric->read = (float)atof(buffer_pointer);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+    
+    metric->write = (float)atof(buffer_pointer);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+    
+    metric->rx = (float)atof(buffer_pointer);
+    buffer_pointer = n + 1;
+
+    n = strchr(buffer_pointer, '\n');
+    if(n == NULL) {
+        fclose(f);
+        return;
+    }
+    *n = '\0';
+    
+    metric->tx = (float)atof(buffer_pointer);
+    buffer_pointer = n + 1;
 
     fclose(f);
 }
@@ -397,14 +638,9 @@ pid_t startDaemon(PulseArgs args) {
         pthread_mutex_init(&shmp->lock, &attr);
         pthread_mutexattr_destroy(&attr);
 
-        // _log(
-        //     INFO,
-        //     "Now starting sem1 wait."
-        // );
-
         short repetition = 0;
         while(true) {
-            if(repetition % 5 == 0) {
+            if(repetition % 2 == 0) {
                 writeHistoryM(metrics);
                 writeHistoryS(system_snapshot);
                 repetition = 0;
