@@ -85,7 +85,7 @@ void render(
 
 
     printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
-    for(int i = 0; i < 3; i++) {
+    for(unsigned i = 0; i < args.processes; i++) {
         Process process = system.processes[i];
         printProcess(process, system);
     }

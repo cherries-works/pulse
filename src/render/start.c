@@ -17,7 +17,7 @@ void startRender(PulseArgs args) {
     Metrics metrics;
 
     bool look_started = false;
-    short total_lines = 15;
+    short total_lines = 12 + (short)args.processes;
     while(running) {
         if(!look_started) { 
             look_started = true;
