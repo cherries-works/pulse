@@ -97,9 +97,9 @@ void help() {
     printf("     %-20s %-20s\n", "--port [number]", "Determine the port where the website will be hosted (omits --web).");
     printf("     %-20s %-20s\n", "--web", "Hosts website (and API) on default port 8080.");
     printf("     %-20s %-20s\n", "--sleep", "How many seconds the program sleeps before updating (TUI only).");
-    printf("     %-20s %-20s\n\n", "--headless", "Runs program without TUI (currently only useful with --web).");
-    printf("     %-20s %-20s\n\n", "--stop", "Stops all of the processes that Pulse currently runs.");
-    printf("     %-20s %-20s\n\n", "--processes", "Amount of processes that are being monitored.");
-    printf("     %-20s %-20s\n\n", "--sort", "Sorts the processes between \"cpu\" and \"ram\".");
+    printf("     %-20s %-20s\n", "--headless", "Runs program without TUI (currently only useful with --web).");
+    printf("     %-20s %-20s\n", "--stop", "Stops all of the processes that Pulse currently runs.");
+    printf("     %-20s %-20s\n", "--processes", "Amount of processes that are being monitored.");
+    printf("     %-20s %-20s\n", "--sort", "Sorts the processes between \"cpu\" and \"ram\".");
     printf("     %-20s %-20s\n\n", "--help", "Prints this.");
 }
