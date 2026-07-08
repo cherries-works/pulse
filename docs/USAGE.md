@@ -26,6 +26,8 @@ To see the metrics in your terminal.
     --sleep              How many seconds the program sleeps before updating (TUI only).
     --headless           Runs program without TUI (currently only useful with --web).
     --stop               Stops all of the processes that Pulse currently runs.
+    --processes          Amount of processes that are being monitored.
+    --sort               Sorts the processes between "cpu" and "ram".
     --help               Prints this. 
 ```
 
@@ -45,3 +47,10 @@ Add `--headless` argument to run it without the TUI in the background.
 
 Pulse updates every 1 second by default. Enter a given number that update
 per the entered number `--sleep 10 # updates ever 10 seconds`.
+
+`
+    $ ./dist/pulse --processes 2 --sort cpu
+`
+
+Monitors two processes, and sorts them by CPU usage. By default, Pulse monitors
+three processes, and sorts it by RAM. 
