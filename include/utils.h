@@ -36,6 +36,11 @@ extern const char* R_CHERRIES_FOLDER_PULSE;
 extern const char* CHERRIES_PULSE_SHM;
 extern const char* CHERRIES_PULSE_READY_SEM;
 
+typedef enum {
+    CPU,
+    RAM
+} Sort;
+
 typedef struct {
     volatile bool running;
     
@@ -45,8 +50,10 @@ typedef struct {
 
     bool stop; // stop the current running processes
     
+    Sort sort;
     uint16_t port;
     unsigned sleep;
+    unsigned processes;
 } PulseArgs;
 
 extern PulseArgs parseArgs(int argc, char* argv[]);
