@@ -186,44 +186,19 @@ void writeHistoryS(System system) {
     fwrite(buffer, strlen(buffer), 1, f);
 
 
-    snprintf(buffer, buffer_size, "%s\n", system.processes[0].name);
-    fwrite(buffer, strlen(buffer), 1, f);
-
-    snprintf(buffer, buffer_size, "%ld\n", system.processes[0].cpu);
-    fwrite(buffer, strlen(buffer), 1, f);
+    for(unsigned i = 0; i < system.processes_count; i++) {
+        snprintf(buffer, buffer_size, "%s\n", system.processes[i].name);
+        fwrite(buffer, strlen(buffer), 1, f);
     
-    snprintf(buffer, buffer_size, "%d\n", system.processes[0].pid);
-    fwrite(buffer, strlen(buffer), 1, f);
-    
-    snprintf(buffer, buffer_size, "%ld\n", system.processes[0].ram);
-    fwrite(buffer, strlen(buffer), 1, f);
-
-
-    snprintf(buffer, buffer_size, "%s\n", system.processes[1].name);
-    fwrite(buffer, strlen(buffer), 1, f);
-
-    snprintf(buffer, buffer_size, "%ld\n", system.processes[1].cpu);
-    fwrite(buffer, strlen(buffer), 1, f);
-    
-    snprintf(buffer, buffer_size, "%d\n", system.processes[1].pid);
-    fwrite(buffer, strlen(buffer), 1, f);
-    
-    snprintf(buffer, buffer_size, "%ld\n", system.processes[1].ram);
-    fwrite(buffer, strlen(buffer), 1, f);
-    
-    
-    snprintf(buffer, buffer_size, "%s\n", system.processes[2].name);
-    fwrite(buffer, strlen(buffer), 1, f);
-
-    snprintf(buffer, buffer_size, "%ld\n", system.processes[2].cpu);
-    fwrite(buffer, strlen(buffer), 1, f);
-    
-    snprintf(buffer, buffer_size, "%d\n", system.processes[2].pid);
-    fwrite(buffer, strlen(buffer), 1, f);
-    
-    snprintf(buffer, buffer_size, "%ld\n", system.processes[2].ram);
-    fwrite(buffer, strlen(buffer), 1, f);
-    
+        snprintf(buffer, buffer_size, "%ld\n", system.processes[i].cpu);
+        fwrite(buffer, strlen(buffer), 1, f);
+        
+        snprintf(buffer, buffer_size, "%d\n", system.processes[i].pid);
+        fwrite(buffer, strlen(buffer), 1, f);
+        
+        snprintf(buffer, buffer_size, "%ld\n", system.processes[i].ram);
+        fwrite(buffer, strlen(buffer), 1, f);
+    }
 
     snprintf(buffer, buffer_size, "%ld", system.uptime);
     fwrite(buffer, strlen(buffer), 1, f);
@@ -621,7 +596,7 @@ pid_t startDaemon(PulseArgs args) {
             exit(EXIT_FAILURE);
         }
 
-        System system_snapshot = getSystem();
+        System system_snapshot = getSystem(args);
         System prev_system_snapshot = system_snapshot;
 
         Metrics metrics = getMetrics(prev_system_snapshot, system_snapshot);
@@ -648,9 +623,8 @@ pid_t startDaemon(PulseArgs args) {
 
             repetition++;
 
-
             prev_system_snapshot = system_snapshot;
-            system_snapshot = getSystem();
+            system_snapshot = getSystem(args);
             metrics = getMetrics(prev_system_snapshot, system_snapshot);
 
             pthread_mutex_lock(&shmp->lock);

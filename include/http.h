@@ -44,7 +44,7 @@ extern void route(
     RouteHandler *h
 );
 
-extern void routeJSON(int new_socket, char *response, size_t response_size, char *fmt, ...);
+extern void routeJSON(int new_socket, char *response, size_t response_size, char *json);
 extern void routeStatic(int new_socket, char *file_path, char *response, size_t response_size);
 extern void handle(RouteHandler handler, Request request, int new_socket, char *response, size_t response_size);
 

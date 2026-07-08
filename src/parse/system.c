@@ -1,4 +1,6 @@
+#include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "utils.h"
 #include "parse.h"
@@ -27,7 +29,9 @@ unsigned long parseUptime(size_t size, char *buffer) {
 }
 
 
-System getSystem() {
+System getSystem(
+    PulseArgs args
+) {
     size_t stat_buffer_size = BUFFER_ONE_KB * 6;
     char stat_buffer[stat_buffer_size];
     readFile(PROC_STAT_FILE, stat_buffer_size, stat_buffer);
@@ -57,52 +61,34 @@ System getSystem() {
     readFile(PROC_NET_FILE, network_buffer_size, network_buffer);
     Network network = getNetwork(network_buffer);
 
-    Process processes[3] = {
-        { 
-            .name = "", 
-            .cpu = 0,
-            .ram = 0, 
-            .pid = 0 
-        },
-        { 
-            .name = "", 
-            .cpu = 0,
-            .ram = 0, 
-            .pid = 0 
-        },
-        { 
-            .name = "", 
-            .cpu = 0,
-            .ram = 0, 
-            .pid = 0 
-        }
-    };
-
-    size_t processes_buffer_size = BUFFER_ONE_KB * 8;
-    char processes_buffer[processes_buffer_size];
-    getProcesses(processes_buffer_size, processes_buffer, processes);
-
     size_t uptime_buffer_size = BUFFER_ONE_KB * 2;
     char uptime_buffer[uptime_buffer_size];
     readFile(PROC_UPTIME_FILE, uptime_buffer_size, uptime_buffer);
     unsigned long uptime = parseUptime(uptime_buffer_size, uptime_buffer);
 
-    System system = { 
-        cpu, 
-        memory, 
-        disk,
-        
-        load,
-        network,
-        
-        {
-            processes[0],
-            processes[1],
-            processes[2]
-        },
 
-        uptime 
+    System system = { 
+        .cpu = cpu, 
+        .memory = memory, 
+        .disk = disk,
+        
+        .load = load,
+        .network = network,
+        
+        .processes = {},
+        .processes_count = args.processes,
+
+        .uptime = uptime
     };
+
+    size_t processes_buffer_size = BUFFER_ONE_KB * 8;
+    char processes_buffer[processes_buffer_size];
+    getProcesses(
+        processes_buffer_size,
+        processes_buffer,
+        system.processes,
+        args
+    );
 
     return system;
 }

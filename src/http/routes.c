@@ -147,20 +147,14 @@ void routeJSON(
     int new_socket, 
     char *response,
     size_t response_size,
-    char *fmt,
-    ...
+    char *json
 ) {
-    va_list args;
-    va_start(args, fmt);
-
-    vsnprintf(
+    snprintf(
         response,
         response_size,
-        fmt,
-        args
+        json,
+        NULL
     );
-
-    va_end(args);
 
     write(new_socket, response, strlen(response));
 }

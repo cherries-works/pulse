@@ -26,32 +26,20 @@ JSON_ROUTE(indexMetrics, {
     System snapshot;
     readDaemonS(&snapshot);
 
-    char *fmt =
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: application/json; charset=UTF-8\r\n\r\n"
+    char json[BUFFER_ONE_KB * 32];
+    size_t json_len = 0;
+
+    json_len += (size_t)snprintf(json + json_len, sizeof(json) - json_len,
         "{"
         "\"error\":null,"
         "\"success\":true,"
         "\"timestamp\":%ld,"
         "\"cpu\":{\"idle\":%ld,\"total\":%ld,\"processes\":%ld},"
-        "\"disk\":{\"available\":%llu,\"total\":%llu, \"reads\":%llu, \"writes\":%llu},"
+        "\"disk\":{\"available\":%llu,\"total\":%llu,\"reads\":%llu,\"writes\":%llu},"
         "\"memory\":{\"available\":%ld,\"total\":%ld},"
         "\"network\":{\"rx\":%ld,\"tx\":%ld},"
         "\"load\":{\"load1\":%.2f,\"load5\":%.2f,\"load15\":%.2f},"
-        "\"processes\": ["
-        " {\"pid\":%d,\"ram\":%d,\"cpu\":%d, \"name\": \"%s\"},"
-        " {\"pid\":%d,\"ram\":%d,\"cpu\":%d, \"name\": \"%s\"},"
-        " {\"pid\":%d,\"ram\":%d,\"cpu\":%d, \"name\": \"%s\"}"
-        "],"
-        "\"uptime\":%ld"
-        "}";
-
-    routeJSON(
-        socket,
-        response,
-        response_size,
-
-        fmt,
+        "\"processes\":[",
         time(NULL),
 
         snapshot.cpu.idle,
@@ -62,7 +50,7 @@ JSON_ROUTE(indexMetrics, {
         snapshot.disk.total,
         snapshot.disk.read,
         snapshot.disk.write,
-        
+
         snapshot.memory.available,
         snapshot.memory.total,
 
@@ -71,24 +59,36 @@ JSON_ROUTE(indexMetrics, {
 
         snapshot.load.load1,
         snapshot.load.load5,
-        snapshot.load.load15,
+        snapshot.load.load15
+    );
 
-        snapshot.processes[0].pid,
-        snapshot.processes[0].ram,
-        snapshot.processes[0].cpu,
-        snapshot.processes[0].name,
+    for (unsigned i = 0; i < snapshot.processes_count; i++) {
+        if (i != 0) {
+            json_len += (size_t)snprintf(json + json_len, sizeof(json) - json_len, ",");
+        }
 
-        snapshot.processes[1].pid,
-        snapshot.processes[1].ram,
-        snapshot.processes[1].cpu,
-        snapshot.processes[1].name,
+        json_len += (size_t)snprintf(json + json_len, sizeof(json) - json_len,
+            "{\"pid\":%d,\"ram\":%ld,\"cpu\":%ld,\"name\":\"%s\"}",
+            snapshot.processes[i].pid,
+            snapshot.processes[i].ram,
+            snapshot.processes[i].cpu,
+            snapshot.processes[i].name
+        );
+    }
 
-        snapshot.processes[2].pid,
-        snapshot.processes[2].ram,
-        snapshot.processes[2].cpu,
-        snapshot.processes[2].name,
-
+    json_len += (size_t)snprintf(json + json_len, sizeof(json) - json_len,
+        "],"
+        "\"uptime\":%ld"
+        "}",
         snapshot.uptime
+    );
+
+    routeJSON(
+        socket,
+        response,
+        response_size,
+
+        json
     );
 });
 
@@ -171,7 +171,10 @@ JSON_ROUTE(historyCPU, {
         continue;
     }
 
-    char *fmt =
+    char json[BUFFER_ONE_KB * 32];
+    snprintf(
+        json,
+        sizeof(json),
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: application/json; charset=UTF-8\r\n\r\n"
         "{"
@@ -179,17 +182,16 @@ JSON_ROUTE(historyCPU, {
         "\"success\":true,"
         "\"timestamp\":%ld,"
         "\"data\": [%s]"
-        "}";
+        "}",
+        time(NULL),
+        entry_storer
+    );
 
     routeJSON(
         socket,
         response,
         response_size,
-
-        fmt,
-
-        time(NULL),
-        entry_storer
+        json
     );
 });
 
@@ -272,7 +274,10 @@ JSON_ROUTE(historyRAM, {
         continue;
     }
 
-    char *fmt =
+    char json[BUFFER_ONE_KB * 32];
+    snprintf(
+        json,
+        sizeof(json),
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: application/json; charset=UTF-8\r\n\r\n"
         "{"
@@ -280,17 +285,17 @@ JSON_ROUTE(historyRAM, {
         "\"success\":true,"
         "\"timestamp\":%ld,"
         "\"data\": [%s]"
-        "}";
+        "}",
+        time(NULL),
+        entry_storer
+    );
+
 
     routeJSON(
         socket,
         response,
         response_size,
-
-        fmt,
-
-        time(NULL),
-        entry_storer
+        json
     );
 });
 
@@ -373,7 +378,10 @@ JSON_ROUTE(historyDisk, {
         continue;
     }
 
-    char *fmt =
+    char json[BUFFER_ONE_KB * 32];
+    snprintf(
+        json,
+        sizeof(json),
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: application/json; charset=UTF-8\r\n\r\n"
         "{"
@@ -381,87 +389,18 @@ JSON_ROUTE(historyDisk, {
         "\"success\":true,"
         "\"timestamp\":%ld,"
         "\"data\": [%s]"
-        "}";
-
-    routeJSON(
-        socket,
-        response,
-        response_size,
-
-        fmt,
-
+        "}",
         time(NULL),
         entry_storer
     );
-});
 
-JSON_ROUTE(indexRAM, {
-    System snapshot;
-    readDaemonS(&snapshot);
-
-    char *fmt =
-        "HTTP/1.1 200 OK\r\n"
-        "Content-Type: application/json; charset=UTF-8\r\n\r\n"
-        "{"
-        "\"error\":null,"
-        "\"success\":true,"
-        "\"timestamp\":%ld,"
-        "\"cpu\":{\"idle\":%ld,\"total\":%ld,\"processes\":%ld},"
-        "\"disk\":{\"available\":%llu,\"total\":%llu, \"reads\":%llu, \"writes\":%llu},"
-        "\"memory\":{\"available\":%ld,\"total\":%ld},"
-        "\"network\":{\"rx\":%ld,\"tx\":%ld},"
-        "\"load\":{\"load1\":%.2f,\"load5\":%.2f,\"load15\":%.2f},"
-        "\"processes\": ["
-        " {\"pid\":%d,\"ram\":%d,\"cpu\":%d, \"name\": \"%s\"},"
-        " {\"pid\":%d,\"ram\":%d,\"cpu\":%d, \"name\": \"%s\"},"
-        " {\"pid\":%d,\"ram\":%d,\"cpu\":%d, \"name\": \"%s\"}"
-        "],"
-        "\"uptime\":%ld"
-        "}";
 
     routeJSON(
         socket,
         response,
         response_size,
 
-        fmt,
-        time(NULL),
-
-        snapshot.cpu.idle,
-        snapshot.cpu.total,
-        snapshot.cpu.processes,
-
-        snapshot.disk.available,
-        snapshot.disk.total,
-        snapshot.disk.read,
-        snapshot.disk.write,
-        
-        snapshot.memory.available,
-        snapshot.memory.total,
-
-        snapshot.network.rx,
-        snapshot.network.tx,
-
-        snapshot.load.load1,
-        snapshot.load.load5,
-        snapshot.load.load15,
-
-        snapshot.processes[0].pid,
-        snapshot.processes[0].ram,
-        snapshot.processes[0].cpu,
-        snapshot.processes[0].name,
-
-        snapshot.processes[1].pid,
-        snapshot.processes[1].ram,
-        snapshot.processes[1].cpu,
-        snapshot.processes[1].name,
-
-        snapshot.processes[2].pid,
-        snapshot.processes[2].ram,
-        snapshot.processes[2].cpu,
-        snapshot.processes[2].name,
-
-        snapshot.uptime
+        json
     );
 });
 

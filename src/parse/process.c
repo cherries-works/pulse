@@ -6,7 +6,12 @@
 #include "utils.h"
 #include "parse.h"
 
-void getProcesses(size_t size, char *buffer, Process processes[]) {
+void getProcesses(
+    size_t size, 
+    char *buffer, 
+    Process processes[],
+    PulseArgs args
+) {
     struct dirent *proc_entry;
     DIR *proc_dir = opendir(PROC_DIR);
 
@@ -16,7 +21,6 @@ void getProcesses(size_t size, char *buffer, Process processes[]) {
     }
 
     int keys_until_utime = 14;
-    int processes_amount = 3;
     
     size_t proc_file_name_size = 32;
     char proc_file_name[proc_file_name_size];
@@ -24,12 +28,12 @@ void getProcesses(size_t size, char *buffer, Process processes[]) {
     size_t proc_name_size = 64;
     char proc_name[proc_name_size];
     while((proc_entry = readdir(proc_dir)) != NULL) {
-        int proc_pid = 0;
+        unsigned proc_pid = 0;
         unsigned long proc_ram = 0;
         unsigned long proc_cpu = 0;
         char *proc_entry_name = proc_entry->d_name;
 
-        int pid = atoi(proc_entry_name);
+        unsigned pid = (unsigned)atoi(proc_entry_name);
         if(pid == 0) continue;
         proc_pid = pid;
 
@@ -78,9 +82,12 @@ void getProcesses(size_t size, char *buffer, Process processes[]) {
         size_t name_size = readFile(proc_file_name, proc_name_size, proc_name);
         proc_name[name_size - 1] = '\0';
 
-        for(int i = 0; i < processes_amount; i++) {
-            if(processes[i].ram < proc_ram) {
-                for(int j = 1; j > i; j--) {
+        for(unsigned i = 0; i < args.processes; i++) {
+            bool t = processes[i].ram < proc_ram;
+            if(args.sort == CPU) t = processes[i].cpu < proc_cpu;
+
+            if(t) {
+                for(unsigned j = 1; j > i; j--) {
                     processes[j] = processes[j - 1];
                 }
 

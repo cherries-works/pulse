@@ -1,6 +1,8 @@
 #ifndef PARSE_H
 #define PARSE_H
 
+#include "utils.h"
+
 typedef struct {
     unsigned long idle;
     unsigned long total;
@@ -41,12 +43,13 @@ typedef struct {
 } NetworkAverage;
 
 typedef struct {
-    char name[64];
-    int pid;
-    
+    unsigned pid;
     unsigned long ram;
     unsigned long cpu;
+    char name[64];
 } Process;
+
+#define MAX_PROCESSES 10
 
 typedef struct {
     Cpu cpu;
@@ -56,7 +59,8 @@ typedef struct {
     Load load;
     Network network;
 
-    Process processes[3];
+    Process processes[MAX_PROCESSES];
+    unsigned processes_count;
 
     unsigned long uptime;
 } System;
@@ -79,11 +83,16 @@ extern Cpu getCpu(size_t size, char *buffer);
 extern Network getNetwork(char *buffer);
 extern Load getLoad(char *buffer);
 extern Disk getDisk(char *buffer);
-extern System getSystem();
+extern System getSystem(PulseArgs args);
 extern Metrics getMetrics(System system2, System system1);
 
 extern unsigned long parseMemoryKey(char *buffer, char *target_key);
 extern float parseCpuUsage(Cpu snapshot2, Cpu snapshot1);
-extern void getProcesses(size_t size, char *buffer, Process processes[]);
+extern void getProcesses(
+    size_t size, 
+    char *buffer, 
+    Process processes[],
+    PulseArgs args
+);
 
 #endif
