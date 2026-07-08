@@ -23,6 +23,7 @@ A fast, simple, and efficient monitoring system that just works.
 * Graphical display
 * Historical metrics
 * Charts library
+* Process sorting
 
 ## Philosophy
 
@@ -40,7 +41,7 @@ Pulse aims to be the fastest way to set up monitoring:
   $ git clone https://github.com/cherries-works/pulse.git
   $ cd pulse
   $ make
-  $ ./pulse
+  $ ./dist/pulse
 ```
 
 To get Pulse running on the web, add the `--web` argument.
@@ -159,7 +160,6 @@ Example response:
 
 ## Roadmap
 
-* Process sorting
 * Network throughput
 * Disk throughput
 * Additional system statistics
