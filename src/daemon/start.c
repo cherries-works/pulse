@@ -543,7 +543,7 @@ pid_t checkDaemon() {
     return -1;
 }
 
-pid_t startDaemon(PulseArgs args) {
+pid_t startDaemon(Args args) {
     _log(
         INFO,
         "Starting Daemon"

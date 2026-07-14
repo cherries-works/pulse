@@ -71,7 +71,7 @@ pid_t checkWebsite() {
 }
 
 
-pid_t startWebsite(PulseArgs args) {
+pid_t startWebsite(Args args) {
     _log(INFO, "Starting Website");
 
     pid_t pid = checkWebsite();

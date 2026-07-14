@@ -52,7 +52,7 @@ void printProcess(
 }
 
 void render(
-    PulseArgs args,
+    Args args,
     System system,
     Metrics metrics 
 ) {

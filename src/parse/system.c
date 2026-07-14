@@ -6,7 +6,7 @@
 #include "parse.h"
 
 System getSystem(
-    PulseArgs args
+    Args args
 ) {
     size_t stat_buffer_size = BUFFER_ONE_KB * 6;
     char stat_buffer[stat_buffer_size];

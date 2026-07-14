@@ -10,7 +10,7 @@ void getProcesses(
     size_t size, 
     char *buffer, 
     Process processes[],
-    PulseArgs args
+    Args args
 ) {
     struct dirent *proc_entry;
     DIR *proc_dir = opendir(PROC_DIR);

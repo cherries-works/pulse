@@ -84,7 +84,7 @@ extern Cpu getCpu(size_t size, char *buffer);
 extern Network getNetwork(char *buffer);
 extern Load getLoad(char *buffer);
 extern Disk getDisk(char *buffer);
-extern System getSystem(PulseArgs args);
+extern System getSystem(Args args);
 extern Metrics getMetrics(System system2, System system1);
 
 extern unsigned long parseMemoryKey(char *buffer, char *target_key);
@@ -96,7 +96,7 @@ extern void getProcesses(
     size_t size, 
     char *buffer, 
     Process processes[],
-    PulseArgs args
+    Args args
 );
 
 #endif

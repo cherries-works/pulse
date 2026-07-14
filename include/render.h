@@ -4,9 +4,9 @@
 #include <stdlib.h>
 #include "utils.h"
 
-extern void startRender(PulseArgs args);
+extern void startRender(Args args);
 extern void render(
-    PulseArgs args,
+    Args args,
     System system,
     Metrics metrics
 );

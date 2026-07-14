@@ -14,7 +14,7 @@ struct shmbuf {
     System system;
 };
 
-extern pid_t startDaemon(PulseArgs args);
+extern pid_t startDaemon(Args args);
 
 extern void readDaemonS(System *system);
 extern void readDaemonM(Metrics *metrics);

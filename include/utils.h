@@ -57,8 +57,8 @@ typedef struct {
     uint16_t port;
     unsigned sleep;
     unsigned processes;
-} PulseArgs;
+} Args;
 
-extern PulseArgs parseArgs(int argc, char* argv[]);
+extern Args parseArgs(int argc, char* argv[]);
 
 #endif

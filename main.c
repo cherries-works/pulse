@@ -84,7 +84,7 @@ int main(int argc, char* argv[]) {
     }
     setupLog();
 
-    PulseArgs args = parseArgs(argc, argv);
+    Args args = parseArgs(argc, argv);
     if(args.help) {
         help();
         return 0;

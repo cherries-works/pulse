@@ -7,7 +7,7 @@
 #include "render.h"
 #include "log.h"
 
-void startRender(PulseArgs args) {
+void startRender(Args args) {
     _log(
         INFO,
         "Starting Renderer"
