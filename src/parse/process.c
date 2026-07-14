@@ -80,7 +80,17 @@ void getProcesses(
         );
 
         size_t name_size = readFile(proc_file_name, proc_name_size, proc_name);
-        proc_name[name_size - 1] = '\0';
+        // the names wrap 16 characters total whilst printing.
+        size_t max_name_size = 16;
+        if(name_size >= max_name_size) {
+            // -4 because of ... and \0 (4 bytes)
+            for(size_t i = max_name_size - 4; i < max_name_size; i++) {
+                proc_name[i] = '.';
+            }
+            proc_name[max_name_size - 1] = '\0';
+        } else {
+            proc_name[name_size - 1] = '\0';
+        }
 
         for(unsigned i = 0; i < args.processes; i++) {
             bool t = processes[i].ram < proc_ram;
