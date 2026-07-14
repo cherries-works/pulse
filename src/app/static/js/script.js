@@ -1,6 +1,7 @@
 const system_status = document.querySelector("#system_status")
 
 const cpu_percentage = document.querySelector("#cpu_percentage")
+const cpu_temp = document.querySelector("#cpu_temp")
 const cpu_idle = document.querySelector("#cpu_idle")
 const cpu_total = document.querySelector("#cpu_total")
 const cpu_processes = document.querySelector("#cpu_processes")
@@ -65,8 +66,10 @@ const updateSystem = async () => {
     const _network = json.network
     const _load = json.load
     const _processes = json.processes
+    const _temp = json.temp
 
     const parsed_cpu_usage = parseCpuUsage(_cpu, previousSnapshot?.cpu);
+    cpu_temp.textContent = `(${_temp / 1000}°C)`
     cpu_percentage.textContent = `${(parsed_cpu_usage).toFixed(2)}%`
     cpu_idle.textContent = Intl.NumberFormat("de").format(_cpu.idle)
     cpu_total.textContent = Intl.NumberFormat("de").format(_cpu.total)

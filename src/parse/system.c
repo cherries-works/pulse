@@ -5,30 +5,6 @@
 #include "utils.h"
 #include "parse.h"
 
-// reading the first number
-unsigned long parseUptime(size_t size, char *buffer) {
-    unsigned i = 0;
-
-    // should be maximum 16 characters
-    char number[16];
-    while(i < size) {
-        char c = buffer[i];
-        if(c == '\0') {
-            break;
-        }
-        if(c == ' ') {
-            break;
-        }
-
-        number[i] = c;
-        i++;
-    }
-
-    unsigned long n = strtoull(number, NULL, 10);
-    return n;
-}
-
-
 System getSystem(
     PulseArgs args
 ) {
@@ -66,6 +42,7 @@ System getSystem(
     readFile(PROC_UPTIME_FILE, uptime_buffer_size, uptime_buffer);
     unsigned long uptime = parseUptime(uptime_buffer_size, uptime_buffer);
 
+    unsigned temp = parseTemp();
 
     System system = { 
         .cpu = cpu, 
@@ -78,7 +55,8 @@ System getSystem(
         .processes = {},
         .processes_count = args.processes,
 
-        .uptime = uptime
+        .uptime = uptime,
+        .temp = temp
     };
 
     size_t processes_buffer_size = BUFFER_ONE_KB * 8;

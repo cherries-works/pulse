@@ -78,9 +78,11 @@ JSON_ROUTE(indexMetrics, {
 
     json_len += (size_t)snprintf(json + json_len, sizeof(json) - json_len,
         "],"
-        "\"uptime\":%ld"
+        "\"uptime\":%ld,"
+        "\"temp\":%d"
         "}",
-        snapshot.uptime
+        snapshot.uptime,
+        snapshot.temp
     );
 
     routeJSON(

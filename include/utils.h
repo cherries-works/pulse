@@ -33,6 +33,9 @@ extern const char* CHERRIES_FOLDER;
 extern const char* CHERRIES_FOLDER_PULSE;
 extern const char* R_CHERRIES_FOLDER;
 extern const char* R_CHERRIES_FOLDER_PULSE;
+
+extern const char* SYS_THERMAL_ZONE;
+
 extern const char* CHERRIES_PULSE_SHM;
 extern const char* CHERRIES_PULSE_READY_SEM;
 

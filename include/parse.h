@@ -63,6 +63,7 @@ typedef struct {
     unsigned processes_count;
 
     unsigned long uptime;
+    unsigned temp;
 } System;
 
 typedef struct {
@@ -87,6 +88,9 @@ extern System getSystem(PulseArgs args);
 extern Metrics getMetrics(System system2, System system1);
 
 extern unsigned long parseMemoryKey(char *buffer, char *target_key);
+extern unsigned long parseUptime(size_t size, char *buffer);
+extern unsigned parseTemp();
+
 extern float parseCpuUsage(Cpu snapshot2, Cpu snapshot1);
 extern void getProcesses(
     size_t size, 

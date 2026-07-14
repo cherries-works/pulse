@@ -9,6 +9,8 @@ const char *PROC_STAT_FILE = "/proc/stat";
 const char *PROC_DISK_FILE = "/proc/diskstats";
 const char *PROC_NET_FILE = "/proc/net/dev";
 
+const char *SYS_THERMAL_ZONE = "/sys/class/thermal/thermal_zone";
+
 const char SPACE_IN_ASCII = ' ';
 const unsigned ASCII_INT_TO_STRING_NUMNER = 48;
 const size_t BUFFER_ONE_KB = 1024;

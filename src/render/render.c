@@ -60,9 +60,9 @@ void render(
     char uptime_buffer_text[uptime_buffer_text_size];
     formatTimeHumanReadable(system.uptime, uptime_buffer_text, uptime_buffer_text_size);
     if(args.web) {
-        printf("%s%sCherries Pulse%s ──────────── port :: %d ──────────────── ", BOLD, RED, RESET, args.port);
+        printf("%s%sCherries Pulse%s ────── %d°C ───────── port :: %d ──────── ", BOLD, RED, RESET, system.temp / 1000, args.port);
     } else {
-        printf("%s%sCherries Pulse%s ─────────────────────────────────────────── ", BOLD, RED, RESET);
+        printf("%s%sCherries Pulse%s ───────────────── %d°C ─────────────────── ", BOLD, RED, RESET, system.temp / 1000);
     }
     printf("%-7s %s%-20s%s\n",
         "Uptime:",
