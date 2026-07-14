@@ -17,11 +17,18 @@ Args parseArgs(int argc, char* argv[]) {
         .stop = false,
         .headless = false,
 
+        .command = monitor,
         .sort = RAM,
         .sleep = 1,
         .port = 8080,
         .processes = 3
     };
+
+    if(argc > 1) {
+        char *arg = argv[1];
+        if(strcmp(arg, "info") == 0) p.command = info;
+        if(strcmp(arg, "top") == 0) p.command = top;
+    }
 
     for(int i = 0; i < argc; i++) {
         char* arg = argv[i];
@@ -71,7 +78,6 @@ Args parseArgs(int argc, char* argv[]) {
             break;
         }
     }
-
 
     return p;
 }

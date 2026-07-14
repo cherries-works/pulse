@@ -10,6 +10,12 @@ extern void render(
     System system,
     Metrics metrics
 );
+
+extern void printProcess(
+    Process process,
+    System system
+);
+
 extern void help();
 extern char *getBars(float val);
 extern char* getColor(float value);

@@ -95,6 +95,22 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
+    if(args.command == info) {
+        
+
+        return 0;
+    } else if(args.command == top) {
+        System system = getSystem(args);
+
+        printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
+        for(unsigned i = 0; i < args.processes; i++) {
+            Process process = system.processes[i];
+            printProcess(process, system);
+        }
+        printf("└─────────────────────────────────────────────────────────────────────────┘\n");
+    
+        return 0;
+    }
 
     // clean up any leftover from a crash
     sem_unlink(CHERRIES_PULSE_READY_SEM);

@@ -44,6 +44,13 @@ typedef enum {
     RAM
 } Sort;
 
+typedef enum {
+    monitor,
+    top,
+    info
+} Command;
+
+
 typedef struct {
     volatile bool running;
     
@@ -54,6 +61,8 @@ typedef struct {
     bool stop; // stop the current running processes
     
     Sort sort;
+    Command command;
+
     uint16_t port;
     unsigned sleep;
     unsigned processes;
