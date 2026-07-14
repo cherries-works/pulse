@@ -96,12 +96,76 @@ int main(int argc, char* argv[]) {
     }
 
     if(args.command == info) {
-        
+        System system = getSystem(args);
+        Info info = getInfo();
+        printf(
+            "%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n",
+            BOLD,
+            RED,
+            RESET
+        );
+
+        printf("┌── INFO ─────────────────────────────────────────────────────────────────┐\n");
+        printf(
+            "│ %-15s %54s  │\n",
+            "OS",
+            info.os
+        );
+
+        printf(
+            "│ %-15s %54s  │\n",
+            "Architecture",
+            info.kernel.machine
+        );
+
+        printf(
+            "│ %-15s %54s  │\n",
+            "Kernel",
+            info.kernel.sysname
+        );
+
+        printf(
+            "│ %-15s %54s  │\n",
+            "Hostname",
+            info.hostname
+        );
+
+        printf(
+            "│ %-15s %51ld GB  │\n",
+            "RAM",
+            (system.memory.total) / 1024 / 1024
+        );
+
+        printf(
+            "│ %-15s %54s  │\n",
+            "CPU",
+            info.cpu_model
+        );
+
+        printf(
+            "│ %-15s %54d  │\n",
+            "Cores",
+            info.cores
+        );
+
+        printf(
+            "│ %-15s %54s  │\n",
+            "Desktop",
+            info.desktop
+        );
+
+        printf(
+            "│ %-15s %54s  │\n",
+            "Session",
+            info.session
+        );
+
+        printf("└─────────────────────────────────────────────────────────────────────────┘\n");
 
         return 0;
     } else if(args.command == top) {
         System system = getSystem(args);
-
+        printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
         printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
         for(unsigned i = 0; i < args.processes; i++) {
             Process process = system.processes[i];

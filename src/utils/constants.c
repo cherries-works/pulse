@@ -9,6 +9,8 @@ const char *PROC_STAT_FILE = "/proc/stat";
 const char *PROC_DISK_FILE = "/proc/diskstats";
 const char *PROC_NET_FILE = "/proc/net/dev";
 
+const char *ETC_OS_RELEASE = "/etc/os-release";
+
 const char *SYS_THERMAL_ZONE = "/sys/class/thermal/thermal_zone";
 
 const char SPACE_IN_ASCII = ' ';

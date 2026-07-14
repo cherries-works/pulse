@@ -49,6 +49,23 @@ typedef struct {
     char name[64];
 } Process;
 
+typedef struct {
+    char release[256];
+    char machine[256];
+    char sysname[256];
+} Kernel;
+
+typedef struct {
+    char os[256];
+    char hostname[256];
+    char cpu_model[256];
+    char desktop[256];
+    char session[256];
+    
+    Kernel kernel;
+    unsigned cores;
+} Info;
+
 #define MAX_PROCESSES 10
 
 typedef struct {
@@ -86,6 +103,7 @@ extern Load getLoad(char *buffer);
 extern Disk getDisk(char *buffer);
 extern System getSystem(Args args);
 extern Metrics getMetrics(System system2, System system1);
+extern Info getInfo();
 
 extern unsigned long parseMemoryKey(char *buffer, char *target_key);
 extern unsigned long parseUptime(size_t size, char *buffer);
