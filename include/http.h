@@ -46,7 +46,7 @@ extern void route(
 
 extern void routeJSON(int new_socket, char *response, size_t response_size, char *json);
 extern void routeStatic(int new_socket, char *file_path, char *response, size_t response_size);
-extern void handle(RouteHandler handler, Request request, int new_socket, char *response, size_t response_size);
+extern void routeHandle(RouteHandler handler, Request request, int new_socket, char *response, size_t response_size);
 
 typedef struct Server {
     int domain;

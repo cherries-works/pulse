@@ -190,7 +190,7 @@ void route(
     h->routesAmount += 1;
 }
 
-void handle(
+void routeHandle(
     RouteHandler handler,
     Request request,
     int new_socket,

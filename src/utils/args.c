@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
@@ -13,8 +14,6 @@ Args parseArgs(int argc, char* argv[]) {
 
     Args p = {
         .web = false,
-        .help = false,
-        .stop = false,
         .headless = false,
 
         .command = MONITOR,
@@ -26,8 +25,15 @@ Args parseArgs(int argc, char* argv[]) {
 
     if(argc > 1) {
         char *arg = argv[1];
-        if(strcmp(arg, "info") == 0) p.command = INFO;
-        if(strcmp(arg, "top") == 0) p.command = TOP;
+        if(strcmp(arg, "monitor") == 0) p.command = MONITOR;
+        else if(strcmp(arg, "info") == 0) p.command = INFO;
+        else if(strcmp(arg, "help") == 0) p.command = HELP;
+        else if(strcmp(arg, "top") == 0) p.command = TOP;
+        else if(strcmp(arg, "stop") == 0) p.command = STOP;
+        else {
+            printf("Invalid command.\n");
+            exit(EXIT_FAILURE);
+        }
     }
 
     for(int i = 0; i < argc; i++) {
@@ -64,18 +70,9 @@ Args parseArgs(int argc, char* argv[]) {
         if(strcmp(arg, "--web") == 0) {
             p.web = true;
         }
-
-        if(strcmp(arg, "--stop") == 0) {
-            p.stop = true;
-        }
      
         if(strcmp(arg, "--headless") == 0) {
             p.headless = true;
-        }
-
-        if(strcmp(arg, "--help") == 0) {
-            p.help = true;
-            break;
         }
     }
 

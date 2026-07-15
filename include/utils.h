@@ -49,18 +49,17 @@ typedef enum {
 typedef enum {
     MONITOR,
     TOP,
-    INFO
+    INFO,
+    STOP,
+    HELP
 } Command;
 
 typedef struct {
     volatile bool running;
     
     bool web;
-    bool help;
     bool headless;
 
-    bool stop; // stop the current running processes
-    
     Sort sort;
     Command command;
 
@@ -75,5 +74,6 @@ extern void stop();
 extern void help();
 extern void top(Args args);
 extern void info(Args args);
+extern void monitor(Args args);
 
 #endif

@@ -7,10 +7,15 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <signal.h>
+#include <wait.h>
 
 #include "parse.h"
 #include "render.h"
 #include "utils.h"
+#include "http.h"
+#include "daemon.h"
+#include "log.h"
+#include "app.h"
 
 void help() {
     printf("%s%sCherries Pulse%s ───────────────────────────────────── v0.2.0 ──── \n\n", BOLD, RED, RESET);
@@ -139,4 +144,34 @@ void info(Args args) {
     );
 
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
+}
+
+void monitor(Args args) {
+    // clean up any leftover from a crash
+    sem_unlink(CHERRIES_PULSE_READY_SEM);
+    sem_t *ready_sem = sem_open(CHERRIES_PULSE_READY_SEM, O_CREAT | O_EXCL, 0600, 0);
+    if (ready_sem == SEM_FAILED) {
+        _log(L_ERROR, "Failed to create ready semaphore");
+        exit(EXIT_FAILURE);
+    }
+
+    startDaemon(args);
+    
+    // wait until daemon is ready
+    sem_wait(ready_sem);
+    sem_post(ready_sem);
+    sem_close(ready_sem);
+    sem_unlink(CHERRIES_PULSE_READY_SEM);
+
+    if(args.headless && !args.web) return;
+
+    if(args.web) {
+        startWebsite(args);
+    }
+
+    if(!args.headless) {
+        startRender(args);
+    }
+
+    return;
 }

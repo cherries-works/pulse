@@ -89,7 +89,7 @@ void serverLaunch(Server *server) {
         }
 
         Request request = parseRequest(buffer);
-        handle(server->routeHandler, request, new_socket, response, response_size);
+        routeHandle(server->routeHandler, request, new_socket, response, response_size);
 
         close(new_socket);
     }
