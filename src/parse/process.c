@@ -7,11 +7,12 @@
 #include "parse.h"
 
 void getProcesses(
-    size_t size, 
-    char *buffer, 
     Process processes[],
     Args args
 ) {
+    size_t processes_buffer_size = BUFFER_ONE_KB * 8;
+    char processes_buffer[processes_buffer_size];
+    
     struct dirent *proc_entry;
     DIR *proc_dir = opendir(PROC_DIR);
 
@@ -43,8 +44,10 @@ void getProcesses(
             "/proc/%d/status",
             pid
         );
-        readFile(proc_file_name, size, buffer);
-        proc_ram = parseMemoryKey(buffer, "VmRSS");
+
+        char *cursor = processes_buffer;
+        readFile(proc_file_name, processes_buffer_size, cursor);
+        proc_ram = parseMemoryKey(cursor, "VmRSS");
 
         snprintf(
             proc_file_name,
@@ -52,29 +55,28 @@ void getProcesses(
             "/proc/%d/stat",
             pid
         );
-        readFile(proc_file_name, size, buffer);
+        readFile(proc_file_name, processes_buffer_size, cursor);
 
         for(int i = 0; i < keys_until_utime; i++) {
-            char *next = strchr(buffer, ' ');
-            if(!next) break;;
-            buffer = next + 1;
+            char *next = strchr(cursor, ' ');
+            if(!next) break;
+            cursor = next + 1;
         }
 
-        char *utime = strchr(buffer, ' ');
+        char *utime = strchr(cursor, ' ');
         if(!utime) continue;
         *utime = '\0';
-        proc_cpu += strtoull(buffer, NULL, 10);
+        proc_cpu += strtoull(cursor, NULL, 10);
 
-        buffer = utime + 1;
-        char *stime = strchr(buffer, ' ');
+        cursor = utime + 1;
+        char *stime = strchr(cursor, ' ');
         if(!stime) continue;
         *stime = '\0';
-        proc_cpu += strtoull(buffer, NULL, 10);
-
+        proc_cpu += strtoull(cursor, NULL, 10);
 
         snprintf(
             proc_file_name,
-            proc_name_size,
+            proc_file_name_size,
             "/proc/%d/comm",
             pid
         );

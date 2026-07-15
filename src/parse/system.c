@@ -59,14 +59,7 @@ System getSystem(
         .temp = temp
     };
 
-    size_t processes_buffer_size = BUFFER_ONE_KB * 8;
-    char processes_buffer[processes_buffer_size];
-    getProcesses(
-        processes_buffer_size,
-        processes_buffer,
-        system.processes,
-        args
-    );
+    getProcesses(system.processes, args);
 
     return system;
 }

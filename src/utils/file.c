@@ -25,6 +25,6 @@ size_t readFile(const char *file_name, size_t size, char *buffer) {
     size_t file_size = fread(buffer, 1, size - 1, file_ptr);
 
     fclose(file_ptr);
-    buffer[file_size] = '\0';
+    // buffer[file_size] = '\0';
     return file_size;
 }

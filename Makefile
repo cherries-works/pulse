@@ -1,9 +1,9 @@
 CC=gcc
 LIBS=-lpthread
 INCLUDES=-Iinclude
-FLAGS=-Wall -Werror -Wextra -Wconversion -Wno-unused-parameter
+FLAGS=-Wall -Werror -Wextra -Wconversion -Wno-unused-parameter -fsanitize=address -fno-omit-frame-pointer
 CFLAGS=$(INCLUDES) $(FLAGS)
-LDFLAGS=$(LIBS)
+LDFLAGS=$(LIBS) -fsanitize=address -fno-omit-frame-pointer
 
 progname = pulse
 build = build

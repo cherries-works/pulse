@@ -111,8 +111,6 @@ extern unsigned parseTemp();
 
 extern float parseCpuUsage(Cpu snapshot2, Cpu snapshot1);
 extern void getProcesses(
-    size_t size, 
-    char *buffer, 
     Process processes[],
     Args args
 );
