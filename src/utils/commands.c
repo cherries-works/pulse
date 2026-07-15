@@ -18,15 +18,21 @@
 #include "app.h"
 
 void help() {
-    printf("%s%sCherries Pulse%s ───────────────────────────────────── v0.2.0 ──── \n\n", BOLD, RED, RESET);
-    printf("     %-20s %-20s\n", "--port [number]", "Determine the port where the website will be hosted (omits --web).");
-    printf("     %-20s %-20s\n", "--web", "Hosts website (and API) on default port 8080.");
-    printf("     %-20s %-20s\n", "--sleep", "How many seconds the program sleeps before updating (TUI only).");
-    printf("     %-20s %-20s\n", "--headless", "Runs program without TUI (currently only useful with --web).");
-    printf("     %-20s %-20s\n", "--stop", "Stops all of the processes that Pulse currently runs.");
-    printf("     %-20s %-20s\n", "--processes", "Amount of processes that are being monitored.");
-    printf("     %-20s %-20s\n", "--sort", "Sorts the processes between \"cpu\" and \"ram\".");
-    printf("     %-20s %-20s\n\n", "--help", "Prints this.");
+    printf("%s%sCherries Pulse%s ───────────────────────────────────── v0.2.1 ──── \n", BOLD, RED, RESET);
+    printf(" > %-20s %-20s\n", "monitor", "Monitors your device (default option).");
+    printf("     %s%-20s %-20s%s\n", DIM, "--port [number]", "Determine the port where the website will be hosted (omits --web).", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--web", "Hosts website (and API) on default port 8080.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--sleep", "How many seconds the program sleeps before updating (TUI only).", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--headless", "Runs program without TUI (currently only useful with --web).", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that are being monitored.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
+    printf(" > %-20s %-20s\n", "stop", "Stops all running processes by Pulse.");
+    printf(" > %-20s %-20s\n", "help", "Prints this.");
+    printf(" > %-20s %-20s\n", "info", "Displays system information.");
+    printf(" > %-20s %-20s\n", "top", "Prints top processes that are currently running.");
+    printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that get printed.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
+    printf("\n");
 }
 
 pid_t getRenderPid() {
