@@ -18,7 +18,7 @@ void setupLog() {
     snprintf(current_file, BUFFER_ONE_KB, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
     if(access(current_file, F_OK) == 0) {
         _log(
-            INFO,
+            L_INFO,
             "Logging initted."
         );
         return;
@@ -53,7 +53,7 @@ void setupLog() {
     fclose(f);
 
     _log(
-        INFO,
+        L_INFO,
         "Logging initted."
     );
 }
@@ -125,9 +125,9 @@ void _log(
         return;
     }
 
-    if(types == INFO) {
+    if(types == L_INFO) {
         fwrite("[INFO] ", 7, 1, f);
-    } else if(types == ERROR) {
+    } else if(types == L_ERROR) {
         fwrite("[ERROR] ", 8, 1, f);
     }
 

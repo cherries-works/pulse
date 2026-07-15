@@ -16,7 +16,6 @@ extern void printProcess(
     System system
 );
 
-extern void help();
 extern char *getBars(float val);
 extern char* getColor(float value);
 

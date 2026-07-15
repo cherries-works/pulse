@@ -18,7 +18,7 @@
 void setupDaemon(pid_t pid) {
     char *home = getenv("HOME");
     if(home == NULL) {
-        _log(ERROR, "No HOME environment variable");
+        _log(L_ERROR, "No HOME environment variable");
         return;
     }
 
@@ -72,13 +72,13 @@ void setupDaemon(pid_t pid) {
 static struct shmbuf *openSHM() {
     int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
     if (fd == -1) {
-        _log(ERROR, "SHM open failed");
+        _log(L_ERROR, "SHM open failed");
         exit(EXIT_FAILURE);
     }
 
     struct shmbuf *shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (shmp == MAP_FAILED) {
-        _log(ERROR, "Mapping object failed");
+        _log(L_ERROR, "Mapping object failed");
         exit(EXIT_FAILURE);
     }
 
@@ -114,7 +114,7 @@ void writeHistoryS(System system) {
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
-            ERROR,
+            L_ERROR,
             "No HOME environment variable"
         );
         return;
@@ -215,13 +215,13 @@ void readHistoryS(
 
     FILE *f = fopen(path, "r");
     if(f == NULL) {
-        _log(ERROR, "History path invalid.");
+        _log(L_ERROR, "History path invalid.");
         return;
     }
 
     size_t size = fread(buffer, 1, buffer_size - 1, f);
     if(size == 0) {
-        _log(ERROR, "Reading history file failed.");
+        _log(L_ERROR, "Reading history file failed.");
         return;
     }
 
@@ -359,13 +359,13 @@ void readHistoryM(
 
     FILE *f = fopen(path, "r");
     if(f == NULL) {
-        _log(ERROR, "History path invalid.");
+        _log(L_ERROR, "History path invalid.");
         return;
     }
 
     size_t size = fread(buffer, 1, buffer_size - 1, f);
     if(size == 0) {
-        _log(ERROR, "Reading history file failed.");
+        _log(L_ERROR, "Reading history file failed.");
         return;
     }
 
@@ -449,7 +449,7 @@ void writeHistoryM(Metrics metrics) {
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
-            ERROR,
+            L_ERROR,
             "No HOME environment variable"
         );
         return;
@@ -507,7 +507,7 @@ pid_t checkDaemon() {
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
-            ERROR,
+            L_ERROR,
             "No HOME environment variable"
         );
         return -1;
@@ -545,16 +545,16 @@ pid_t checkDaemon() {
 
 pid_t startDaemon(Args args) {
     _log(
-        INFO,
+        L_INFO,
         "Starting Daemon"
     );
 
     pid_t pid = checkDaemon();
     if(pid > 0) {
-        _log(INFO, "Attached to previous Daemon");
+        _log(L_INFO, "Attached to previous Daemon");
         sem_t *ready_sem = sem_open(CHERRIES_PULSE_READY_SEM, 0);
         if (ready_sem == SEM_FAILED) {
-            _log(ERROR, "Failed to open ready semaphore");
+            _log(L_ERROR, "Failed to open ready semaphore");
             exit(EXIT_FAILURE);
         }
         sem_post(ready_sem);
@@ -565,12 +565,12 @@ pid_t startDaemon(Args args) {
 
     pid = fork();
     if (pid == 0) {
-        _log(INFO, "Setting up Daemon.");
+        _log(L_INFO, "Setting up Daemon.");
         setupDaemon(getpid());
 
         sem_t *ready_sem = sem_open(CHERRIES_PULSE_READY_SEM, 0);
         if (ready_sem == SEM_FAILED) {
-            _log(ERROR, "Failed to open ready semaphore");
+            _log(L_ERROR, "Failed to open ready semaphore");
             exit(EXIT_FAILURE);
         }
         sem_post(ready_sem);
@@ -580,7 +580,7 @@ pid_t startDaemon(Args args) {
         int shm_fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
         if(shm_fd == -1) {
             _log(
-                ERROR,
+                L_ERROR,
                 "SHM open failed"
             );
             exit(EXIT_FAILURE);
@@ -590,7 +590,7 @@ pid_t startDaemon(Args args) {
         shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
         if (shmp == MAP_FAILED) {
             _log(
-                ERROR,
+                L_ERROR,
                 "Mapping object failed"
             );
             exit(EXIT_FAILURE);

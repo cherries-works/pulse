@@ -22,44 +22,6 @@
 #include "app.h"
 #include "setup.h"
 
-void stop() {
-    char *home = getenv("HOME");
-    if(home == NULL) return;
-
-    char file_path[BUFFER_ONE_KB];
-    char path_dir[BUFFER_ONE_KB / 2];
-    snprintf(
-        path_dir,
-        BUFFER_ONE_KB / 2,
-        "%s/%s/state",
-        home, 
-        R_CHERRIES_FOLDER_PULSE
-    );
-
-    DIR *dir = opendir(path_dir);
-    struct dirent *entry;
-    while((entry = readdir(dir)) != NULL) {
-        char *name = entry->d_name;
-        if(strcmp(name, ".") == 0) continue;
-        if(strcmp(name, "..") == 0) continue;
-        snprintf(file_path, BUFFER_ONE_KB, "%s/%s", path_dir, name);
-
-        char *d = strchr(name, '.');
-        if(d == NULL) continue;
-        name = d + 1;
-        int pid = atoi(name);
-        kill(pid, SIGKILL);
-        waitpid(pid, NULL, 0);
-        
-        remove(file_path);
-    }
-
-    snprintf(file_path, BUFFER_ONE_KB, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
-    remove(file_path);
-
-    closedir(dir);
-}
-
 pid_t website_pid = 0;
 pid_t daemon_pid = 0;
 pid_t render_pid = 0;
@@ -95,84 +57,11 @@ int main(int argc, char* argv[]) {
         return 0;
     }
 
-    if(args.command == info) {
-        System system = getSystem(args);
-        Info info = getInfo();
-        printf(
-            "%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n",
-            BOLD,
-            RED,
-            RESET
-        );
-
-        printf("┌── INFO ─────────────────────────────────────────────────────────────────┐\n");
-        printf(
-            "│ %-15s %54s  │\n",
-            "OS",
-            info.os
-        );
-
-        printf(
-            "│ %-15s %54s  │\n",
-            "Architecture",
-            info.kernel.machine
-        );
-
-        printf(
-            "│ %-15s %54s  │\n",
-            "Kernel",
-            info.kernel.sysname
-        );
-
-        printf(
-            "│ %-15s %54s  │\n",
-            "Hostname",
-            info.hostname
-        );
-
-        printf(
-            "│ %-15s %51ld GB  │\n",
-            "RAM",
-            (system.memory.total) / 1024 / 1024
-        );
-
-        printf(
-            "│ %-15s %54s  │\n",
-            "CPU",
-            info.cpu_model
-        );
-
-        printf(
-            "│ %-15s %54d  │\n",
-            "Cores",
-            info.cores
-        );
-
-        printf(
-            "│ %-15s %54s  │\n",
-            "Desktop",
-            info.desktop
-        );
-
-        printf(
-            "│ %-15s %54s  │\n",
-            "Session",
-            info.session
-        );
-
-        printf("└─────────────────────────────────────────────────────────────────────────┘\n");
-
+    if(args.command == INFO) {
+        info(args);
         return 0;
-    } else if(args.command == top) {
-        System system = getSystem(args);
-        printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
-        printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
-        for(unsigned i = 0; i < args.processes; i++) {
-            Process process = system.processes[i];
-            printProcess(process, system);
-        }
-        printf("└─────────────────────────────────────────────────────────────────────────┘\n");
-    
+    } else if(args.command == TOP) {
+        top(args);
         return 0;
     }
 
@@ -180,7 +69,7 @@ int main(int argc, char* argv[]) {
     sem_unlink(CHERRIES_PULSE_READY_SEM);
     sem_t *ready_sem = sem_open(CHERRIES_PULSE_READY_SEM, O_CREAT | O_EXCL, 0600, 0);
     if (ready_sem == SEM_FAILED) {
-        _log(ERROR, "Failed to create ready semaphore");
+        _log(L_ERROR, "Failed to create ready semaphore");
         exit(EXIT_FAILURE);
     }
 

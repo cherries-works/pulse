@@ -98,7 +98,7 @@ JSON_ROUTE(historyCPU, {
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
-            ERROR,
+            L_ERROR,
             "No HOME environment variable"
         );
         return;
@@ -124,7 +124,7 @@ JSON_ROUTE(historyCPU, {
     
     DIR *dir = opendir(path);
     if(!dir) {
-        _log(ERROR, "History file for system not found.");
+        _log(L_ERROR, "History file for system not found.");
         return;
     }
 
@@ -201,7 +201,7 @@ JSON_ROUTE(historyRAM, {
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
-            ERROR,
+            L_ERROR,
             "No HOME environment variable"
         );
         return;
@@ -227,7 +227,7 @@ JSON_ROUTE(historyRAM, {
     
     DIR *dir = opendir(path);
     if(!dir) {
-        _log(ERROR, "History file for system not found.");
+        _log(L_ERROR, "History file for system not found.");
         return;
     }
 
@@ -305,7 +305,7 @@ JSON_ROUTE(historyDisk, {
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
-            ERROR,
+            L_ERROR,
             "No HOME environment variable"
         );
         return;
@@ -331,7 +331,7 @@ JSON_ROUTE(historyDisk, {
     
     DIR *dir = opendir(path);
     if(!dir) {
-        _log(ERROR, "History file for system not found.");
+        _log(L_ERROR, "History file for system not found.");
         return;
     }
 

@@ -7,7 +7,7 @@
 
 Args parseArgs(int argc, char* argv[]) {
     _log(
-        INFO,
+        L_INFO,
         "Parsing CLI arguments"
     );
 
@@ -17,7 +17,7 @@ Args parseArgs(int argc, char* argv[]) {
         .stop = false,
         .headless = false,
 
-        .command = monitor,
+        .command = MONITOR,
         .sort = RAM,
         .sleep = 1,
         .port = 8080,
@@ -26,8 +26,8 @@ Args parseArgs(int argc, char* argv[]) {
 
     if(argc > 1) {
         char *arg = argv[1];
-        if(strcmp(arg, "info") == 0) p.command = info;
-        if(strcmp(arg, "top") == 0) p.command = top;
+        if(strcmp(arg, "info") == 0) p.command = INFO;
+        if(strcmp(arg, "top") == 0) p.command = TOP;
     }
 
     for(int i = 0; i < argc; i++) {

@@ -47,11 +47,10 @@ typedef enum {
 } Sort;
 
 typedef enum {
-    monitor,
-    top,
-    info
+    MONITOR,
+    TOP,
+    INFO
 } Command;
-
 
 typedef struct {
     volatile bool running;
@@ -71,5 +70,10 @@ typedef struct {
 } Args;
 
 extern Args parseArgs(int argc, char* argv[]);
+
+extern void stop();
+extern void help();
+extern void top(Args args);
+extern void info(Args args);
 
 #endif

@@ -2,8 +2,8 @@
 #define LOG_H
 
 typedef enum {
-    INFO,
-    ERROR
+    L_INFO,
+    L_ERROR
 } log_types;
 
 extern void setupLog();

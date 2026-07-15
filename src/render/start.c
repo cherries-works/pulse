@@ -9,7 +9,7 @@
 
 void startRender(Args args) {
     _log(
-        INFO,
+        L_INFO,
         "Starting Renderer"
     );
 

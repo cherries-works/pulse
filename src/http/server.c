@@ -82,7 +82,7 @@ void serverLaunch(Server *server) {
             buffer[bytes_read] = '\0';
         } else {
             _log(
-                ERROR,
+                L_ERROR,
                 "Failed to read buffer"
             );
             continue;;

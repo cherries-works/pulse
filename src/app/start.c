@@ -13,7 +13,7 @@
 void setupWebsite(pid_t pid) {
     char *home = getenv("HOME");
     if(home == NULL) {
-        _log(ERROR, "No HOME environment variable");
+        _log(L_ERROR, "No HOME environment variable");
         return;
     }
 
@@ -34,7 +34,7 @@ pid_t checkWebsite() {
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
-            ERROR,
+            L_ERROR,
             "No HOME environment variable"
         );
         return -1;
@@ -72,7 +72,7 @@ pid_t checkWebsite() {
 
 
 pid_t startWebsite(Args args) {
-    _log(INFO, "Starting Website");
+    _log(L_INFO, "Starting Website");
 
     pid_t pid = checkWebsite();
     if(pid > 0) return pid;
