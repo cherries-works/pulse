@@ -1,3 +1,9 @@
+v0.2.1 (15th July 2026)
+- Added Temperature detection
+- New info and top command
+- Stop and Help (and Monitor) have been moved to separate commands
+- Codebase got cleaned
+
 v0.2.0 (3rd July 2026)
 - Storing historical metrics and system snapshots
 - Displaying RAM, CPU and Disk to Web UI

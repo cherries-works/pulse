@@ -29,6 +29,44 @@ void help() {
     printf("     %-20s %-20s\n\n", "--help", "Prints this.");
 }
 
+pid_t getRenderPid() {
+    char *home = getenv("HOME");
+    if(home == NULL) return -1;
+
+    char file_path[BUFFER_ONE_KB];
+    char path_dir[BUFFER_ONE_KB / 2];
+    snprintf(
+        path_dir,
+        BUFFER_ONE_KB / 2,
+        "%s/%s/state",
+        home, 
+        R_CHERRIES_FOLDER_PULSE
+    );
+
+    DIR *dir = opendir(path_dir);
+    struct dirent *entry;
+    while((entry = readdir(dir)) != NULL) {
+        char *name = entry->d_name;
+        if(strcmp(name, ".") == 0) continue;
+        if(strcmp(name, "..") == 0) continue;
+        snprintf(file_path, BUFFER_ONE_KB, "%s/%s", path_dir, name);
+
+        char *d = strchr(name, '.');
+        if(d == NULL) continue;
+        *d = '\0';
+        if(strcmp(name, "daemon") != 0) continue;
+
+        name = d + 1;
+        pid_t pid = (pid_t)atoi(name);
+        closedir(dir);
+        return pid;
+    }
+
+    closedir(dir);
+    return -1;
+}
+
+
 void stop() {
     char *home = getenv("HOME");
     if(home == NULL) return;
