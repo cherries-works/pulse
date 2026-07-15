@@ -52,9 +52,9 @@ void handle(Args args) {
 }
 
 void term(int sig) {
-    // if(render_pid == getpid()) {
-    //     failureLog();
-    // }
+    if(getpid() == getRenderPid()) {
+        failureLog();
+    }
 
     running = 0;
     stop();

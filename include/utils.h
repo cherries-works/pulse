@@ -22,6 +22,8 @@ extern const size_t BUFFER_ONE_KB;
 extern const size_t BUFFER_ONE_MB;
 
 extern void trim(char *buffer);
+extern bool startsWith(char *src, size_t src_size, char *comp, size_t comp_size);
+
 extern void clearLine();
 extern void clearLines(short i);
 
@@ -75,5 +77,7 @@ extern void help();
 extern void top(Args args);
 extern void info(Args args);
 extern void monitor(Args args);
+
+extern pid_t getRenderPid();
 
 #endif

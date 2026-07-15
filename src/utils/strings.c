@@ -27,3 +27,13 @@ void trim(char *buffer) {
 
     buffer[end - start] = '\0';
 }
+
+bool startsWith(char *src, size_t src_size, char *comp, size_t comp_size) {
+    if(comp_size > src_size) return false;
+
+    for(size_t i = 0; i < comp_size; i++) {
+        if(src[i] != comp[i]) return false;
+    }
+
+    return true;
+}

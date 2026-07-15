@@ -25,14 +25,16 @@ Args parseArgs(int argc, char* argv[]) {
 
     if(argc > 1) {
         char *arg = argv[1];
-        if(strcmp(arg, "monitor") == 0) p.command = MONITOR;
-        else if(strcmp(arg, "info") == 0) p.command = INFO;
-        else if(strcmp(arg, "help") == 0) p.command = HELP;
-        else if(strcmp(arg, "top") == 0) p.command = TOP;
-        else if(strcmp(arg, "stop") == 0) p.command = STOP;
-        else {
-            printf("Invalid command.\n");
-            exit(EXIT_FAILURE);
+        if(!startsWith(arg, strlen(arg), "--", 2)) {
+            if(strcmp(arg, "monitor") == 0) p.command = MONITOR;
+            else if(strcmp(arg, "info") == 0) p.command = INFO;
+            else if(strcmp(arg, "help") == 0) p.command = HELP;
+            else if(strcmp(arg, "top") == 0) p.command = TOP;
+            else if(strcmp(arg, "stop") == 0) p.command = STOP;
+            else {
+                printf("Invalid command.\n");
+                exit(EXIT_FAILURE);
+            }
         }
     }
 
