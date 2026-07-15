@@ -90,4 +90,5 @@ void render(
         printProcess(process, system);
     }
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
+    printf("Press 'd' to detach | Press 'q' to quit\n");
 }
