@@ -181,3 +181,21 @@ void monitor(Args args) {
 
     return;
 }
+
+void process(Args args) {
+    System system = getSystem(args);
+
+    Process process = {
+        .cpu = 0,
+        .pid = 0,
+        .ram = 0,
+        .name = ""
+    };
+
+    getProcess(&process, args.process);
+
+    printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
+    printf("┌── PROCESS (%-6d) ─────────────────────────────────────────────────────┐\n", args.process);
+    printProcess(process, system);
+    printf("└─────────────────────────────────────────────────────────────────────────┘\n");
+}

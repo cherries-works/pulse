@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include <string.h>
+#include <fcntl.h>
 
 #include "utils.h"
 #include "log.h"
@@ -20,7 +21,8 @@ Args parseArgs(int argc, char* argv[]) {
         .sort = RAM,
         .sleep = 1,
         .port = 8080,
-        .processes = 3
+        .processes = 3,
+        .process = 0
     };
 
     if(argc > 1) {
@@ -31,6 +33,7 @@ Args parseArgs(int argc, char* argv[]) {
             else if(strcmp(arg, "help") == 0) p.command = HELP;
             else if(strcmp(arg, "top") == 0) p.command = TOP;
             else if(strcmp(arg, "stop") == 0) p.command = STOP;
+            else if(strcmp(arg, "process") == 0) p.command = PROCESS;
             else {
                 printf("Invalid command.\n");
                 exit(EXIT_FAILURE);
@@ -57,6 +60,12 @@ Args parseArgs(int argc, char* argv[]) {
                 if(processes <= 0 || processes > 100) continue;
             }
             p.processes = processes;
+        }
+
+        if(strcmp(arg, "--process") == 0) {
+            if(i == argc - 1) continue;
+            pid_t process = (pid_t)atoi(argv[i + 1]);
+            p.process = process;
         }
 
         if(strcmp(arg, "--sort") == 0) {

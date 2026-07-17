@@ -47,6 +47,10 @@ void handle(Args args) {
             top(args);
             break;
         
+        case PROCESS:
+            process(args);
+            break;
+        
         default:
             break;
     }
