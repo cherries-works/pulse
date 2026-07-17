@@ -3,7 +3,6 @@ v0.2.2 (17th July 2026)
 - Fixed c_lflag from not being reverted after quit
 - ''    ''      ''      ''      ''      after CTRL+C
 
-
 v0.2.1 (15th July 2026)
 - Added Temperature detection
 - New info and top command
@@ -22,7 +21,6 @@ v0.1.2 (30th June 2026)
 - Moved to mutex locks instead of shms
 - No hang, if deployed twice (check guards)
 _Pulse checks if a service is already running before starting it_
-
 
 v0.1.1 (26th June 2026)
 - Daemon running separately
