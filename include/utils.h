@@ -78,6 +78,4 @@ extern void top(Args args);
 extern void info(Args args);
 extern void monitor(Args args);
 
-extern pid_t getRenderPid();
-
 #endif
