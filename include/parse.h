@@ -43,9 +43,12 @@ typedef struct {
 } NetworkAverage;
 
 typedef enum {
-    RUNNING,
-    SLEEPING,
-    ZOMBIE,
+    S_RUNNING,
+    S_SLEEPING,
+    S_ZOMBIE,
+    S_STOPPED,
+    S_DISK_SLEEP,
+    S_UKNOWN
 } Status;
 
 typedef struct {

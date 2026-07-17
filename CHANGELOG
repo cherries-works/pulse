@@ -1,7 +1,11 @@
+v0.3.0 (17th July 2026)
+- The top command supports up to 100 processes now
+
 v0.2.2 (17th July 2026)
 - Fixed charts Y-Axis display
 - Fixed c_lflag from not being reverted after quit
 - ''    ''      ''      ''      ''      after CTRL+C
+- Compiles properly with -fsanitze=address and -fno-omit-frame-pointer
 
 v0.2.1 (15th July 2026)
 - Added Temperature detection
