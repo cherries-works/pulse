@@ -51,7 +51,11 @@ Args parseArgs(int argc, char* argv[]) {
         if(strcmp(arg, "--processes") == 0) {
             if(i == argc - 1) continue;
             unsigned processes = (unsigned)atoi(argv[i + 1]);
-            if(processes <= 0 || processes > 10) continue;
+            if(p.command == MONITOR) {
+                if(processes <= 0 || processes > 10) continue;
+            } else if(p.command == TOP) {
+                if(processes <= 0 || processes > 100) continue;
+            }
             p.processes = processes;
         }
 

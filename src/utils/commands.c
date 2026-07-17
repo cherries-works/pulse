@@ -24,13 +24,13 @@ void help() {
     printf("     %s%-20s %-20s%s\n", DIM, "--web", "Hosts website (and API) on default port 8080.", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--sleep", "How many seconds the program sleeps before updating (TUI only).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--headless", "Runs program without TUI (currently only useful with --web).", RESET);
-    printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that are being monitored.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that are being monitored (max. 10).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
     printf(" > %-20s %-20s\n", "stop", "Stops all running processes by Pulse.");
     printf(" > %-20s %-20s\n", "help", "Prints this.");
     printf(" > %-20s %-20s\n", "info", "Displays system information.");
     printf(" > %-20s %-20s\n", "top", "Prints top processes that are currently running.");
-    printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that get printed.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that get printed (max. 100).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
     printf("\n");
 }

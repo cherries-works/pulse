@@ -66,7 +66,7 @@ typedef struct {
     unsigned cores;
 } Info;
 
-#define MAX_PROCESSES 10
+#define MAX_PROCESSES 100
 
 typedef struct {
     Cpu cpu;
