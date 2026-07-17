@@ -50,8 +50,6 @@ void setupDaemon(pid_t pid) {
     snprintf(history_path, history_path_size, "%s/%s/history/%s/metric", home, R_CHERRIES_FOLDER_PULSE, time_buffer);
     mkdir(history_path, 0755);
 
-
-
     shm_unlink(CHERRIES_PULSE_SHM);
     int shm_fd = shm_open(CHERRIES_PULSE_SHM, O_CREAT | O_EXCL | O_RDWR, 0600);
     if (shm_fd == -1) {
