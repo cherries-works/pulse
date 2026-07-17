@@ -15,7 +15,6 @@ void startRender(Args args) {
         "Starting Renderer"
     );
 
-
     struct termios oldt, newt;
 
     tcgetattr(STDIN_FILENO, &oldt);
@@ -57,7 +56,7 @@ void startRender(Args args) {
                 tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
                 failureLog();
                 stop();
-                return;
+                break;
             }
         }
     }
