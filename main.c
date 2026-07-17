@@ -60,7 +60,6 @@ void term(int sig) {
         failureLog();
     }
 
-    running = 0;
     stop();
     exit(0);
 }

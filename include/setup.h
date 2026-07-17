@@ -3,7 +3,6 @@
 
 #include <signal.h>
 
-extern volatile sig_atomic_t running;
 extern int setup();
 
 #endif

@@ -57,8 +57,6 @@ typedef enum {
 } Command;
 
 typedef struct {
-    volatile bool running;
-    
     bool web;
     bool headless;
 

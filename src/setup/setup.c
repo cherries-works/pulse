@@ -7,8 +7,6 @@
 #include "utils.h"
 #include "log.h"
 
-volatile sig_atomic_t running = 1;
-
 int setup() {
     // _log(
     //     INFO,

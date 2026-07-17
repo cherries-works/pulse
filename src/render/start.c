@@ -27,7 +27,7 @@ void startRender(Args args) {
 
     bool look_started = false;
     short total_lines = 13 + (short)args.processes;
-    while(running) {
+    while(true) {
         if(!look_started) { 
             look_started = true;
         } else {
