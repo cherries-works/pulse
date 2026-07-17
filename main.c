@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <termios.h>
 
 #include "parse.h"
 #include "render.h"
@@ -51,8 +52,11 @@ void handle(Args args) {
     }
 }
 
+pid_t render_pid = 0;
+struct termios oldt;
 void term(int sig) {
-    if(getpid() == getRenderPid()) {
+    if(getpid() == render_pid) {
+        tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
         failureLog();
     }
 
@@ -62,6 +66,9 @@ void term(int sig) {
 }
 
 int main(int argc, char* argv[]) {
+    render_pid = getpid();
+
+    tcgetattr(STDIN_FILENO, &oldt);
     signal(SIGINT, term);
 
     int s = setup();
