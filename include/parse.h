@@ -42,10 +42,25 @@ typedef struct {
     float tx;
 } NetworkAverage;
 
+typedef enum {
+    RUNNING,
+    SLEEPING,
+    ZOMBIE,
+} Status;
+
 typedef struct {
-    unsigned pid;
+    pid_t pid;
+    pid_t parent_pid;
+
+    unsigned long time;
+
     unsigned long ram;
     unsigned long cpu;
+    unsigned long threads;
+    
+    Status status;
+
+    char exec[256];
     char name[64];
 } Process;
 
@@ -110,9 +125,7 @@ extern unsigned long parseUptime(size_t size, char *buffer);
 extern unsigned parseTemp();
 
 extern float parseCpuUsage(Cpu snapshot2, Cpu snapshot1);
-extern void getProcesses(
-    Process processes[],
-    Args args
-);
+extern void getProcesses(Process processes[], Args args);
+extern void getProcess(Process *process, pid_t pid);
 
 #endif
