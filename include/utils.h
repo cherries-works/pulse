@@ -53,19 +53,23 @@ typedef enum {
     TOP,
     INFO,
     STOP,
-    HELP
+    HELP,
+    PROCESS,
 } Command;
 
 typedef struct {
-    bool web;
-    bool headless;
-
-    Sort sort;
     Command command;
+    
+    bool web; // for the MONITOR command
+    bool headless; // for the MONITOR command
 
-    uint16_t port;
-    unsigned sleep;
-    unsigned processes;
+    Sort sort; // for the MONITOR / TOP command
+
+    uint16_t port; // for the MONITOR command
+    unsigned sleep; // for the MONITOR command
+    unsigned processes; // for the MONITOR / TOP command
+ 
+    pid_t process; // for the PROCESS command
 } Args;
 
 extern Args parseArgs(int argc, char* argv[]);
@@ -75,5 +79,6 @@ extern void help();
 extern void top(Args args);
 extern void info(Args args);
 extern void monitor(Args args);
+extern void process(Args args);
 
 #endif
