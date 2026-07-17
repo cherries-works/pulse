@@ -47,9 +47,20 @@ const parser = (
     const canvasXOffset = defaultX + padding * 2;
     const canvasYOffset = defaultY + padding * 2;
 
-    ctx.moveTo(0 + canvasXOffset, defaultY + canvasYOffset);
-    ctx.lineTo(0 + canvasXOffset, canvas.height - defaultY);
+    const yAxisStart = defaultY + canvasYOffset;
+    const yAxisEnd = canvas.height - defaultY;
+    const yAxisHeight = yAxisEnd - yAxisStart - canvasYOffset + defaultY;
+
+    ctx.moveTo(0 + canvasXOffset, yAxisStart);
+    ctx.lineTo(0 + canvasXOffset, yAxisEnd);
     ctx.stroke()
+
+    for(let i = 0; i < 10; i++) {
+        const y = (yAxisHeight - yAxisHeight * ((i + 1) / 10)) + yAxisStart;
+        ctx.moveTo(0 + canvasXOffset - 10, y);
+        ctx.lineTo(0 + canvasXOffset + 10, y);
+        ctx.stroke()
+    }
 
     const canvasWidth = canvas.width - canvasXOffset;
     
@@ -64,7 +75,7 @@ const parser = (
     // start at the first data point
     for (let i = 0; i < data.length; i++) {
         const x = canvasWidth * (i / (Math.max(data.length, 5))) + canvasXOffset;
-        const y = (canvas.height - canvas.height * (data[i] / 100)) - canvasYOffset;
+        const y = (yAxisHeight - yAxisHeight * (data[i] / 100)) + yAxisStart;
 
         if (i === 0) {
             ctx.moveTo(x, y);
