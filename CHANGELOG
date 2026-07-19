@@ -1,5 +1,8 @@
 v0.3.0 (17th July 2026)
 - The top command supports up to 100 processes now
+- Printing single process
+- Formatting in code was fixed
+- Getting single process is faster (O(n) => O(1))
 
 v0.2.2 (17th July 2026)
 - Fixed charts Y-Axis display
