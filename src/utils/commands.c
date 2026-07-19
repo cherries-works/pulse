@@ -197,5 +197,6 @@ void process(Args args) {
     printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
     printf("┌── PROCESS (%-6d) ─────────────────────────────────────────────────────┐\n", args.process);
     printProcess(process, system);
+    printProcessExtra(process, system);
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
 }
