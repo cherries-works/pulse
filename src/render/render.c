@@ -51,18 +51,23 @@ void printProcess(
     );
 }
 
+char *statuses[] = {
+    "RUNNING",
+    "SLEEPING",
+    "ZOMBIE",
+    "STOPPED",
+    "DISK_SLEEP",
+    "UNKNOWN"
+};
+
 void printProcessExtra(
     Process process,
     System system
 ) {
-    printf(
-        "│ (%-6d) %-15s RAM %8.2f MB %18s CPU %5.2f%%  │\n",
-        process.pid,
-        process.name,
-        ((float)process.ram) / 1024.0f,
-        "",
-        ((float)process.cpu / (float)system.cpu.total) * 100
-    );
+    printf("   └────── Status %s\n", statuses[process.status]);
+    printf("    └────── Parent PID %d\n", process.parent_pid);
+    printf("     └────── Threads %ld\n", process.threads);
+    printf("      └────── Uptime %ld\n", process.uptime);
 }
 
 void render(
