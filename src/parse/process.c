@@ -192,12 +192,10 @@ void getProcess(Process *p, pid_t pid) {
                     case 'T': p->status = S_STOPPED; break;
                     default:  p->status = S_UNKNOWN; break;
                 }
-
                 break;
             }
             case keys_until_parent_pid: {
                 proc_parent_pid = atoi(cursor);
-
                 break;
             }
             case keys_until_utime: {
@@ -211,25 +209,14 @@ void getProcess(Process *p, pid_t pid) {
                 if(!stime) break;
                 *stime = '\0';
                 proc_cpu += strtoull(cursor, NULL, 10);
-                
                 break;
             }
             case keys_until_threads: {
-                char *threads = strchr(cursor, ' ');
-                if(!threads) break;
-                *threads = '\0';
-
                 proc_threads = strtoull(cursor, NULL, 10);
-                
                 break;
             }
             case keys_until_uptime: {
-                char *uptime = strchr(cursor, ' ');
-                if(!uptime) break;
-                *uptime = '\0';
-                
                 proc_uptime = strtoull(cursor, NULL, 10);
-
                 break;
             }
             default: break;
