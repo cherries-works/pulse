@@ -16,6 +16,11 @@ extern void printProcess(
     System system
 );
 
+extern void printProcessExtra(
+    Process process,
+    System system
+);
+
 extern char *getBars(float val);
 extern char* getColor(float value);
 
