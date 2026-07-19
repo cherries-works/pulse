@@ -67,7 +67,10 @@ void printProcessExtra(
     printf("   └────── Status %s\n", statuses[process.status]);
     printf("    └────── Parent PID %d\n", process.parent_pid);
     printf("     └────── Threads %ld\n", process.threads);
-    printf("      └────── Uptime %ld\n", process.uptime);
+
+    char human_readable_time[256];
+    formatTimeHumanReadable(process.uptime, human_readable_time, 256);
+    printf("      └────── Uptime %s\n", human_readable_time);
 }
 
 void render(
