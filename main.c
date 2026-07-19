@@ -65,7 +65,7 @@ void term(int sig) {
     }
 
     stop();
-    exit(0);
+    exit(EXIT_SUCCESS);
 }
 
 int main(int argc, char* argv[]) {
