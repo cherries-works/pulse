@@ -2,6 +2,7 @@
 #define PARSE_H
 
 #include "utils.h"
+#include <fcntl.h>
 
 typedef struct {
     unsigned long idle;
@@ -48,22 +49,20 @@ typedef enum {
     S_ZOMBIE,
     S_STOPPED,
     S_DISK_SLEEP,
-    S_UKNOWN
+    S_UNKNOWN
 } Status;
 
 typedef struct {
     pid_t pid;
     pid_t parent_pid;
 
-    unsigned long time;
-
+    unsigned long uptime;
     unsigned long ram;
     unsigned long cpu;
     unsigned long threads;
     
     Status status;
 
-    char exec[256];
     char name[64];
 } Process;
 
