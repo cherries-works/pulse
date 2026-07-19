@@ -199,4 +199,5 @@ void process(Args args) {
     printProcess(process, system);
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
     printProcessExtra(process, system);
+    printf("───────────────────────────────────────────────────────────────────────────\n");
 }
