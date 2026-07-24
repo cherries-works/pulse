@@ -1,9 +1,12 @@
 CC=gcc
 LIBS=-lpthread
 INCLUDES=-Iinclude
-FLAGS=-Wall -Werror -Wextra -Wconversion -Wno-unused-parameter -fsanitize=address -fno-omit-frame-pointer
+
+EXTRA_FLAGS_DEBUG = -fsanitize=address -fno-omit-frame-pointer
+
+FLAGS=-Wall -Werror -Wextra -Wconversion -Wno-unused-parameter -O3
 CFLAGS=$(INCLUDES) $(FLAGS)
-LDFLAGS=$(LIBS) -fsanitize=address -fno-omit-frame-pointer
+LDFLAGS=$(LIBS)
 
 progname = pulse
 build = build
@@ -26,6 +29,10 @@ obj = $(src:%.c=$(build)/%.o)
 dep = $(obj:.o=.d)
 
 all: $(target)
+
+debug: LDFLAGS += $(EXTRA_FLAGS_DEBUG)
+debug: CFLAGS += $(EXTRA_FLAGS_DEBUG)
+debug: $(target)
 
 $(target): $(obj) | $(bin)
 	$(CC) $(obj) -o $(target) $(LDFLAGS)
