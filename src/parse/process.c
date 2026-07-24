@@ -11,11 +11,6 @@ void getProcesses(
     Process processes[],
     Args args
 ) {
-    if(args.process == 0) {
-        printf("Invalid, or no process passed.\n--process (process)\n\n");
-        exit(EXIT_FAILURE);
-    }
-
     size_t processes_buffer_size = BUFFER_ONE_KB * 8;
     char processes_buffer[processes_buffer_size];
     
@@ -126,6 +121,11 @@ void getProcesses(
 }
 
 void getProcess(Process *p, pid_t pid) {
+    if(pid == 0) {
+        printf("Invalid, or no process passed.\n--process (process)\n\n");
+        exit(EXIT_FAILURE);
+    }
+
     size_t processes_buffer_size = BUFFER_ONE_KB * 8;
     char processes_buffer[processes_buffer_size];
     
