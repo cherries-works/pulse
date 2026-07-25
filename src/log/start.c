@@ -125,10 +125,15 @@ void _log(
         return;
     }
 
+    time_t t = time(NULL);
+    char formatted_time[128];
+    formatTime(t, formatted_time, 128);
+
+    fwrite(formatted_time, strlen(formatted_time), 1, f);
     if(types == L_INFO) {
-        fwrite("[INFO] ", 7, 1, f);
+        fwrite(" [INFO] ", 8, 1, f);
     } else if(types == L_ERROR) {
-        fwrite("[ERROR] ", 8, 1, f);
+        fwrite(" [ERROR] ", 9, 1, f);
     }
 
     fwrite(message, strlen(message), 1, f);
