@@ -7,6 +7,15 @@
 #include "utils.h"
 #include "log.h"
 
+const char *commands[] = {
+    "MONITOR",
+    "TOP",
+    "INFO",
+    "STOP",
+    "HELP",
+    "PROCESS"
+};
+
 Args parseArgs(int argc, char* argv[]) {
     _log(
         L_INFO,
@@ -40,6 +49,13 @@ Args parseArgs(int argc, char* argv[]) {
             }
         }
     }
+
+    char log_buffer[256];
+    snprintf(log_buffer, 256, "Running command %s", commands[p.command]);
+    _log(
+        L_INFO,
+        log_buffer
+    );
 
     for(int i = 0; i < argc; i++) {
         char* arg = argv[i];
@@ -88,6 +104,21 @@ Args parseArgs(int argc, char* argv[]) {
      
         if(strcmp(arg, "--headless") == 0) {
             p.headless = true;
+        }
+    }
+
+    if(p.command == MONITOR) {
+        if(p.headless) {
+            _log(
+                L_INFO,
+                "Running headless mode."
+            );
+        }
+        if(p.web) {
+            _log(
+                L_INFO,
+                "Running website."
+            );
         }
     }
 
