@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <time.h>
+#include <fcntl.h>
 
 extern const char *PROC_DIR;
 extern const char *PROC_UPTIME_FILE;
@@ -29,9 +30,13 @@ extern void clearLines(short i);
 
 extern void formatTimeHumanReadable(long unsigned seconds, char* buffer, size_t size);
 extern void formatTime(time_t _time, char *buffer, size_t size);
+extern long unsigned unformatTime(char *buffer);
 
 extern size_t readFile(const char *file_name, size_t size, char *buffer);
 extern size_t sizeFile(const char *file_name);
+
+extern void cleanDir(char *path);
+extern unsigned countDir(char *path);
 
 extern const char* CHERRIES_FOLDER;
 extern const char* CHERRIES_FOLDER_PULSE;
@@ -49,12 +54,19 @@ typedef enum {
 } Sort;
 
 typedef enum {
+    LOGS,
+    HISTORY,
+    ALL
+} Prune;
+
+typedef enum {
     MONITOR,
     TOP,
     INFO,
     STOP,
     HELP,
     PROCESS,
+    PRUNE,
 } Command;
 
 typedef struct {
@@ -70,6 +82,10 @@ typedef struct {
     unsigned processes; // for the MONITOR / TOP command
  
     pid_t process; // for the PROCESS command
+
+    Prune prune; // for the PRUNE command
+    unsigned keep; // for the PRUNE command
+    char until[64]; // for the PRUNE command
 } Args;
 
 extern Args parseArgs(int argc, char* argv[]);
@@ -80,5 +96,6 @@ extern void top(Args args);
 extern void info(Args args);
 extern void monitor(Args args);
 extern void process(Args args);
+extern void prune(Args args);
 
 #endif
