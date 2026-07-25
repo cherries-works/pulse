@@ -56,7 +56,7 @@ void stop() {
 }
 
 void help() {
-    printf("%s%sCherries Pulse%s ───────────────────────────────────── v0.3.0 ──── \n", BOLD, RED, RESET);
+    printf("%s%sCherries Pulse%s ───────────────────────────────────── v0.3.1 ──── \n", BOLD, RED, RESET);
     printf(" > %-20s %-20s\n", "monitor", "Monitors your device (default option).");
     printf("     %s%-20s %-20s%s\n", DIM, "--port [number]", "Determine the port where the website will be hosted (omits --web).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--web", "Hosts website (and API) on default port 8080.", RESET);

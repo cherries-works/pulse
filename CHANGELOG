@@ -1,3 +1,10 @@
+v0.3.1 (19th July 2026)
+- New "prune" command added
+- Help command updated
+- Log deletion after each subcommand
+- Bug fixes
+- Reduced memory usage
+
 v0.3.0 (19th July 2026)
 - The top command supports up to 100 processes now
 - Printing single process
