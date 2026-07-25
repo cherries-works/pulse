@@ -13,7 +13,8 @@ const char *commands[] = {
     "INFO",
     "STOP",
     "HELP",
-    "PROCESS"
+    "PROCESS",
+    "PRUNE"
 };
 
 Args parseArgs(int argc, char* argv[]) {
@@ -31,7 +32,11 @@ Args parseArgs(int argc, char* argv[]) {
         .sleep = 1,
         .port = 8080,
         .processes = 3,
-        .process = 0
+        .process = 0,
+
+        .prune = ALL,
+        .keep = 0,
+        .until = "3000-00-00"
     };
 
     if(argc > 1) {
@@ -43,6 +48,7 @@ Args parseArgs(int argc, char* argv[]) {
             else if(strcmp(arg, "top") == 0) p.command = TOP;
             else if(strcmp(arg, "stop") == 0) p.command = STOP;
             else if(strcmp(arg, "process") == 0) p.command = PROCESS;
+            else if(strcmp(arg, "prune") == 0) p.command = PRUNE;
             else {
                 printf("Invalid command.\n");
                 exit(EXIT_FAILURE);
@@ -65,6 +71,27 @@ Args parseArgs(int argc, char* argv[]) {
             unsigned sleep = (unsigned)atoi(argv[i + 1]);
             if(sleep <= 0 || sleep > 60) continue;
             p.sleep = sleep;
+        }
+
+        if(strcmp(arg, "--keep") == 0) {
+            if(i == argc - 1) continue;
+            unsigned keep = (unsigned)atoi(argv[i + 1]);
+            if(keep <= 0) continue;
+            p.keep = keep;
+        }
+
+        if(strcmp(arg, "--until") == 0) {
+            if(i == argc - 1) continue;
+            strcpy(p.until, argv[i + 1]);
+        }
+
+        if(strcmp(arg, "--prune") == 0) {
+            if(i == argc - 1) continue;
+            if(strcmp("history", argv[i + 1]) == 0) {
+                p.prune = HISTORY;
+            } else if(strcmp("logs", argv[i + 1]) == 0) {
+                p.prune = LOGS;
+            }
         }
 
         if(strcmp(arg, "--processes") == 0) {

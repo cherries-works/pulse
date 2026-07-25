@@ -51,6 +51,10 @@ void handle(Args args) {
             process(args);
             break;
         
+        case PRUNE:
+            prune(args);
+            break;
+        
         default:
             break;
     }

@@ -17,24 +17,6 @@
 #include "log.h"
 #include "app.h"
 
-void help() {
-    printf("%s%sCherries Pulse%s ───────────────────────────────────── v0.3.0 ──── \n", BOLD, RED, RESET);
-    printf(" > %-20s %-20s\n", "monitor", "Monitors your device (default option).");
-    printf("     %s%-20s %-20s%s\n", DIM, "--port [number]", "Determine the port where the website will be hosted (omits --web).", RESET);
-    printf("     %s%-20s %-20s%s\n", DIM, "--web", "Hosts website (and API) on default port 8080.", RESET);
-    printf("     %s%-20s %-20s%s\n", DIM, "--sleep", "How many seconds the program sleeps before updating (TUI only).", RESET);
-    printf("     %s%-20s %-20s%s\n", DIM, "--headless", "Runs program without TUI (currently only useful with --web).", RESET);
-    printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that are being monitored (max. 10).", RESET);
-    printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
-    printf(" > %-20s %-20s\n", "stop", "Stops all running processes by Pulse.");
-    printf(" > %-20s %-20s\n", "help", "Prints this.");
-    printf(" > %-20s %-20s\n", "info", "Displays system information.");
-    printf(" > %-20s %-20s\n", "top", "Prints top processes that are currently running.");
-    printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that get printed (max. 100).", RESET);
-    printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
-    printf("\n");
-}
-
 void stop() {
     char *home = getenv("HOME");
     if(home == NULL) return;
@@ -73,6 +55,29 @@ void stop() {
     closedir(dir);
 }
 
+void help() {
+    printf("%s%sCherries Pulse%s ───────────────────────────────────── v0.3.0 ──── \n", BOLD, RED, RESET);
+    printf(" > %-20s %-20s\n", "monitor", "Monitors your device (default option).");
+    printf("     %s%-20s %-20s%s\n", DIM, "--port [number]", "Determine the port where the website will be hosted (omits --web).", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--web", "Hosts website (and API) on default port 8080.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--sleep", "How many seconds the program sleeps before updating (TUI only).", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--headless", "Runs program without TUI (currently only useful with --web).", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that are being monitored (max. 10).", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
+    printf(" > %-20s %-20s\n", "stop", "Stops all running processes by Pulse.");
+    printf(" > %-20s %-20s\n", "help", "Prints this.");
+    printf(" > %-20s %-20s\n", "info", "Displays system information.");
+    printf(" > %-20s %-20s\n", "top", "Prints top processes that are currently running.");
+    printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that get printed (max. 100).", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
+    printf(" > %-20s %-20s\n", "prune", "Prunes either logs, history or both.");
+    printf("     %s%-20s %-20s%s\n", DIM, "--keep", "Amount of files to be kept.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--until", "The date up until when history/logs are kept. (YYYY-MM-DD)", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--prune", "What is suppose to be pruned (history/logs/all).", RESET);
+    printf("\n");
+    stop();
+}
+
 void top(Args args) {
     System system = getSystem(args);
     printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
@@ -82,6 +87,7 @@ void top(Args args) {
         printProcess(process, system);
     }
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
+    stop();
 }
 
 void info(Args args) {
@@ -150,6 +156,7 @@ void info(Args args) {
     );
 
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
+    stop();
 }
 
 void monitor(Args args) {
@@ -200,4 +207,82 @@ void process(Args args) {
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
     printProcessExtra(process, system);
     printf("───────────────────────────────────────────────────────────────────────────\n");
+    stop();
+}
+
+void prune(Args args) {
+    Prune prune = args.prune;
+    unsigned keep = args.keep;
+    long unsigned until = unformatTime(args.until);
+
+    char *home = getenv("HOME");
+    if(home == NULL) {
+        _log(L_ERROR, "No HOME environment variable");
+        return;
+    }
+
+    size_t path_size = BUFFER_ONE_KB;
+    if(prune == HISTORY || prune == ALL) {
+        char path[path_size];
+        snprintf(path, path_size, "%s/%s/history", home, R_CHERRIES_FOLDER_PULSE);
+
+        unsigned path_entries_count = countDir(path);
+        unsigned path_entries_deleted = 0;
+
+        char entry_path[path_size];
+
+        struct dirent *entry;
+        DIR *dir = opendir(path);
+
+        while((entry = readdir(dir)) != NULL) {
+            if(path_entries_count - path_entries_deleted <= keep) break;
+
+            char *entry_name = entry->d_name;
+            if(strcmp(entry_name, ".") == 0) continue;
+            if(strcmp(entry_name, "..") == 0) continue;
+
+            snprintf(entry_path, path_size, "%s/%s/history/%s", home, R_CHERRIES_FOLDER_PULSE, entry_name);
+
+            long unsigned _entry_time = unformatTime(entry_name);
+            if(_entry_time < until) {
+                cleanDir(entry_path);
+                path_entries_deleted++;
+            }
+        }
+
+        closedir(dir);
+    }
+
+    if(prune == LOGS || prune == ALL) {
+        char path[path_size];
+        snprintf(path, path_size, "%s/%s/logs", home, R_CHERRIES_FOLDER_PULSE);
+
+        unsigned path_entries_count = countDir(path);
+        unsigned path_entries_deleted = 0;
+
+        char entry_path[path_size];
+
+        struct dirent *entry;
+        DIR *dir = opendir(path);
+        
+        while((entry = readdir(dir)) != NULL) {
+            if(path_entries_count - path_entries_deleted <= keep) break;
+
+            char *entry_name = entry->d_name;
+            if(strcmp(entry_name, ".") == 0) continue;
+            if(strcmp(entry_name, "..") == 0) continue;
+
+            snprintf(entry_path, path_size, "%s/%s/logs/%s", home, R_CHERRIES_FOLDER_PULSE, entry_name);
+            long unsigned _entry_time = unformatTime(entry_name);
+
+            if(_entry_time < until) {
+                remove(entry_path);
+                path_entries_deleted++;
+            }
+        }
+
+        closedir(dir);
+    }
+
+    stop();
 }
