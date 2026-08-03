@@ -22,8 +22,9 @@ daemon = src/daemon/start.c
 log = src/log/start.c
 app = src/app/routes.c src/app/start.c
 setup = src/setup/setup.c
+config = src/config/toml.c
 
-src = $(render) $(parse) $(utils) $(http) $(setup) $(daemon) $(log) $(app) $(main)
+src = $(render) $(parse) $(utils) $(http) $(setup) $(daemon) $(log) $(config) $(app) $(main)
 
 obj = $(src:%.c=$(build)/%.o)
 dep = $(obj:.o=.d)

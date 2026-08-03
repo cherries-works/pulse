@@ -22,8 +22,9 @@
 
 #include "app.h"
 #include "setup.h"
+#include "config.h"
 
-void handle(Args args) {
+void handle(Args args, Config config) {
     Command cmd = args.command;
 
     switch (cmd) {
@@ -36,7 +37,7 @@ void handle(Args args) {
             break;
         
         case MONITOR:
-            monitor(args);
+            monitor(args, config);
             break;
         
         case INFO:
@@ -85,7 +86,8 @@ int main(int argc, char* argv[]) {
     setupLog();
 
     Args args = parseArgs(argc, argv);
-    handle(args);
+    Config config = parseToml();
+    handle(args, config);
 
     return 0;
 }

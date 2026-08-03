@@ -1,0 +1,33 @@
+[alerts]
+enabled = true
+
+[alerts.cpu]
+threshold = 70
+operator = <
+duration = 15s
+
+[alerts.ram]
+threshold = 10
+operator = <
+duration = 5s
+
+[alerts.disk]
+threshold = 90
+operator = <
+duration = 15s
+
+[notifications]
+
+[notifications.desktop]
+enabled = true
+title = Pulse Alert
+message = {resource} is above {value}%
+
+[notifications.discord]
+enabled = false
+webhook = 
+message = **Pulse:** {resource} reached {value}%
+
+[notifications.command]
+enabled = false
+command = 
