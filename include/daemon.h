@@ -7,6 +7,7 @@
 
 #include "parse.h"
 #include "utils.h"
+#include "config.h"
 
 struct shmbuf {
     pthread_mutex_t lock;
@@ -14,7 +15,7 @@ struct shmbuf {
     System system;
 };
 
-extern pid_t startDaemon(Args args);
+extern pid_t startDaemon(Args args, Config config);
 
 extern void readDaemonS(System *system);
 extern void readDaemonM(Metrics *metrics);

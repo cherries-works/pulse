@@ -6,6 +6,8 @@
 #include <time.h>
 #include <fcntl.h>
 
+#include "config.h"
+
 extern const char *PROC_DIR;
 extern const char *PROC_UPTIME_FILE;
 extern const char *PROC_MEM_FILE;
@@ -94,7 +96,7 @@ extern void stop();
 extern void help();
 extern void top(Args args);
 extern void info(Args args);
-extern void monitor(Args args);
+extern void monitor(Args args, Config config);
 extern void process(Args args);
 extern void prune(Args args);
 

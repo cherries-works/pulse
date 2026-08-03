@@ -15,6 +15,214 @@
 #include "daemon.h"
 #include "log.h"
 
+void notifyAlert(Config config) {
+    if(config.commandNotify.enabled) {
+        printf("Running command %s\n", config.commandNotify.command);
+    }
+    if(config.discordNotify.enabled) {
+        printf("Webhook %s, Message %s\n", config.discordNotify.webhook, config.discordNotify.message);
+    }
+    if(config.desktopNotify.enabled) {
+        printf("Title %s, Message %s\n", config.desktopNotify.title, config.desktopNotify.message);
+    }
+}
+
+void checkAlerts(Metrics metrics, Args args, Config *config) {
+    if(!config->alerts.enabled) return;
+
+    switch (config->alerts.CPU.op) {
+        case E: {
+            if(metrics.cpuUsage == ((float)(config->alerts.CPU.threshold) / 100)) {
+                config->alerts.CPU.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.CPU.current_duration = 0;
+            }
+            break;
+        }
+        
+        case GE: {
+            if(metrics.cpuUsage <= ((float)(config->alerts.CPU.threshold) / 100)) {
+                config->alerts.CPU.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.CPU.current_duration = 0;
+            }
+            break;
+        }
+        
+        case LE: {
+            if(metrics.cpuUsage >= ((float)(config->alerts.CPU.threshold) / 100)) {
+                config->alerts.CPU.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.CPU.current_duration = 0;
+            }
+            break;
+        }
+        
+        case L: {
+            if(metrics.cpuUsage > ((float)(config->alerts.CPU.threshold) / 100)) {
+                config->alerts.CPU.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.CPU.current_duration = 0;
+            }
+            break;
+        }
+        
+        case G: {
+            if(metrics.cpuUsage < ((float)(config->alerts.CPU.threshold) / 100)) {
+                config->alerts.CPU.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.CPU.current_duration = 0;
+            }
+            break;
+        }
+
+        case NE: {
+            if(metrics.cpuUsage != ((float)(config->alerts.CPU.threshold) / 100)) {
+                config->alerts.CPU.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.CPU.current_duration = 0;
+            }
+            break;
+        }
+
+        default: {
+            break;
+        }
+    }
+
+    switch (config->alerts.RAM.op) {
+        case E: {
+            if(metrics.ramUsage == ((float)(config->alerts.RAM.threshold) / 100)) {
+                config->alerts.RAM.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.RAM.current_duration = 0;
+            }
+            break;
+        }
+
+        case GE: {
+            if(metrics.ramUsage <= ((float)(config->alerts.RAM.threshold) / 100)) {
+                config->alerts.RAM.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.RAM.current_duration = 0;
+            }
+            break;
+        }
+
+        case LE: {
+            if(metrics.ramUsage >= ((float)(config->alerts.RAM.threshold) / 100)) {
+                config->alerts.RAM.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.RAM.current_duration = 0;
+            }
+            break;
+        }
+
+        case L: {
+            if(metrics.ramUsage > ((float)(config->alerts.RAM.threshold) / 100)) {
+                config->alerts.RAM.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.RAM.current_duration = 0;
+            }
+            break;
+        }
+
+        case G: {
+            if(metrics.ramUsage < ((float)(config->alerts.RAM.threshold) / 100)) {
+                config->alerts.RAM.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.RAM.current_duration = 0;
+            }
+            break;
+        }
+
+        case NE: {
+            if(metrics.ramUsage != ((float)(config->alerts.RAM.threshold) / 100)) {
+                config->alerts.RAM.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.RAM.current_duration = 0;
+            }
+            break;
+        }
+
+        default: {
+            break;
+        }
+    }
+ 
+    switch (config->alerts.Disk.op) {
+        case E: {
+            if(metrics.diskUsage == ((float)(config->alerts.Disk.threshold) / 100)) {
+                config->alerts.Disk.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.Disk.current_duration = 0;
+            }
+            break;
+        }
+
+        case GE: {
+            if(metrics.diskUsage <= ((float)(config->alerts.Disk.threshold) / 100)) {
+                config->alerts.Disk.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.Disk.current_duration = 0;
+            }
+            break;
+        }
+
+        case LE: {
+            if(metrics.diskUsage >= ((float)(config->alerts.Disk.threshold) / 100)) {
+                config->alerts.Disk.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.Disk.current_duration = 0;
+            }
+            break;
+        }
+
+        case L: {
+            if(metrics.diskUsage > ((float)(config->alerts.Disk.threshold) / 100)) {
+                config->alerts.Disk.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.Disk.current_duration = 0;
+            }
+            break;
+        }
+
+        case G: {
+            if(metrics.diskUsage < ((float)(config->alerts.Disk.threshold) / 100)) {
+                config->alerts.Disk.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.Disk.current_duration = 0;
+            }
+            break;
+        }
+
+        case NE: {
+            if(metrics.diskUsage != ((float)(config->alerts.Disk.threshold) / 100)) {
+                config->alerts.Disk.current_duration += (int)args.sleep;
+            } else {
+                config->alerts.Disk.current_duration = 0;
+            }
+            break;
+        }
+
+        default: {
+            break;
+        }
+    }
+
+    printf("%d\n", config->alerts.RAM.duration);
+    printf("%d\n", config->alerts.RAM.current_duration);
+    if(config->alerts.CPU.duration <= config->alerts.CPU.current_duration) {
+        notifyAlert(*config);
+    }
+    if(config->alerts.RAM.duration <= config->alerts.RAM.current_duration) {
+        notifyAlert(*config);
+    }
+    if(config->alerts.Disk.duration <= config->alerts.Disk.current_duration) {
+        notifyAlert(*config);
+    }
+}
+
 void setupDaemon(pid_t pid) {
     char *home = getenv("HOME");
     if(home == NULL) {
@@ -541,7 +749,7 @@ pid_t checkDaemon() {
     return -1;
 }
 
-pid_t startDaemon(Args args) {
+pid_t startDaemon(Args args, Config config) {
     _log(
         L_INFO,
         "Starting Daemon"
@@ -630,6 +838,7 @@ pid_t startDaemon(Args args) {
             shmp->system = system_snapshot;
             pthread_mutex_unlock(&shmp->lock);
 
+            checkAlerts(metrics, args, &config);
             sleep(args.sleep);
         }
 
