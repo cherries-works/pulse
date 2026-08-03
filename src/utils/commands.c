@@ -16,6 +16,7 @@
 #include "daemon.h"
 #include "log.h"
 #include "app.h"
+#include "config.h"
 
 void stop() {
     char *home = getenv("HOME");
@@ -159,7 +160,7 @@ void info(Args args) {
     stop();
 }
 
-void monitor(Args args) {
+void monitor(Args args, Config config) {
     // clean up any leftover from a crash
     sem_unlink(CHERRIES_PULSE_READY_SEM);
     sem_t *ready_sem = sem_open(CHERRIES_PULSE_READY_SEM, O_CREAT | O_EXCL, 0600, 0);
@@ -168,7 +169,7 @@ void monitor(Args args) {
         exit(EXIT_FAILURE);
     }
 
-    startDaemon(args);
+    startDaemon(args, config);
     
     // wait until daemon is ready
     sem_wait(ready_sem);
