@@ -1,3 +1,9 @@
+v0.4.0 (4th August 2026)
+- Alerts added
+- New config command
+- Config file (.toml) in home directory
+- Updated help command
+
 v0.3.1 (19th July 2026)
 - New "prune" command added
 - Help command updated
