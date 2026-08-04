@@ -49,6 +49,7 @@ Args parseArgs(int argc, char* argv[]) {
             else if(strcmp(arg, "stop") == 0) p.command = STOP;
             else if(strcmp(arg, "process") == 0) p.command = PROCESS;
             else if(strcmp(arg, "prune") == 0) p.command = PRUNE;
+            else if(strcmp(arg, "config") == 0) p.command = CONFIG;
             else {
                 printf("Invalid command.\n");
                 exit(EXIT_FAILURE);

@@ -15,15 +15,110 @@
 #include "daemon.h"
 #include "log.h"
 
-void notifyAlert(Config config) {
+void formatMessage(
+    char *out, 
+    size_t size,
+    char *template,
+    char *resource,
+    float value
+) {
+    size_t value_string_size = 64;
+    char value_string[value_string_size];
+    snprintf(value_string, sizeof(value_string), "%.1f", value);
+
+    while (*template && size > 1) {
+        if (strncmp(template, "{resource}", 10) == 0) {
+            size_t len = strlen(resource);
+            memcpy(out, resource, len);
+            out += len;
+            size -= len;
+            template += 10;
+        }
+        else if (strncmp(template, "{value}", 7) == 0) {
+            size_t len = strlen(value_string);
+            memcpy(out, value_string, len);
+            out += len;
+            size -= len;
+            template += 7;
+        }
+        else {
+            *out++ = *template++;
+            size--;
+        }
+    }
+
+    *out = '\0';
+}
+
+void notifyDesktop(char *title, char *message, char *resource, float usage) {
+    size_t command_size = BUFFER_ONE_KB;
+    char command[command_size];
+    
+    size_t out_message_size = BUFFER_ONE_KB;
+    char out_message[out_message_size];
+    formatMessage(out_message, out_message_size, message, resource, usage);
+
+    snprintf(
+        command,
+        command_size,
+        "notify-send "
+        "-a \"Pulse\" "
+        "-i \"./assets/favicon.png\" "
+        "\"%s\" "
+        "\"%s\"",
+        title,
+        out_message
+    );
+
+    system(command);
+}
+
+void notifyDiscord(char *webhook, char *message, char *resource, float usage) {
+    size_t command_size = BUFFER_ONE_KB * 2;
+    char command[command_size];
+
+    size_t out_message_size = BUFFER_ONE_KB;
+    char out_message[out_message_size];
+    formatMessage(out_message, out_message_size, message, resource, usage);
+
+
+    snprintf(
+        command,
+        sizeof(command),
+        "curl -H \"Content-Type: application/json\" "
+        "-X POST "
+        "-d \"{\\\"content\\\":\\\"%s\\\"}\" "
+        "\"%s\" > /dev/null 2>&1",
+        out_message,
+        webhook
+    );
+
+    system(command);
+}
+
+void notifyCommand(char *command) {
+    system(command);
+}
+
+void notifyAlert(Config config, char *resource, float usage) {
     if(config.commandNotify.enabled) {
-        printf("Running command %s\n", config.commandNotify.command);
+        notifyCommand(config.commandNotify.command);
     }
     if(config.discordNotify.enabled) {
-        printf("Webhook %s, Message %s\n", config.discordNotify.webhook, config.discordNotify.message);
+        notifyDiscord(
+            config.discordNotify.webhook,
+            config.discordNotify.message,
+            resource,
+            usage
+        );
     }
     if(config.desktopNotify.enabled) {
-        printf("Title %s, Message %s\n", config.desktopNotify.title, config.desktopNotify.message);
+        notifyDesktop(
+            config.desktopNotify.title,
+            config.desktopNotify.message,
+            resource,
+            usage
+        );
     }
 }
 
@@ -210,16 +305,17 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
         }
     }
 
-    printf("%d\n", config->alerts.RAM.duration);
-    printf("%d\n", config->alerts.RAM.current_duration);
     if(config->alerts.CPU.duration <= config->alerts.CPU.current_duration) {
-        notifyAlert(*config);
+        notifyAlert(*config, "CPU", metrics.cpuUsage);
+        config->alerts.CPU.current_duration = 0;
     }
     if(config->alerts.RAM.duration <= config->alerts.RAM.current_duration) {
-        notifyAlert(*config);
+        notifyAlert(*config, "RAM", metrics.ramUsage);
+        config->alerts.RAM.current_duration = 0;
     }
     if(config->alerts.Disk.duration <= config->alerts.Disk.current_duration) {
-        notifyAlert(*config);
+        notifyAlert(*config, "Disk", metrics.diskUsage);
+        config->alerts.Disk.current_duration = 0;
     }
 }
 

@@ -69,6 +69,7 @@ typedef enum {
     HELP,
     PROCESS,
     PRUNE,
+    CONFIG,
 } Command;
 
 typedef struct {
@@ -99,5 +100,6 @@ extern void info(Args args);
 extern void monitor(Args args, Config config);
 extern void process(Args args);
 extern void prune(Args args);
+extern void config();
 
 #endif

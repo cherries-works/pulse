@@ -287,3 +287,18 @@ void prune(Args args) {
 
     stop();
 }
+
+void config() {
+    char *home = getenv("HOME");
+    if(home == NULL) return;
+
+    char path[BUFFER_ONE_KB];
+    snprintf(path, BUFFER_ONE_KB, "%s/%s/config.toml", home, R_CHERRIES_FOLDER_PULSE);
+    
+    char command[BUFFER_ONE_KB];
+    snprintf(command, BUFFER_ONE_KB, "nano %s", path);
+
+    system(command);
+
+    stop();
+}

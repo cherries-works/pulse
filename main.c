@@ -24,7 +24,7 @@
 #include "setup.h"
 #include "config.h"
 
-void handle(Args args, Config config) {
+void handle(Args args, Config _config) {
     Command cmd = args.command;
 
     switch (cmd) {
@@ -37,7 +37,7 @@ void handle(Args args, Config config) {
             break;
         
         case MONITOR:
-            monitor(args, config);
+            monitor(args, _config);
             break;
         
         case INFO:
@@ -54,6 +54,10 @@ void handle(Args args, Config config) {
         
         case PRUNE:
             prune(args);
+            break;
+
+        case CONFIG:
+            config();
             break;
         
         default:
