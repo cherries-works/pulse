@@ -19,8 +19,20 @@
 #include "config.h"
 
 void stop() {
+    _log(
+        L_INFO,
+        "Running stop() -> command stop"
+    );
+
+
     char *home = getenv("HOME");
-    if(home == NULL) return;
+    if(home == NULL) {
+        _log(
+            L_ERROR,
+            "No HOME environment variable"
+        );
+        return;
+    }
 
     char file_path[BUFFER_ONE_KB];
     char path_dir[BUFFER_ONE_KB / 2];
@@ -57,6 +69,11 @@ void stop() {
 }
 
 void help() {
+    _log(
+        L_INFO,
+        "Running help() -> command help"
+    );
+
     printf("%s%sCherries Pulse%s ───────────────────────────────────── v0.4.0 ──── \n", BOLD, RED, RESET);
     printf(" > %-20s %-20s\n", "monitor", "Monitors your device (default option).");
     printf("     %s%-20s %-20s%s\n", DIM, "--port [number]", "Determine the port where the website will be hosted (omits --web).", RESET);
@@ -81,6 +98,11 @@ void help() {
 }
 
 void top(Args args) {
+    _log(
+        L_INFO,
+        "Running top() -> command top"
+    );
+
     System system = getSystem(args);
     printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
     printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
@@ -93,6 +115,11 @@ void top(Args args) {
 }
 
 void info(Args args) {
+    _log(
+        L_INFO,
+        "Running info() -> command info"
+    );
+
     System system = getSystem(args);
     Info info = getInfo();
     printf(
@@ -162,6 +189,11 @@ void info(Args args) {
 }
 
 void monitor(Args args, Config config) {
+    _log(
+        L_INFO,
+        "Running monitor() -> command monitor"
+    );
+    
     // clean up any leftover from a crash
     sem_unlink(CHERRIES_PULSE_READY_SEM);
     sem_t *ready_sem = sem_open(CHERRIES_PULSE_READY_SEM, O_CREAT | O_EXCL, 0600, 0);
@@ -192,6 +224,11 @@ void monitor(Args args, Config config) {
 }
 
 void process(Args args) {
+    _log(
+        L_INFO,
+        "Running process() -> command process"
+    );
+
     System system = getSystem(args);
 
     Process process = {
@@ -213,6 +250,11 @@ void process(Args args) {
 }
 
 void prune(Args args) {
+    _log(
+        L_INFO,
+        "Running prune() -> command prune"
+    );
+
     Prune prune = args.prune;
     unsigned keep = args.keep;
     long unsigned until = unformatTime(args.until);
@@ -290,8 +332,19 @@ void prune(Args args) {
 }
 
 void config() {
+    _log(
+        L_INFO,
+        "Running config() -> command config"
+    );
+
     char *home = getenv("HOME");
-    if(home == NULL) return;
+    if(home == NULL) {
+        _log(
+            L_ERROR,
+            "No HOME environment variable"
+        );
+        return;
+    }
 
     char path[BUFFER_ONE_KB];
     snprintf(path, BUFFER_ONE_KB, "%s/%s/config.toml", home, R_CHERRIES_FOLDER_PULSE);

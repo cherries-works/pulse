@@ -5,6 +5,7 @@
 
 #include "config.h"
 #include "utils.h"
+#include "log.h"
 
 int isDigit(char ch) {
     return (ch >= '0' && ch <= '9') ? 1 : 0;
@@ -46,10 +47,21 @@ int parseWait(char *wait) {
 }
 
 Config parseToml() {
+    _log(
+        L_INFO,
+        "Parsing TOML file"
+    );
+
     Config config = {};
 
     char *home = getenv("HOME");
-    if(home == NULL) return config;
+    if(home == NULL) {
+        _log(
+            L_ERROR,
+            "No HOME environment variable"
+        );
+        return config;
+    }
 
     char path[BUFFER_ONE_KB];
     snprintf(path, BUFFER_ONE_KB, "%s/%s/config.toml", home, R_CHERRIES_FOLDER_PULSE);

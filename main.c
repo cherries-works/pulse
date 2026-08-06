@@ -25,6 +25,11 @@
 #include "config.h"
 
 void handle(Args args, Config _config) {
+    _log(
+        L_INFO,
+        "Handler is parsing..."
+    );
+
     Command cmd = args.command;
 
     switch (cmd) {
@@ -63,6 +68,11 @@ void handle(Args args, Config _config) {
         default:
             break;
     }
+
+    _log(
+        L_INFO,
+        "Finished running command"
+    );
 }
 
 pid_t render_pid = 0;

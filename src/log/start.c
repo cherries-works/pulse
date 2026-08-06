@@ -60,7 +60,13 @@ void setupLog() {
 
 time_t getCurrentLog() {
     char *home = getenv("HOME");
-    if(home == NULL) return 0;
+    if(home == NULL) {
+        _log(
+            L_ERROR,
+            "No HOME environment variable"
+        );
+        return 0;
+    }
 
     char path_file[BUFFER_ONE_KB];
     snprintf(path_file, BUFFER_ONE_KB, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
