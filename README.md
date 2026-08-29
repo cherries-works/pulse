@@ -25,6 +25,12 @@ A fast, simple, and efficient monitoring system that just works.
 * Charts library
 * Process sorting
 
+## Contributing
+
+cherries.works is open source and contributions are welcome.
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) to get started.
+
 ## Philosophy
 
 Pulse aims to be the fastest way to set up monitoring:
@@ -34,6 +40,8 @@ Pulse aims to be the fastest way to set up monitoring:
 * Self-hosted
 * Easy to deploy
 * Low resource usage
+
+See [PHILOSOPHY.md](docs/PHILOSOPHY.md) for more information.
 
 ## Installation
 
