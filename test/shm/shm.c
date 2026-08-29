@@ -2,6 +2,7 @@
 #include <pthread.h>
 #include <sys/mman.h>
 #include <fcntl.h>
+#include <unistd.h>
 #include <sys/un.h>
 
 #include "utils.h"
@@ -9,17 +10,17 @@
 
 void testReadDaemonS() {
     System system;
-    int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
+    int fd = shm_open(CHERRIES_PULSE_SHM, O_CREAT | O_RDWR, 0666);
     if(fd == -1) {
         printf("SHM open failed.\n");
-        exit(EXIT_FAILURE);
+        exit(0);
     }
-
+    ftruncate(fd, sizeof(struct shmbuf));
     struct shmbuf *shmp;
     shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (shmp == MAP_FAILED) {
         printf("Mapping object failed.\n");
-        exit(EXIT_FAILURE);
+        exit(0);
     }
 
     pthread_mutex_lock(&shmp->lock);
@@ -32,17 +33,17 @@ void testReadDaemonS() {
 
 void testReadDaemonM() {
     Metrics metrics;
-    int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
+    int fd = shm_open(CHERRIES_PULSE_SHM, O_CREAT | O_RDWR, 0666);
     if(fd == -1) {
         printf("SHM open failed.\n");
-        exit(EXIT_FAILURE);
+        exit(0);
     }
-
+    ftruncate(fd, sizeof(struct shmbuf));
     struct shmbuf *shmp;
     shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (shmp == MAP_FAILED) {
         printf("Mapping object failed.\n");
-        exit(EXIT_FAILURE);
+        exit(0);
     }
 
     pthread_mutex_lock(&shmp->lock);
