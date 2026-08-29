@@ -2,7 +2,7 @@
 
 Thanks for wanting to contribute to cherries.works.
 
-We build small, fast, reliable developer tools. Contributions are welcome — whether that's code, documentation, bug reports, tests, or ideas.
+We try to build fast, and efficient tools for developers. Contributions are welcome, whether it is for code, documentation, bug reports, tests, or ideas.
 
 ## Before you start
 
