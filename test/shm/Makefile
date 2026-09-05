@@ -1,11 +1,11 @@
 CC=gcc
 INCLUDES=-I "../../include"
 
-progname = shm
+progname = test_shm
 bin = dist
 target = $(bin)/$(progname)
 
-main = shm.c
+main = test_shm.c
 utils = ../../src/utils/constants.c
 src = $(utils) $(main)
 
