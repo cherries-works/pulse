@@ -1,0 +1,49 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc make
+
+      - name: Build
+        run: make
+
+      - name: Package
+        run: |
+          mkdir -p release
+
+          tar -czf release/pulse_Linux_x86_64.tar.gz \
+            -C dist \
+            pulse
+
+      - name: Generate checksums
+        run: |
+          cd release
+          sha256sum pulse_Linux_x86_64.tar.gz > checksums.txt
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          files: |
+            release/pulse_Linux_x86_64.tar.gz
+            release/checksums.txt
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
