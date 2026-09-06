@@ -352,7 +352,8 @@ void config() {
     char command[BUFFER_ONE_KB];
     snprintf(command, BUFFER_ONE_KB, "nano %s", path);
 
-    system(command);
+    int result = system(command);
+    if(result <= 0) return;
 
     stop();
 }

@@ -31,7 +31,8 @@ void routeNotFound(
         time(NULL)
     );
 
-    write(new_socket, response, strlen(response));
+    ssize_t result = write(new_socket, response, strlen(response));
+    if(result <= 0) return;
 }
 
 void routeInvalidMethod(int new_socket, char *response, size_t response_size) {
@@ -48,7 +49,8 @@ void routeInvalidMethod(int new_socket, char *response, size_t response_size) {
         time(NULL)
     );
 
-    write(new_socket, response, strlen(response));
+    ssize_t result = write(new_socket, response, strlen(response));
+    if(result <= 0) return;
 }
 
 void routeHTML(char *file_path, int new_socket, char *response, size_t response_size) {
@@ -64,14 +66,16 @@ void routeHTML(char *file_path, int new_socket, char *response, size_t response_
         "Content-Length: %ld\r\n\r\n",
         file_size
     );
-    write(new_socket, response, strlen(response));
-    
+    ssize_t result = write(new_socket, response, strlen(response));
+  
+    if(result <= 0) return;
     FILE *file_ptr = fopen(file_path, "r");
     size_t size = fread(file_buffer, 1, file_buffer_size - 1, file_ptr);
     file_buffer[size] = '\0';
     
     fclose(file_ptr);
-    write(new_socket, file_buffer, size);
+    result = write(new_socket, file_buffer, size);
+    if(result <= 0) return;
 }
 
 void routeCSS(char *file_path, int new_socket, char *response, size_t response_size) {
@@ -87,14 +91,17 @@ void routeCSS(char *file_path, int new_socket, char *response, size_t response_s
         "Content-Length: %ld\r\n\r\n",
         file_size
     );
-    write(new_socket, response, strlen(response));
+
+    ssize_t result = write(new_socket, response, strlen(response));
+    if(result <= 0) return;;
 
     FILE *file_ptr = fopen(file_path, "r");
     size_t size = fread(file_buffer, 1, file_buffer_size - 1, file_ptr);
     file_buffer[size] = '\0';
 
     fclose(file_ptr);
-    write(new_socket, file_buffer, size);
+    result = write(new_socket, file_buffer, size);
+    if(result <= 0) return;
 }
 
 void routeJS(char *file_path, int new_socket, char *response, size_t response_size) {
@@ -110,14 +117,17 @@ void routeJS(char *file_path, int new_socket, char *response, size_t response_si
         "Content-Length: %ld\r\n\r\n",
         file_size
     );
-    write(new_socket, response, strlen(response));
+
+    ssize_t result = write(new_socket, response, strlen(response));
+    if(result <= 0) return;;
 
     FILE *file_ptr = fopen(file_path, "r");
     size_t size = fread(file_buffer, 1, file_buffer_size - 1, file_ptr);
     file_buffer[size] = '\0';
 
     fclose(file_ptr);
-    write(new_socket, file_buffer, size);
+    result = write(new_socket, file_buffer, size);
+    if(result <= 0) return;
 }
 
 void routeImage(char *file_path, int new_socket, char *response, size_t response_size) {
@@ -133,14 +143,17 @@ void routeImage(char *file_path, int new_socket, char *response, size_t response
         "Content-Length: %ld\r\n\r\n",
         file_size
     );
-    write(new_socket, response, strlen(response));
+
+    ssize_t result = write(new_socket, response, strlen(response));
+    if(result <= 0) return;;
 
     FILE *file_ptr = fopen(file_path, "r");
     size_t size = fread(file_buffer, 1, file_buffer_size - 1, file_ptr);
     file_buffer[size] = '\0';
 
     fclose(file_ptr);
-    write(new_socket, file_buffer, file_size);
+    result = write(new_socket, file_buffer, file_size);
+    if(result <= 0) return;
 }
 
 void routeJSON(
@@ -156,7 +169,8 @@ void routeJSON(
         NULL
     );
 
-    write(new_socket, response, strlen(response));
+    ssize_t result = write(new_socket, response, strlen(response));
+    if(result <= 0) return;
 }
 
 void routeStatic(

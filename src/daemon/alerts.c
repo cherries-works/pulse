@@ -70,7 +70,8 @@ void notifyDesktop(char *title, char *message, char *resource, float usage) {
         out_message
     );
 
-    system(command);
+    int result = system(command);
+    if(result <= 0) return;
 }
 
 void notifyDiscord(char *webhook, char *message, char *resource, float usage) {
@@ -93,11 +94,13 @@ void notifyDiscord(char *webhook, char *message, char *resource, float usage) {
         webhook
     );
 
-    system(command);
+    int result = system(command);
+    if(result <= 0) return;
 }
 
 void notifyCommand(char *command) {
-    system(command);
+    int result = system(command);
+    if(result <= 0) return;
 }
 
 void notifyAlert(Config config, char *resource, float usage) {

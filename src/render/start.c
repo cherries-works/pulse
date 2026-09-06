@@ -50,7 +50,8 @@ void startRender(Args args) {
 
         if (r > 0) {
             char c;
-            read(STDIN_FILENO, &c, 1);
+            ssize_t result = read(STDIN_FILENO, &c, 1);
+            if(result <= 0) break;
             if(c == 'd') break;
             if(c == 'q') {
                 tcsetattr(STDIN_FILENO, TCSANOW, &oldt);

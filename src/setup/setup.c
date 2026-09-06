@@ -39,7 +39,8 @@ int setup() {
 
         char conf[BUFFER_ONE_KB];
         size_t n = readFile("./src/config/default.toml", BUFFER_ONE_KB, conf);
-        write(fd, conf, n);
+        ssize_t result = write(fd, conf, n);
+        if(result <= 0) return -1;
     }
 
     snprintf(path, BUFFER_ONE_KB, "%s/%s/state", home, R_CHERRIES_FOLDER_PULSE);
