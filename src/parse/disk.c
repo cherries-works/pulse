@@ -5,7 +5,7 @@
 #include "utils.h"
 #include "parse.h"
 
-Disk getDisk(char *buffer) {
+Disk getDisk(size_t size, char *buffer) {
     struct statvfs stat;
     statvfs("/", &stat);
 

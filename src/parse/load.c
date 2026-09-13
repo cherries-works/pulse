@@ -4,7 +4,7 @@
 #include "utils.h"
 #include "parse.h"
 
-Load getLoad(char *buffer) {
+Load getLoad(size_t size, char *buffer) {
     Load load = { 0.0f, 0.0f, 0.0f };
     char *line = buffer;
 

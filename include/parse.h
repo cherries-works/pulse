@@ -116,9 +116,9 @@ extern IoAverage parseIoUsage(Disk snapshot2, Disk snapshot1);
 
 extern Cpu getCpu(size_t size, char *buffer);
 extern Memory getMemory(size_t size, char *buffer);
-extern Network getNetwork(char *buffer);
-extern Load getLoad(char *buffer);
-extern Disk getDisk(char *buffer);
+extern Network getNetwork(size_t size, char *buffer);
+extern Load getLoad(size_t size, char *buffer);
+extern Disk getDisk(size_t size, char *buffer);
 extern System getSystem(Args args);
 extern Metrics getMetrics(System system2, System system1);
 extern Info getInfo();

@@ -4,7 +4,7 @@
 #include "utils.h"
 #include "parse.h"
 
-Network getNetwork(char *buffer) {
+Network getNetwork(size_t size, char *buffer) {
     unsigned long rx = 0;
     unsigned long tx = 0;
 

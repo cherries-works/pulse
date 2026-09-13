@@ -11,7 +11,7 @@ System getSystem(
     size_t stat_buffer_size = BUFFER_ONE_KB * 6;
     char stat_buffer[stat_buffer_size];
     readFile(PROC_STAT_FILE, stat_buffer_size, stat_buffer);
-    Cpu cpu = getCpu(BUFFER_ONE_KB, stat_buffer);
+    Cpu cpu = getCpu(stat_buffer_size, stat_buffer);
 
     size_t mem_buffer_size = BUFFER_ONE_KB * 2;
     char mem_buffer[mem_buffer_size];
@@ -21,17 +21,17 @@ System getSystem(
     size_t disk_buffer_size = BUFFER_ONE_KB * 2;
     char disk_buffer[disk_buffer_size];
     readFile(PROC_DISK_FILE, disk_buffer_size, disk_buffer);
-    Disk disk = getDisk(disk_buffer);
+    Disk disk = getDisk(disk_buffer_size, disk_buffer);
 
     size_t load_buffer_size = BUFFER_ONE_KB;
     char load_buffer[load_buffer_size];
     readFile(PROC_LOAD_FILE, load_buffer_size, load_buffer);
-    Load load = getLoad(load_buffer);
+    Load load = getLoad(load_buffer_size, load_buffer);
 
     size_t network_buffer_size = BUFFER_ONE_KB * 8;
     char network_buffer[network_buffer_size];
     readFile(PROC_NET_FILE, network_buffer_size, network_buffer);
-    Network network = getNetwork(network_buffer);
+    Network network = getNetwork(network_buffer_size, network_buffer);
 
     size_t uptime_buffer_size = BUFFER_ONE_KB * 2;
     char uptime_buffer[uptime_buffer_size];
