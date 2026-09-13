@@ -54,10 +54,42 @@ unsigned long parseMemoryKey(char *buffer, char *target_key) {
 }
 
 Memory getMemory(size_t size, char *buffer) {
-    readFile(PROC_MEM_FILE, size, buffer);
-    unsigned long memory_total = parseMemoryKey(buffer, "MemTotal");
-    readFile(PROC_MEM_FILE, size, buffer);
-    unsigned long memory_available = parseMemoryKey(buffer, "MemAvailable");
-    Memory memory = { memory_total, memory_available };
+    unsigned long memory_total = 0;
+    unsigned long memory_available = 0;
+
+    char *line = buffer;
+
+    while (*line) {
+        char *next = strchr(line, '\n');
+
+        if (next)
+            *next = '\0';
+        else
+            break;
+
+        char *colon = strchr(line, ':');
+
+        if (colon) {
+            *colon = '\0';
+            trim(line);
+
+            char *value = colon + 1;
+            trim(value);
+
+            if (strcmp(line, "MemTotal") == 0) {
+                memory_total = strtoull(value, NULL, 10);
+            } else if (strcmp(line, "MemAvailable") == 0) {
+                memory_available = strtoull(value, NULL, 10);
+            }
+        }
+
+        line = next + 1;
+    }
+
+    Memory memory = {
+        memory_total,
+        memory_available
+    };
+
     return memory;
 }
