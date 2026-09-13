@@ -31,6 +31,9 @@ dep = $(obj:.o=.d)
 
 all: $(target)
 
+test:
+	$(MAKE) -C test/unit
+
 debug: LDFLAGS += $(EXTRA_FLAGS_DEBUG)
 debug: CFLAGS += $(EXTRA_FLAGS_DEBUG)
 debug: $(target)
@@ -59,4 +62,4 @@ $(bin):
 clean:
 	rm -rf $(build) $(bin)
 
-.PHONY: all clean
+.PHONY: all test clean
