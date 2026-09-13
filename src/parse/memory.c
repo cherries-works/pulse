@@ -52,3 +52,12 @@ unsigned long parseMemoryKey(char *buffer, char *target_key) {
     if(value == NULL) return 1;
     return strtoull(value, NULL, 10);
 }
+
+Memory getMemory(size_t size, char *buffer) {
+    readFile(PROC_MEM_FILE, size, buffer);
+    unsigned long memory_total = parseMemoryKey(buffer, "MemTotal");
+    readFile(PROC_MEM_FILE, size, buffer);
+    unsigned long memory_available = parseMemoryKey(buffer, "MemAvailable");
+    Memory memory = { memory_total, memory_available };
+    return memory;
+}

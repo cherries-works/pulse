@@ -15,13 +15,9 @@ System getSystem(
 
     size_t mem_buffer_size = BUFFER_ONE_KB * 2;
     char mem_buffer[mem_buffer_size];
+    readFile(PROC_MEM_FILE, mem_buffer_size, mem_buffer);
+    Memory memory = getMemory(mem_buffer_size, mem_buffer);
 
-    readFile(PROC_MEM_FILE, mem_buffer_size, mem_buffer);
-    unsigned long memory_total = parseMemoryKey(mem_buffer, "MemTotal");
-    readFile(PROC_MEM_FILE, mem_buffer_size, mem_buffer);
-    unsigned long memory_available = parseMemoryKey(mem_buffer, "MemAvailable");
-    Memory memory = { memory_total, memory_available };
-   
     size_t disk_buffer_size = BUFFER_ONE_KB * 2;
     char disk_buffer[disk_buffer_size];
     readFile(PROC_DISK_FILE, disk_buffer_size, disk_buffer);
