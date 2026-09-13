@@ -43,7 +43,7 @@ Network getNetwork(size_t size, char *buffer) {
             if(next) *next = '\0';
             else continue;
 
-            rx += strtoull(line, NULL, 10);
+            rx += strtoul(line, NULL, 10);
             if(next) line = next + 1;
             else line = line + strlen(line);
         }
@@ -55,7 +55,7 @@ Network getNetwork(size_t size, char *buffer) {
             if(next) *next = '\0';
             else continue;
 
-            tx += strtoull(line, NULL, 10);
+            tx += strtoul(line, NULL, 10);
             
             if(next) line = next + 1;
             else line = line + strlen(line);
