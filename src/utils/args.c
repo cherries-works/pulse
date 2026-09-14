@@ -1,3 +1,4 @@
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
@@ -122,6 +123,8 @@ Args parseArgs(int argc, char* argv[]) {
         if(strcmp(arg, "--port") == 0) {
             if(i == argc - 1) continue;
             int port = atoi(argv[i + 1]);
+            if (port < 1024) port = 1024;
+            else if (port > UINT16_MAX) port = UINT16_MAX;
             p.web = 1;
             p.port = (uint16_t)port;
         }
