@@ -114,3 +114,41 @@ void render(
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
     printf("Press 'd' to detach | Press 'q' to quit\n");
 }
+
+void renderSnapshot(
+    Args args,
+    System system,
+    Metrics metrics 
+) {
+    size_t uptime_buffer_text_size = BUFFER_ONE_KB / 8;
+    char uptime_buffer_text[uptime_buffer_text_size];
+    formatTimeHumanReadable(system.uptime, uptime_buffer_text, uptime_buffer_text_size);
+    printf("%s%sCherries Pulse%s ───────────────── %d°C ─────────────────── ", BOLD, RED, RESET, system.temp / 1000);
+
+    printf("%-7s %s%-20s%s\n",
+        "Uptime:",
+        BOLD,
+        uptime_buffer_text,
+        RESET
+    );
+
+    printf("┌── RESOURCES ────────────────────────┐ ┌── SYSTEM LOAD ──────────────────┐\n");
+    printMetric("CPU", metrics.cpuUsage, "1 min:", system.load.load1);
+    printMetric("RAM", metrics.ramUsage, "5 min:", system.load.load5);
+    printMetric("DISK", metrics.diskUsage, "15 min:", system.load.load15);
+    printf("└─────────────────────────────────────┘ └─────────────────────────────────┘\n");
+
+
+    printf("┌── NETWORK ──────────────────────────┐ ┌── DISK I/O ─────────────────────┐\n");
+    printTransferRow("RX:", metrics.rx, "READ:", metrics.read);
+    printTransferRow("TX:", metrics.tx / 1024.0f, "WRITE:", metrics.write);
+    printf("└─────────────────────────────────────┘ └─────────────────────────────────┘\n");
+
+
+    printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
+    for(unsigned i = 0; i < args.processes; i++) {
+        Process process = system.processes[i];
+        printProcess(process, system);
+    }
+    printf("└─────────────────────────────────────────────────────────────────────────┘\n");
+}
