@@ -26,6 +26,8 @@ Args parseArgs(int argc, char* argv[]) {
     Args p = {
         .web = false,
         .headless = false,
+        
+        .json = false,
 
         .command = MONITOR,
         .sort = RAM,
@@ -33,6 +35,7 @@ Args parseArgs(int argc, char* argv[]) {
         .port = 8080,
         .processes = 3,
         .process = 0,
+        
 
         .prune = ALL,
         .keep = 0,
@@ -50,6 +53,7 @@ Args parseArgs(int argc, char* argv[]) {
             else if(strcmp(arg, "process") == 0) p.command = PROCESS;
             else if(strcmp(arg, "prune") == 0) p.command = PRUNE;
             else if(strcmp(arg, "config") == 0) p.command = CONFIG;
+            else if(strcmp(arg, "snapshot") == 0) p.command = SNAPSHOT;
             else {
                 printf("Invalid command.\n");
                 exit(EXIT_FAILURE);
@@ -124,6 +128,10 @@ Args parseArgs(int argc, char* argv[]) {
             int port = atoi(argv[i + 1]);
             p.web = 1;
             p.port = (uint16_t)port;
+        }
+
+        if(strcmp(arg, "--json") == 0) {
+            p.json = true;
         }
 
         if(strcmp(arg, "--web") == 0) {

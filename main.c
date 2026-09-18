@@ -65,6 +65,10 @@ void handle(Args args, Config _config) {
             config();
             break;
         
+        case SNAPSHOT:
+            snapshot(args);
+            break;
+        
         default:
             break;
     }

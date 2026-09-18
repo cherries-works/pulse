@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <wait.h>
+#include <unistd.h>
 
 #include "parse.h"
 #include "render.h"
@@ -356,4 +357,83 @@ void config() {
     if(result <= 0) return;
 
     stop();
+}
+
+void snapshot(Args args) {
+    System system_snapshot = getSystem(args);
+    sleep(1);
+    System prev_system_snapshot = getSystem(args);
+    Metrics metrics = getMetrics(system_snapshot, prev_system_snapshot);
+
+    if(args.json) {
+        char snapshot_json[BUFFER_ONE_KB * 32];
+        size_t snapshot_json_len = 0;
+    
+        snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len,
+            "{"
+            "\"timestamp\":%ld,"
+            "\"metrics\":{\"cpuUsage\":%.2f,\"ramUsage\":%.2f,\"diskUsage\":%.2f,\"read\":%.2f,\"write\":%.2f,\"rx\":%.2f,\"tx\":%.2f},"
+            "\"cpu\":{\"idle\":%ld,\"total\":%ld,\"processes\":%ld},"
+            "\"disk\":{\"available\":%llu,\"total\":%llu,\"reads\":%llu,\"writes\":%llu},"
+            "\"memory\":{\"available\":%ld,\"total\":%ld},"
+            "\"network\":{\"rx\":%ld,\"tx\":%ld},"
+            "\"load\":{\"load1\":%.2f,\"load5\":%.2f,\"load15\":%.2f},"
+            "\"processes\":[",
+            time(NULL),
+
+            metrics.cpuUsage,
+            metrics.ramUsage,
+            metrics.diskUsage,
+            metrics.read,
+            metrics.write,
+            metrics.rx,
+            metrics.tx,
+            
+            system_snapshot.cpu.idle,
+            system_snapshot.cpu.total,
+            system_snapshot.cpu.processes,
+    
+            system_snapshot.disk.available,
+            system_snapshot.disk.total,
+            system_snapshot.disk.read,
+            system_snapshot.disk.write,
+    
+            system_snapshot.memory.available,
+            system_snapshot.memory.total,
+    
+            system_snapshot.network.rx,
+            system_snapshot.network.tx,
+    
+            system_snapshot.load.load1,
+            system_snapshot.load.load5,
+            system_snapshot.load.load15
+        );
+    
+        for (unsigned i = 0; i < system_snapshot.processes_count; i++) {
+            if (i != 0) {
+                snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len, ",");
+            }
+    
+            snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len,
+                "{\"pid\":%d,\"ram\":%ld,\"cpu\":%ld,\"name\":\"%s\"}",
+                system_snapshot.processes[i].pid,
+                system_snapshot.processes[i].ram,
+                system_snapshot.processes[i].cpu,
+                system_snapshot.processes[i].name
+            );
+        }
+    
+        snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len,
+            "],"
+            "\"uptime\":%ld,"
+            "\"temp\":%d"
+            "}",
+            system_snapshot.uptime,
+            system_snapshot.temp
+        );
+
+        printf("%s", snapshot_json);
+    } else {
+        renderSnapshot(args, system_snapshot, metrics);
+    }
 }

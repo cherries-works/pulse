@@ -70,6 +70,7 @@ typedef enum {
     PROCESS,
     PRUNE,
     CONFIG,
+    SNAPSHOT,
 } Command;
 
 typedef struct {
@@ -77,6 +78,8 @@ typedef struct {
     
     bool web; // for the MONITOR command
     bool headless; // for the MONITOR command
+    
+    bool json; // for the SNAPSHOT command
 
     Sort sort; // for the MONITOR / TOP command
 
@@ -101,5 +104,6 @@ extern void monitor(Args args, Config config);
 extern void process(Args args);
 extern void prune(Args args);
 extern void config();
+extern void snapshot(Args args);
 
 #endif
