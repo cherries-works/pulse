@@ -1,3 +1,13 @@
+v0.4.1 (18th September 2026)
+- New snapshot command
+- Added --json arguments
+  > for snapshot
+  > for info
+- Overflow fixes (port)
+- Mobile friendly UI
+- Added tests
+- Automated CI/CD pipeline
+
 v0.4.0 (4th August 2026)
 - Alerts added
 - New config command
