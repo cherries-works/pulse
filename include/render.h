@@ -10,6 +10,16 @@ extern void render(
     System system,
     Metrics metrics
 );
+extern void renderSnapshot(
+    Args args,
+    System system,
+    Metrics metrics
+);
+extern void renderInfo(
+    Args args,
+    System system,
+    Info info
+);
 
 extern void printProcess(
     Process process,

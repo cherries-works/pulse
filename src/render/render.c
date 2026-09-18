@@ -114,3 +114,111 @@ void render(
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
     printf("Press 'd' to detach | Press 'q' to quit\n");
 }
+
+void renderSnapshot(
+    Args args,
+    System system,
+    Metrics metrics 
+) {
+    size_t uptime_buffer_text_size = BUFFER_ONE_KB / 8;
+    char uptime_buffer_text[uptime_buffer_text_size];
+    formatTimeHumanReadable(system.uptime, uptime_buffer_text, uptime_buffer_text_size);
+    printf("%s%sCherries Pulse%s ───────────────── %d°C ─────────────────── ", BOLD, RED, RESET, system.temp / 1000);
+
+    printf("%-7s %s%-20s%s\n",
+        "Uptime:",
+        BOLD,
+        uptime_buffer_text,
+        RESET
+    );
+
+    printf("┌── RESOURCES ────────────────────────┐ ┌── SYSTEM LOAD ──────────────────┐\n");
+    printMetric("CPU", metrics.cpuUsage, "1 min:", system.load.load1);
+    printMetric("RAM", metrics.ramUsage, "5 min:", system.load.load5);
+    printMetric("DISK", metrics.diskUsage, "15 min:", system.load.load15);
+    printf("└─────────────────────────────────────┘ └─────────────────────────────────┘\n");
+
+
+    printf("┌── NETWORK ──────────────────────────┐ ┌── DISK I/O ─────────────────────┐\n");
+    printTransferRow("RX:", metrics.rx, "READ:", metrics.read);
+    printTransferRow("TX:", metrics.tx / 1024.0f, "WRITE:", metrics.write);
+    printf("└─────────────────────────────────────┘ └─────────────────────────────────┘\n");
+
+
+    printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
+    for(unsigned i = 0; i < args.processes; i++) {
+        Process process = system.processes[i];
+        printProcess(process, system);
+    }
+    printf("└─────────────────────────────────────────────────────────────────────────┘\n");
+}
+
+void renderInfo(
+    Args args,
+    System system,
+    Info info
+) {
+    printf(
+        "%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n",
+        BOLD,
+        RED,
+        RESET
+    );
+
+    printf("┌── INFO ─────────────────────────────────────────────────────────────────┐\n");
+    printf(
+        "│ %-15s %54s  │\n",
+        "OS",
+        info.os
+    );
+
+    printf(
+        "│ %-15s %54s  │\n",
+        "Architecture",
+        info.kernel.machine
+    );
+
+    printf(
+        "│ %-15s %54s  │\n",
+        "Kernel",
+        info.kernel.sysname
+    );
+
+    printf(
+        "│ %-15s %54s  │\n",
+        "Hostname",
+        info.hostname
+    );
+
+    printf(
+        "│ %-15s %51ld GB  │\n",
+        "RAM",
+        (system.memory.total) / 1024 / 1024
+    );
+
+    printf(
+        "│ %-15s %54s  │\n",
+        "CPU",
+        info.cpu_model
+    );
+
+    printf(
+        "│ %-15s %54d  │\n",
+        "Cores",
+        info.cores
+    );
+
+    printf(
+        "│ %-15s %54s  │\n",
+        "Desktop",
+        info.desktop
+    );
+
+    printf(
+        "│ %-15s %54s  │\n",
+        "Session",
+        info.session
+    );
+
+    printf("└─────────────────────────────────────────────────────────────────────────┘\n");
+}

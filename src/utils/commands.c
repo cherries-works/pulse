@@ -8,6 +8,7 @@
 #include <fcntl.h>
 #include <signal.h>
 #include <wait.h>
+#include <unistd.h>
 
 #include "parse.h"
 #include "render.h"
@@ -69,10 +70,10 @@ void stop() {
 }
 
 void help() {
-    _log(
-        L_INFO,
-        "Running help() -> command help"
-    );
+    // _log(
+    //     L_INFO,
+    //     "Running help() -> command help"
+    // );
 
     printf("%s%sCherries Pulse%s ───────────────────────────────────── v0.4.0 ──── \n", BOLD, RED, RESET);
     printf(" > %-20s %-20s\n", "monitor", "Monitors your device (default option).");
@@ -82,26 +83,29 @@ void help() {
     printf("     %s%-20s %-20s%s\n", DIM, "--headless", "Runs program without TUI (currently only useful with --web).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that are being monitored (max. 10).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
+    printf(" > %-20s %-20s\n", "info", "Displays system information.");
+    printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the info of the system in JSON format.", RESET);
     printf(" > %-20s %-20s\n", "stop", "Stops all running processes by Pulse.");
     printf(" > %-20s %-20s\n", "help", "Prints this.");
-    printf(" > %-20s %-20s\n", "info", "Displays system information.");
     printf(" > %-20s %-20s\n", "top", "Prints top processes that are currently running.");
     printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that get printed (max. 100).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
+    printf(" > %-20s %-20s\n", "snapshot", "The current snapshot of the system.");
+    printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the info of the system in JSON format.", RESET);
     printf(" > %-20s %-20s\n", "prune", "Prunes either logs, history or both.");
     printf("     %s%-20s %-20s%s\n", DIM, "--keep", "Amount of files to be kept.", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--until", "The date up until when history/logs are kept. (YYYY-MM-DD)", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--prune", "What is suppose to be pruned (history/logs/all).", RESET);
     printf(" > %-20s %-20s\n", "config", "Configures ~/.cherries-works/pulse/config-toml file via nano.");
     printf("\n");
-    stop();
+    // stop();
 }
 
 void top(Args args) {
-    _log(
-        L_INFO,
-        "Running top() -> command top"
-    );
+    // _log(
+    //     L_INFO,
+    //     "Running top() -> command top"
+    // );
 
     System system = getSystem(args);
     printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
@@ -111,81 +115,50 @@ void top(Args args) {
         printProcess(process, system);
     }
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
-    stop();
+    // stop();
 }
 
 void info(Args args) {
-    _log(
-        L_INFO,
-        "Running info() -> command info"
-    );
+    // _log(
+    //     L_INFO,
+    //     "Running info() -> command info"
+    // );
 
     System system = getSystem(args);
     Info info = getInfo();
-    printf(
-        "%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n",
-        BOLD,
-        RED,
-        RESET
-    );
+    if(args.json) {
+        char snapshot_json[BUFFER_ONE_KB * 32];
+        size_t snapshot_json_len = 0;
+    
+        snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len,
+            "{"
+            "\"timestamp\":%ld,"
+            "\"os\":\"%s\","
+            "\"cores\":\"%d\","
+            "\"cpu_model\":\"%s\","
+            "\"desktop\":\"%s\","
+            "\"hostname\":\"%s\","
+            "\"kernel\":{\"machine\":\"%s\",\"release\":\"%s\",\"sysname\":\"%s\"},"
+            "\"session\":\"%s\""
+            "}",
+            time(NULL),
+            info.os,
+            info.cores,
+            info.cpu_model,
+            info.desktop,
+            info.hostname,
+            info.kernel.machine,
+            info.kernel.release,
+            info.kernel.sysname,
+            info.session
+        );
 
-    printf("┌── INFO ─────────────────────────────────────────────────────────────────┐\n");
-    printf(
-        "│ %-15s %54s  │\n",
-        "OS",
-        info.os
-    );
+        printf("%s", snapshot_json);
+    } else {
+        renderInfo(args, system, info);
+    }
 
-    printf(
-        "│ %-15s %54s  │\n",
-        "Architecture",
-        info.kernel.machine
-    );
-
-    printf(
-        "│ %-15s %54s  │\n",
-        "Kernel",
-        info.kernel.sysname
-    );
-
-    printf(
-        "│ %-15s %54s  │\n",
-        "Hostname",
-        info.hostname
-    );
-
-    printf(
-        "│ %-15s %51ld GB  │\n",
-        "RAM",
-        (system.memory.total) / 1024 / 1024
-    );
-
-    printf(
-        "│ %-15s %54s  │\n",
-        "CPU",
-        info.cpu_model
-    );
-
-    printf(
-        "│ %-15s %54d  │\n",
-        "Cores",
-        info.cores
-    );
-
-    printf(
-        "│ %-15s %54s  │\n",
-        "Desktop",
-        info.desktop
-    );
-
-    printf(
-        "│ %-15s %54s  │\n",
-        "Session",
-        info.session
-    );
-
-    printf("└─────────────────────────────────────────────────────────────────────────┘\n");
-    stop();
+    // stop();
 }
 
 void monitor(Args args, Config config) {
@@ -356,4 +329,83 @@ void config() {
     if(result <= 0) return;
 
     stop();
+}
+
+void snapshot(Args args) {
+    System system_snapshot = getSystem(args);
+    sleep(1);
+    System prev_system_snapshot = getSystem(args);
+    Metrics metrics = getMetrics(system_snapshot, prev_system_snapshot);
+
+    if(args.json) {
+        char snapshot_json[BUFFER_ONE_KB * 32];
+        size_t snapshot_json_len = 0;
+    
+        snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len,
+            "{"
+            "\"timestamp\":%ld,"
+            "\"metrics\":{\"cpuUsage\":%.2f,\"ramUsage\":%.2f,\"diskUsage\":%.2f,\"read\":%.2f,\"write\":%.2f,\"rx\":%.2f,\"tx\":%.2f},"
+            "\"cpu\":{\"idle\":%ld,\"total\":%ld,\"processes\":%ld},"
+            "\"disk\":{\"available\":%llu,\"total\":%llu,\"reads\":%llu,\"writes\":%llu},"
+            "\"memory\":{\"available\":%ld,\"total\":%ld},"
+            "\"network\":{\"rx\":%ld,\"tx\":%ld},"
+            "\"load\":{\"load1\":%.2f,\"load5\":%.2f,\"load15\":%.2f},"
+            "\"processes\":[",
+            time(NULL),
+
+            metrics.cpuUsage,
+            metrics.ramUsage,
+            metrics.diskUsage,
+            metrics.read,
+            metrics.write,
+            metrics.rx,
+            metrics.tx,
+            
+            system_snapshot.cpu.idle,
+            system_snapshot.cpu.total,
+            system_snapshot.cpu.processes,
+    
+            system_snapshot.disk.available,
+            system_snapshot.disk.total,
+            system_snapshot.disk.read,
+            system_snapshot.disk.write,
+    
+            system_snapshot.memory.available,
+            system_snapshot.memory.total,
+    
+            system_snapshot.network.rx,
+            system_snapshot.network.tx,
+    
+            system_snapshot.load.load1,
+            system_snapshot.load.load5,
+            system_snapshot.load.load15
+        );
+    
+        for (unsigned i = 0; i < system_snapshot.processes_count; i++) {
+            if (i != 0) {
+                snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len, ",");
+            }
+    
+            snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len,
+                "{\"pid\":%d,\"ram\":%ld,\"cpu\":%ld,\"name\":\"%s\"}",
+                system_snapshot.processes[i].pid,
+                system_snapshot.processes[i].ram,
+                system_snapshot.processes[i].cpu,
+                system_snapshot.processes[i].name
+            );
+        }
+    
+        snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len,
+            "],"
+            "\"uptime\":%ld,"
+            "\"temp\":%d"
+            "}",
+            system_snapshot.uptime,
+            system_snapshot.temp
+        );
+
+        printf("%s", snapshot_json);
+    } else {
+        renderSnapshot(args, system_snapshot, metrics);
+    }
 }
