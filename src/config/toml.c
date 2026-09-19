@@ -153,6 +153,17 @@ Config parseToml() {
                 if(strcmp(current_target, "disk") == 0) config.alerts.Disk.duration = duration;
             }
 
+            if(startsWith(buf, strlen(buf), "cooldown", strlen("cooldown"))){
+                buf = eq + 1;
+                trim(buf);
+                
+                int cooldown = parseWait(buf);
+
+                if(strcmp(current_target, "ram") == 0) config.alerts.RAM.cooldown = cooldown;
+                if(strcmp(current_target, "cpu") == 0) config.alerts.CPU.cooldown = cooldown;
+                if(strcmp(current_target, "disk") == 0) config.alerts.Disk.cooldown = cooldown;
+            }
+
             if(startsWith(buf, strlen(buf), "operator", strlen("operator"))) {
                 buf = eq + 1;
                 trim(buf);

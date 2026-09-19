@@ -17,6 +17,8 @@ typedef struct {
     Operator op;
     int duration;
     int current_duration;
+    int cooldown;
+    int current_cooldown;
 } Alert;
 
 typedef struct {

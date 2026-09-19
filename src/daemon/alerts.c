@@ -134,6 +134,7 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.CPU.current_duration += (int)args.sleep;
             } else {
                 config->alerts.CPU.current_duration = 0;
+                config->alerts.CPU.current_cooldown = 0;
             }
             break;
         }
@@ -143,6 +144,7 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.CPU.current_duration += (int)args.sleep;
             } else {
                 config->alerts.CPU.current_duration = 0;
+                config->alerts.CPU.current_cooldown = 0;
             }
             break;
         }
@@ -152,6 +154,7 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.CPU.current_duration += (int)args.sleep;
             } else {
                 config->alerts.CPU.current_duration = 0;
+                config->alerts.CPU.current_cooldown = 0;
             }
             break;
         }
@@ -161,6 +164,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.CPU.current_duration += (int)args.sleep;
             } else {
                 config->alerts.CPU.current_duration = 0;
+                config->alerts.CPU.current_cooldown = 0;
+
             }
             break;
         }
@@ -170,6 +175,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.CPU.current_duration += (int)args.sleep;
             } else {
                 config->alerts.CPU.current_duration = 0;
+                config->alerts.CPU.current_cooldown = 0;
+
             }
             break;
         }
@@ -179,6 +186,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.CPU.current_duration += (int)args.sleep;
             } else {
                 config->alerts.CPU.current_duration = 0;
+                config->alerts.CPU.current_cooldown = 0;
+
             }
             break;
         }
@@ -194,6 +203,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.RAM.current_duration += (int)args.sleep;
             } else {
                 config->alerts.RAM.current_duration = 0;
+                config->alerts.RAM.current_cooldown = 0;
+
             }
             break;
         }
@@ -203,6 +214,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.RAM.current_duration += (int)args.sleep;
             } else {
                 config->alerts.RAM.current_duration = 0;
+                config->alerts.RAM.current_cooldown = 0;
+
             }
             break;
         }
@@ -212,6 +225,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.RAM.current_duration += (int)args.sleep;
             } else {
                 config->alerts.RAM.current_duration = 0;
+                config->alerts.RAM.current_cooldown = 0;
+
             }
             break;
         }
@@ -221,6 +236,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.RAM.current_duration += (int)args.sleep;
             } else {
                 config->alerts.RAM.current_duration = 0;
+                config->alerts.RAM.current_cooldown = 0;
+
             }
             break;
         }
@@ -230,6 +247,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.RAM.current_duration += (int)args.sleep;
             } else {
                 config->alerts.RAM.current_duration = 0;
+                config->alerts.RAM.current_cooldown = 0;
+
             }
             break;
         }
@@ -239,6 +258,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.RAM.current_duration += (int)args.sleep;
             } else {
                 config->alerts.RAM.current_duration = 0;
+                config->alerts.RAM.current_cooldown = 0;
+
             }
             break;
         }
@@ -254,6 +275,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.Disk.current_duration += (int)args.sleep;
             } else {
                 config->alerts.Disk.current_duration = 0;
+                config->alerts.Disk.current_cooldown = 0;
+
             }
             break;
         }
@@ -263,6 +286,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.Disk.current_duration += (int)args.sleep;
             } else {
                 config->alerts.Disk.current_duration = 0;
+                config->alerts.Disk.current_cooldown = 0;
+
             }
             break;
         }
@@ -272,6 +297,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.Disk.current_duration += (int)args.sleep;
             } else {
                 config->alerts.Disk.current_duration = 0;
+                config->alerts.Disk.current_cooldown = 0;
+
             }
             break;
         }
@@ -281,6 +308,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.Disk.current_duration += (int)args.sleep;
             } else {
                 config->alerts.Disk.current_duration = 0;
+                config->alerts.Disk.current_cooldown = 0;
+
             }
             break;
         }
@@ -290,6 +319,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.Disk.current_duration += (int)args.sleep;
             } else {
                 config->alerts.Disk.current_duration = 0;
+                config->alerts.Disk.current_cooldown = 0;
+
             }
             break;
         }
@@ -299,6 +330,8 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
                 config->alerts.Disk.current_duration += (int)args.sleep;
             } else {
                 config->alerts.Disk.current_duration = 0;
+                config->alerts.Disk.current_cooldown = 0;
+
             }
             break;
         }
@@ -309,15 +342,42 @@ void checkAlerts(Metrics metrics, Args args, Config *config) {
     }
 
     if(config->alerts.CPU.duration <= config->alerts.CPU.current_duration) {
-        notifyAlert(*config, "CPU", metrics.cpuUsage);
-        config->alerts.CPU.current_duration = 0;
+        if(config->alerts.CPU.current_cooldown == 0){
+            notifyAlert(*config, "CPU", metrics.cpuUsage);
+            config->alerts.CPU.current_duration = 0;
+            config->alerts.CPU.current_cooldown = config->alerts.CPU.cooldown;
+        } else {
+            config->alerts.CPU.current_duration = 0;
+            config->alerts.CPU.current_cooldown -= (int)args.sleep;
+            if(config->alerts.CPU.current_cooldown < 0){
+                config->alerts.CPU.current_cooldown = 0;
+            }
+        }
     }
     if(config->alerts.RAM.duration <= config->alerts.RAM.current_duration) {
-        notifyAlert(*config, "RAM", metrics.ramUsage);
-        config->alerts.RAM.current_duration = 0;
+        if(config->alerts.RAM.current_cooldown == 0){
+            notifyAlert(*config, "RAM", metrics.ramUsage);
+            config->alerts.RAM.current_duration = 0;
+            config->alerts.RAM.current_cooldown = config->alerts.RAM.cooldown;
+        } else {
+            config->alerts.RAM.current_duration = 0;
+            config->alerts.RAM.current_cooldown -= (int)args.sleep;
+            if(config->alerts.RAM.current_cooldown < 0){
+                config->alerts.RAM.current_cooldown = 0;
+            }
+        }
     }
     if(config->alerts.Disk.duration <= config->alerts.Disk.current_duration) {
-        notifyAlert(*config, "Disk", metrics.diskUsage);
-        config->alerts.Disk.current_duration = 0;
+        if(config->alerts.Disk.current_cooldown == 0){
+            notifyAlert(*config, "Disk", metrics.diskUsage);
+            config->alerts.Disk.current_duration = 0;
+            config->alerts.Disk.current_cooldown = config->alerts.Disk.cooldown;
+        } else {
+            config->alerts.Disk.current_duration = 0;
+            config->alerts.Disk.current_cooldown -= (int)args.sleep;
+            if(config->alerts.Disk.current_cooldown < 0){
+                config->alerts.Disk.current_cooldown = 0;
+            }
+        }
     }
 }
