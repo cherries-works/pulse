@@ -15,7 +15,7 @@ struct shmbuf {
     System system;
 };
 
-extern void checkAlerts(Metrics metrics, Args args, Config *config);
+extern void checkAlerts(Metrics *metrics, Args *args, Config *config);
 
 extern pid_t startDaemon(Args args, Config config);
 

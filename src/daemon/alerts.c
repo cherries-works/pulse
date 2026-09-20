@@ -103,281 +103,105 @@ void notifyCommand(char *command) {
     if(result <= 0) return;
 }
 
-void notifyAlert(Config config, char *resource, float usage) {
-    if(config.commandNotify.enabled) {
-        notifyCommand(config.commandNotify.command);
+void notifyAlert(Config *config, char *resource, float usage) {
+    if(config->commandNotify.enabled) {
+        notifyCommand(config->commandNotify.command);
     }
-    if(config.discordNotify.enabled) {
+    if(config->discordNotify.enabled) {
         notifyDiscord(
-            config.discordNotify.webhook,
-            config.discordNotify.message,
+            config->discordNotify.webhook,
+            config->discordNotify.message,
             resource,
             usage
         );
     }
-    if(config.desktopNotify.enabled) {
+    if(config->desktopNotify.enabled) {
         notifyDesktop(
-            config.desktopNotify.title,
-            config.desktopNotify.message,
+            config->desktopNotify.title,
+            config->desktopNotify.message,
             resource,
             usage
         );
     }
 }
 
-void checkAlerts(Metrics metrics, Args args, Config *config) {
-    if(!config->alerts.enabled) return;
+bool checkCondition(float value, float threshold, Operator op) {
+    switch (op) {
+        case E:  return value == threshold;
+        case GE: return value >= threshold;
+        case LE: return value <= threshold;
+        case L:  return value < threshold;
+        case G:  return value > threshold;
+        case NE: return value != threshold;
+        default: return false;
+    }
+}
 
-    switch (config->alerts.CPU.op) {
-        case E: {
-            if(metrics.cpuUsage == ((float)(config->alerts.CPU.threshold) / 100)) {
-                config->alerts.CPU.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.CPU.current_duration = 0;
-                config->alerts.CPU.current_cooldown = 0;
-            }
-            break;
-        }
-        
-        case GE: {
-            if(metrics.cpuUsage <= ((float)(config->alerts.CPU.threshold) / 100)) {
-                config->alerts.CPU.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.CPU.current_duration = 0;
-                config->alerts.CPU.current_cooldown = 0;
-            }
-            break;
-        }
-        
-        case LE: {
-            if(metrics.cpuUsage >= ((float)(config->alerts.CPU.threshold) / 100)) {
-                config->alerts.CPU.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.CPU.current_duration = 0;
-                config->alerts.CPU.current_cooldown = 0;
-            }
-            break;
-        }
-        
-        case L: {
-            if(metrics.cpuUsage > ((float)(config->alerts.CPU.threshold) / 100)) {
-                config->alerts.CPU.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.CPU.current_duration = 0;
-                config->alerts.CPU.current_cooldown = 0;
+static void checkAlert(
+    float value,
+    Alert *alert,
+    char *name,
+    int sleep,
+    Config *config
+) {
+    float threshold = (float)alert->threshold / 100;
 
-            }
-            break;
-        }
-        
-        case G: {
-            if(metrics.cpuUsage < ((float)(config->alerts.CPU.threshold) / 100)) {
-                config->alerts.CPU.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.CPU.current_duration = 0;
-                config->alerts.CPU.current_cooldown = 0;
+    if (!checkCondition(value, threshold, alert->op)) {
+        alert->current_duration = 0;
+        alert->current_cooldown = 0;
+        return;
+    }
 
-            }
-            break;
-        }
+    alert->current_duration += sleep;
 
-        case NE: {
-            if(metrics.cpuUsage != ((float)(config->alerts.CPU.threshold) / 100)) {
-                config->alerts.CPU.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.CPU.current_duration = 0;
-                config->alerts.CPU.current_cooldown = 0;
+    if (alert->current_cooldown > 0) {
+        // subtract the sleep WITH the cooldown
+        // otherwise, the cooldown counter
+        // never goes down unless the duration
+        // counter is hit (duration * cooldown)
+        alert->current_cooldown -= sleep;
 
-            }
-            break;
-        }
-
-        default: {
-            break;
+        if (alert->current_cooldown < 0) {
+            alert->current_cooldown = 0;
         }
     }
 
-    switch (config->alerts.RAM.op) {
-        case E: {
-            if(metrics.ramUsage == ((float)(config->alerts.RAM.threshold) / 100)) {
-                config->alerts.RAM.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.RAM.current_duration = 0;
-                config->alerts.RAM.current_cooldown = 0;
+    if (alert->current_duration < alert->duration) return;
 
-            }
-            break;
-        }
-
-        case GE: {
-            if(metrics.ramUsage <= ((float)(config->alerts.RAM.threshold) / 100)) {
-                config->alerts.RAM.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.RAM.current_duration = 0;
-                config->alerts.RAM.current_cooldown = 0;
-
-            }
-            break;
-        }
-
-        case LE: {
-            if(metrics.ramUsage >= ((float)(config->alerts.RAM.threshold) / 100)) {
-                config->alerts.RAM.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.RAM.current_duration = 0;
-                config->alerts.RAM.current_cooldown = 0;
-
-            }
-            break;
-        }
-
-        case L: {
-            if(metrics.ramUsage > ((float)(config->alerts.RAM.threshold) / 100)) {
-                config->alerts.RAM.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.RAM.current_duration = 0;
-                config->alerts.RAM.current_cooldown = 0;
-
-            }
-            break;
-        }
-
-        case G: {
-            if(metrics.ramUsage < ((float)(config->alerts.RAM.threshold) / 100)) {
-                config->alerts.RAM.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.RAM.current_duration = 0;
-                config->alerts.RAM.current_cooldown = 0;
-
-            }
-            break;
-        }
-
-        case NE: {
-            if(metrics.ramUsage != ((float)(config->alerts.RAM.threshold) / 100)) {
-                config->alerts.RAM.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.RAM.current_duration = 0;
-                config->alerts.RAM.current_cooldown = 0;
-
-            }
-            break;
-        }
-
-        default: {
-            break;
-        }
-    }
- 
-    switch (config->alerts.Disk.op) {
-        case E: {
-            if(metrics.diskUsage == ((float)(config->alerts.Disk.threshold) / 100)) {
-                config->alerts.Disk.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.Disk.current_duration = 0;
-                config->alerts.Disk.current_cooldown = 0;
-
-            }
-            break;
-        }
-
-        case GE: {
-            if(metrics.diskUsage <= ((float)(config->alerts.Disk.threshold) / 100)) {
-                config->alerts.Disk.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.Disk.current_duration = 0;
-                config->alerts.Disk.current_cooldown = 0;
-
-            }
-            break;
-        }
-
-        case LE: {
-            if(metrics.diskUsage >= ((float)(config->alerts.Disk.threshold) / 100)) {
-                config->alerts.Disk.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.Disk.current_duration = 0;
-                config->alerts.Disk.current_cooldown = 0;
-
-            }
-            break;
-        }
-
-        case L: {
-            if(metrics.diskUsage > ((float)(config->alerts.Disk.threshold) / 100)) {
-                config->alerts.Disk.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.Disk.current_duration = 0;
-                config->alerts.Disk.current_cooldown = 0;
-
-            }
-            break;
-        }
-
-        case G: {
-            if(metrics.diskUsage < ((float)(config->alerts.Disk.threshold) / 100)) {
-                config->alerts.Disk.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.Disk.current_duration = 0;
-                config->alerts.Disk.current_cooldown = 0;
-
-            }
-            break;
-        }
-
-        case NE: {
-            if(metrics.diskUsage != ((float)(config->alerts.Disk.threshold) / 100)) {
-                config->alerts.Disk.current_duration += (int)args.sleep;
-            } else {
-                config->alerts.Disk.current_duration = 0;
-                config->alerts.Disk.current_cooldown = 0;
-
-            }
-            break;
-        }
-
-        default: {
-            break;
-        }
+    if (alert->current_cooldown == 0) {
+        notifyAlert(config, name, value);
+        alert->current_cooldown = alert->cooldown;
     }
 
-    if(config->alerts.CPU.duration <= config->alerts.CPU.current_duration) {
-        if(config->alerts.CPU.current_cooldown == 0){
-            notifyAlert(*config, "CPU", metrics.cpuUsage);
-            config->alerts.CPU.current_duration = 0;
-            config->alerts.CPU.current_cooldown = config->alerts.CPU.cooldown;
-        } else {
-            config->alerts.CPU.current_duration = 0;
-            config->alerts.CPU.current_cooldown -= (int)args.sleep;
-            if(config->alerts.CPU.current_cooldown < 0){
-                config->alerts.CPU.current_cooldown = 0;
-            }
-        }
-    }
-    if(config->alerts.RAM.duration <= config->alerts.RAM.current_duration) {
-        if(config->alerts.RAM.current_cooldown == 0){
-            notifyAlert(*config, "RAM", metrics.ramUsage);
-            config->alerts.RAM.current_duration = 0;
-            config->alerts.RAM.current_cooldown = config->alerts.RAM.cooldown;
-        } else {
-            config->alerts.RAM.current_duration = 0;
-            config->alerts.RAM.current_cooldown -= (int)args.sleep;
-            if(config->alerts.RAM.current_cooldown < 0){
-                config->alerts.RAM.current_cooldown = 0;
-            }
-        }
-    }
-    if(config->alerts.Disk.duration <= config->alerts.Disk.current_duration) {
-        if(config->alerts.Disk.current_cooldown == 0){
-            notifyAlert(*config, "Disk", metrics.diskUsage);
-            config->alerts.Disk.current_duration = 0;
-            config->alerts.Disk.current_cooldown = config->alerts.Disk.cooldown;
-        } else {
-            config->alerts.Disk.current_duration = 0;
-            config->alerts.Disk.current_cooldown -= (int)args.sleep;
-            if(config->alerts.Disk.current_cooldown < 0){
-                config->alerts.Disk.current_cooldown = 0;
-            }
-        }
-    }
+    alert->current_duration = 0;
+}
+
+void checkAlerts(Metrics *metrics, Args *args, Config *config) {
+    if (!config->alerts.enabled) return;
+
+    int sleep = (int)args->sleep;
+
+    checkAlert(
+        metrics->cpuUsage,
+        &config->alerts.CPU,
+        "CPU",
+        sleep,
+        config
+    );
+
+    checkAlert(
+        metrics->ramUsage,
+        &config->alerts.RAM,
+        "RAM",
+        sleep,
+        config
+    );
+
+    checkAlert(
+        metrics->diskUsage,
+        &config->alerts.Disk,
+        "Disk",
+        sleep,
+        config
+    );
 }
