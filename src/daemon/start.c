@@ -197,7 +197,7 @@ pid_t startDaemon(Args args, Config config) {
             shmp->system = system_snapshot;
             pthread_mutex_unlock(&shmp->lock);
 
-            checkAlerts(metrics, args, &config);
+            checkAlerts(&metrics, &args, &config);
             sleep(args.sleep);
         }
 

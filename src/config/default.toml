@@ -2,19 +2,22 @@
 enabled = true
 
 [alerts.cpu]
-threshold = 70
+threshold = 99
 operator = <
-duration = 15s
+duration = 1s
+cooldown = 2s
 
 [alerts.ram]
 threshold = 10
 operator = <
 duration = 5s
+cooldown = 10s
 
 [alerts.disk]
 threshold = 90
 operator = <
 duration = 15s
+cooldown = 30s
 
 [notifications]
 
