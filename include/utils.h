@@ -1,6 +1,14 @@
 #ifndef UTILS_H
 #define UTILS_H
 
+#ifndef PULSE_VERSION
+#define PULSE_VERSION "unknown"
+#endif
+
+#ifndef PULSE_COMMIT
+#define PULSE_COMMIT "unknown"
+#endif
+
 #include <stdint.h>
 #include <stdbool.h>
 #include <time.h>
@@ -71,6 +79,7 @@ typedef enum {
     PRUNE,
     CONFIG,
     SNAPSHOT,
+    VERSION,
 } Command;
 
 typedef struct {
@@ -80,6 +89,8 @@ typedef struct {
     bool headless; // for the MONITOR command
     
     bool json; // for the SNAPSHOT command
+
+    bool hash; // for the VERSION command
 
     Sort sort; // for the MONITOR / TOP command
 
@@ -105,5 +116,6 @@ extern void process(Args args);
 extern void prune(Args args);
 extern void config();
 extern void snapshot(Args args);
+extern void version(Args args);
 
 #endif
