@@ -15,7 +15,10 @@ const char *commands[] = {
     "STOP",
     "HELP",
     "PROCESS",
-    "PRUNE"
+    "PRUNE",
+    "CONFIG",
+    "SNAPSHOT",
+    "VERSION",
 };
 
 Args parseArgs(int argc, char* argv[]) {
@@ -29,6 +32,8 @@ Args parseArgs(int argc, char* argv[]) {
         .headless = false,
         
         .json = false,
+
+        .hash = false,
 
         .command = MONITOR,
         .sort = RAM,
@@ -55,6 +60,7 @@ Args parseArgs(int argc, char* argv[]) {
             else if(strcmp(arg, "prune") == 0) p.command = PRUNE;
             else if(strcmp(arg, "config") == 0) p.command = CONFIG;
             else if(strcmp(arg, "snapshot") == 0) p.command = SNAPSHOT;
+            else if(strcmp(arg, "version") == 0) p.command = VERSION;
             else {
                 printf("Invalid command.\n");
                 exit(EXIT_FAILURE);
@@ -135,6 +141,10 @@ Args parseArgs(int argc, char* argv[]) {
 
         if(strcmp(arg, "--json") == 0) {
             p.json = true;
+        }
+
+        if(strcmp(arg, "--hash") == 0) {
+            p.hash = true;
         }
 
         if(strcmp(arg, "--web") == 0) {

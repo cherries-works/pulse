@@ -75,7 +75,12 @@ void help() {
     //     "Running help() -> command help"
     // );
 
-    printf("%s%sCherries Pulse%s ───────────────────────────────────── v0.4.1 ──── \n", BOLD, RED, RESET);
+    size_t version_length = strlen(PULSE_VERSION);
+    size_t dashes = version_length < 42 ? 43 - version_length : 1;
+
+    printf("%s%sCherries Pulse%s ", BOLD, RED, RESET);
+    for(size_t i = 0; i < dashes; i++) printf("─");
+    printf(" %s ──── \n", PULSE_VERSION);
     printf(" > %-20s %-20s\n", "monitor", "Monitors your device (default option).");
     printf("     %s%-20s %-20s%s\n", DIM, "--port [number]", "Determine the port where the website will be hosted (omits --web).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--web", "Hosts website (and API) on default port 8080.", RESET);
@@ -97,6 +102,8 @@ void help() {
     printf("     %s%-20s %-20s%s\n", DIM, "--until", "The date up until when history/logs are kept. (YYYY-MM-DD)", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--prune", "What is suppose to be pruned (history/logs/all).", RESET);
     printf(" > %-20s %-20s\n", "config", "Configures ~/.cherries-works/pulse/config-toml file via nano.");
+    printf(" > %-20s %-20s\n", "version", "Prints the current version.");
+    printf("     %s%-20s %-20s%s\n", DIM, "--hash", "Prints the commit hash of the build.", RESET);
     printf("\n");
     // stop();
 }
@@ -407,5 +414,13 @@ void snapshot(Args args) {
         printf("%s", snapshot_json);
     } else {
         renderSnapshot(args, system_snapshot, metrics);
+    }
+}
+
+void version(Args args) {
+    if(args.hash) {
+        printf("%s\n", PULSE_COMMIT);
+    } else {
+        printf("%s\n", PULSE_VERSION);
     }
 }
