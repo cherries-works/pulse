@@ -37,6 +37,17 @@ all: $(target)
 test:
 	$(MAKE) -C test/unit
 
+prefix ?= /usr
+bindir ?= $(prefix)/bin
+datadir ?= $(prefix)/share
+bash_completion_dir ?= $(datadir)/bash-completion/completions
+destdir ?=
+
+install: $(target)
+	install -Dm755 $(target) $(destdir)$(bindir)/$(progname)
+	install -Dm644 contrib/completions/pulse.bash \
+		$(destdir)$(bash_completion_dir)/pulse
+
 debug: LDFLAGS += $(EXTRA_FLAGS_DEBUG)
 debug: CFLAGS += $(EXTRA_FLAGS_DEBUG)
 debug: $(target)

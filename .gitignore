@@ -1,3 +1,7 @@
 .vscode/
 dist/
 build/
+rpmbuild/
+
+# URL:            https://github.com/cherries-works/pulse
+# Source0:        %{url}/archive/refs/tags/v%{version}.tar.gz
