@@ -108,3 +108,33 @@ jobs:
         with:
           name: rpm
           path: release/
+
+  release:
+    needs:
+      - build
+      - rpm
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download build
+        uses: actions/download-artifact@v4
+        with:
+          name: release
+          path: release
+
+      - name: Download RPM
+        uses: actions/download-artifact@v4
+        with:
+          name: rpm
+          path: release
+
+      - name: Create GitHub Release
+        if: ${{ !env.ACT }}
+        uses: softprops/action-gh-release@v3
+        with:
+          files: |
+            release/pulse_Linux_x86_64.tar.gz
+            release/checksums.txt
+            release/*.rpm
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
