@@ -1,5 +1,5 @@
 Name:           pulse
-Version:        v0.4.2
+Version:        %{_pulse_version}
 Release:        1%{?dist}
 Summary:        Lightweight Linux process monitoring tool
 
@@ -33,7 +33,3 @@ make install destdir=%{buildroot} prefix=%{_prefix}
 %doc README.md
 %{_bindir}/pulse
 %{_datadir}/bash-completion/completions/pulse
-
-%changelog
-* Sun Sep 20 2026 Mert <mail@mertk.uk> - 0.4.2
-- Initial RPM package
