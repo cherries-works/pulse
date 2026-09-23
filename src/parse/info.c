@@ -24,8 +24,11 @@ Info getInfo() {
         .cores = 0
     };
     
-    strcpy(info.desktop, getenv("XDG_CURRENT_DESKTOP"));
-    strcpy(info.session, getenv("XDG_SESSION_TYPE"));
+    const char *desktop = getenv("XDG_CURRENT_DESKTOP");
+    const char *session = getenv("XDG_SESSION_TYPE");
+
+    snprintf(info.desktop, sizeof(info.desktop), "%s", desktop ? desktop : "unknown");
+    snprintf(info.session, sizeof(info.session), "%s", session ? session : "unknown");
 
     struct utsname u;
     uname(&u);
