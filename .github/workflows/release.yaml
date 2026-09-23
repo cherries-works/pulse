@@ -61,7 +61,7 @@ jobs:
                 --exclude=.git \
                 --transform='s,^,pulse-${VERSION}/,' \
                 . &&
-              cp packaging/pulse.spec ~/rpmbuild/SPECS/pulse.spec &&
+              cp packaging/fedora/pulse.spec ~/rpmbuild/SPECS/pulse.spec &&
               rpmbuild -bb \
                 --define '_pulse_version ${VERSION}' \
                 ~/rpmbuild/SPECS/pulse.spec &&
