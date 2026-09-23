@@ -19,13 +19,19 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Get version
+        id: version
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
       - name: Install dependencies
         run: |
           sudo apt-get update
           sudo apt-get install -y gcc make
 
       - name: Build
-        run: make
+        run: make VERSION="${{ steps.version.outputs.version }}"
 
       - name: Package
         run: |
@@ -39,6 +45,28 @@ jobs:
         run: |
           cd release
           sha256sum pulse_Linux_x86_64.tar.gz > checksums.txt
+
+      - name: Build RPM
+        run: |
+          VERSION="${{ steps.version.outputs.version }}"
+
+          docker run --rm \
+            -v "$PWD:/workspace" \
+            -w /workspace \
+            fedora:latest \
+            bash -c "
+              dnf install -y rpm-build gcc make &&
+              mkdir -p ~/rpmbuild/SOURCES ~/rpmbuild/SPECS &&
+              tar -czf ~/rpmbuild/SOURCES/pulse-${VERSION}.tar.gz \
+                --exclude=.git \
+                --transform='s,^,pulse-${VERSION}/,' \
+                . &&
+              cp packaging/pulse.spec ~/rpmbuild/SPECS/pulse.spec &&
+              rpmbuild -bb \
+                --define '_pulse_version ${VERSION}' \
+                ~/rpmbuild/SPECS/pulse.spec &&
+              cp ~/rpmbuild/RPMS/x86_64/*.rpm /workspace/release/
+            "
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v3
