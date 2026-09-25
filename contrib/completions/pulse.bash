@@ -4,7 +4,7 @@ _pulse() {
     cur="${COMP_WORDS[COMP_CWORD]}"
     prev="${COMP_WORDS[COMP_CWORD-1]}"
 
-    commands="monitor info top stop config prune help snapshot"
+    commands="monitor info top stop config prune help snapshot version process"
 
     if [[ $COMP_CWORD -eq 1 ]]; then
         COMPREPLY=( $(compgen -W "$commands" -- "$cur") )
