@@ -37,9 +37,7 @@ int setup() {
     if(access(path,F_OK) != 0) {
         int fd = creat(path, 0644);
 
-        char conf[BUFFER_ONE_KB];
-        size_t n = readFile("./src/config/default.toml", BUFFER_ONE_KB, conf);
-        ssize_t result = write(fd, conf, n);
+        ssize_t result = write(fd, CHERRIES_DEFAULT_TOML, sizeof(CHERRIES_DEFAULT_TOML));
         if(result <= 0) return -1;
     }
 

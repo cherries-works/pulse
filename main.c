@@ -62,7 +62,7 @@ void handle(Args args, Config _config) {
             break;
 
         case CONFIG:
-            config();
+            config(args);
             break;
         
         case SNAPSHOT:

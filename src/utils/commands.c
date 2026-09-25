@@ -104,6 +104,7 @@ void help() {
     printf("     %s%-20s %-20s%s\n", DIM, "--until", "The date up until when history/logs are kept. (YYYY-MM-DD)", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--prune", "What is suppose to be pruned (history/logs/all).", RESET);
     printf(" > %-20s %-20s\n", "config", "Configures ~/.cherries-works/pulse/config-toml file via nano.");
+    printf("     %s%-20s %-20s%s\n", DIM, "--reset", "Resets the config file to the pulse standart config file (destructive).", RESET);
     printf(" > %-20s %-20s\n", "version", "Prints the current version.");
     printf("     %s%-20s %-20s%s\n", DIM, "--hash", "Prints the commit hash of the build.", RESET);
     printf("\n");
@@ -313,7 +314,7 @@ void prune(Args args) {
     stop();
 }
 
-void config() {
+void config(Args args) {
     _log(
         L_INFO,
         "Running config() -> command config"
@@ -330,6 +331,16 @@ void config() {
 
     char path[BUFFER_ONE_KB];
     snprintf(path, BUFFER_ONE_KB, "%s/%s/config.toml", home, R_CHERRIES_FOLDER_PULSE);
+
+    if(args.reset) {
+        remove(path);
+        int fd = creat(path, 0644);
+        ssize_t result = write(fd, CHERRIES_DEFAULT_TOML, strlen(CHERRIES_DEFAULT_TOML));
+        if(result <= 0) {
+            _log(L_ERROR, "Failed to reset config file.");
+        }
+        return;
+    }
     
     char command[BUFFER_ONE_KB];
     snprintf(command, BUFFER_ONE_KB, "nano %s", path);

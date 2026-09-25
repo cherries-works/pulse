@@ -154,6 +154,10 @@ Args parseArgs(int argc, char* argv[]) {
         if(strcmp(arg, "--headless") == 0) {
             p.headless = true;
         }
+
+        if(strcmp(arg, "--reset") == 0) {
+            p.reset = true;
+        }
     }
 
     if(p.command == MONITOR) {
