@@ -58,6 +58,8 @@ extern const char* SYS_THERMAL_ZONE;
 extern const char* CHERRIES_PULSE_SHM;
 extern const char* CHERRIES_PULSE_READY_SEM;
 
+extern const char* CHERRIES_DEFAULT_TOML;
+
 typedef enum {
     CPU,
     RAM
@@ -89,7 +91,9 @@ typedef struct {
     bool headless; // for the MONITOR command
     
     bool json; // for the SNAPSHOT command
-
+    
+    bool reset; // for the CONFIG command
+    
     bool hash; // for the VERSION command
 
     Sort sort; // for the MONITOR / TOP command
@@ -114,7 +118,7 @@ extern void info(Args args);
 extern void monitor(Args args, Config config);
 extern void process(Args args);
 extern void prune(Args args);
-extern void config();
+extern void config(Args args);
 extern void snapshot(Args args);
 extern void version(Args args);
 
