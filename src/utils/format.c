@@ -10,7 +10,7 @@ void formatTimeHumanReadable(
     size_t size
 ) {
     long unsigned days = seconds / 3600 / 24;
-    long unsigned hours = seconds / 3600;
+    long unsigned hours = (seconds / 3600) % 24;
     long unsigned minutes = (seconds % 3600) / 60;
     long unsigned secs = seconds % 60 % 60 % 60;
 
