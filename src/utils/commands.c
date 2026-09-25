@@ -97,6 +97,8 @@ void help() {
     printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
     printf(" > %-20s %-20s\n", "snapshot", "The current snapshot of the system.");
     printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the info of the system in JSON format.", RESET);
+    printf(" > %-20s %-20s\n", "process", "Print details about a specific process.");
+    printf("     %s%-20s %-20s%s\n", DIM, "--process", "The process PID [required].", RESET);
     printf(" > %-20s %-20s\n", "prune", "Prunes either logs, history or both.");
     printf("     %s%-20s %-20s%s\n", DIM, "--keep", "Amount of files to be kept.", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--until", "The date up until when history/logs are kept. (YYYY-MM-DD)", RESET);
