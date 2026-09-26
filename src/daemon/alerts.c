@@ -64,8 +64,8 @@ void notifyDesktop(char *title, char *message, char *resource, float usage) {
         "notify-send "
         "-a \"Pulse\" "
         "-i \"./assets/favicon.png\" "
-        "\"%s\" "
-        "\"%s\"",
+        "%s "
+        "%s",
         title,
         out_message
     );
@@ -105,23 +105,35 @@ void notifyCommand(char *command) {
 
 void notifyAlert(Config *config, char *resource, float usage) {
     if(config->commandNotify.enabled) {
-        notifyCommand(config->commandNotify.command);
+        if(strlen(config->commandNotify.command) == 0) {
+            _log(L_ERROR, "Command notification enabled, but not set (command).");
+        } else {
+            notifyCommand(config->commandNotify.command);
+        }
     }
     if(config->discordNotify.enabled) {
-        notifyDiscord(
-            config->discordNotify.webhook,
-            config->discordNotify.message,
-            resource,
-            usage
-        );
+        if(strlen(config->discordNotify.webhook) == 0 || strlen(config->discordNotify.message) == 0) {
+            _log(L_ERROR, "Discord notification enabled, but not set (webhook or message).");
+        } else {
+            notifyDiscord(
+                config->discordNotify.webhook,
+                config->discordNotify.message,
+                resource,
+                usage
+            );
+        }
     }
     if(config->desktopNotify.enabled) {
-        notifyDesktop(
-            config->desktopNotify.title,
-            config->desktopNotify.message,
-            resource,
-            usage
-        );
+        if(strlen(config->desktopNotify.title) == 0 || strlen(config->desktopNotify.message) == 0) {
+            _log(L_ERROR, "Desktop notification enabled, but not set (title or message).");
+        } else {
+            notifyDesktop(
+                config->desktopNotify.title,
+                config->desktopNotify.message,
+                resource,
+                usage
+            );
+        }
     }
 }
 
