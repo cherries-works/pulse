@@ -63,7 +63,7 @@ void routeHTML(char *file_path, int new_socket, char *response, size_t response_
         response_size,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/html\r\n"
-        "Content-Length: %ld\r\n\r\n",
+        "Content-Length: %zu\r\n\r\n",
         file_size
     );
     ssize_t result = write(new_socket, response, strlen(response));
@@ -88,7 +88,7 @@ void routeCSS(char *file_path, int new_socket, char *response, size_t response_s
         response_size,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/css\r\n"
-        "Content-Length: %ld\r\n\r\n",
+        "Content-Length: %zu\r\n\r\n",
         file_size
     );
 
@@ -114,7 +114,7 @@ void routeJS(char *file_path, int new_socket, char *response, size_t response_si
         response_size,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: text/js\r\n"
-        "Content-Length: %ld\r\n\r\n",
+        "Content-Length: %zu\r\n\r\n",
         file_size
     );
 
@@ -140,7 +140,7 @@ void routeImage(char *file_path, int new_socket, char *response, size_t response
         response_size,
         "HTTP/1.1 200 OK\r\n"
         "Content-Type: image/png\r\n"
-        "Content-Length: %ld\r\n\r\n",
+        "Content-Length: %zu\r\n\r\n",
         file_size
     );
 

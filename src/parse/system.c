@@ -36,7 +36,7 @@ System getSystem(
     size_t uptime_buffer_size = BUFFER_ONE_KB * 2;
     char uptime_buffer[uptime_buffer_size];
     readFile(PROC_UPTIME_FILE, uptime_buffer_size, uptime_buffer);
-    unsigned long uptime = parseUptime(uptime_buffer_size, uptime_buffer);
+    uint64_t uptime = parseUptime(uptime_buffer_size, uptime_buffer);
 
     unsigned temp = parseTemp();
 

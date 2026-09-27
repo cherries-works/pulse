@@ -4,7 +4,7 @@
 #include "utils.h"
 #include "parse.h"
 
-unsigned long parseCpuKey(char *buffer, char *target_key) {
+uint64_t parseCpuKey(char *buffer, char *target_key) {
     char *line = buffer;
     char *value = NULL;
     while(*line) {
@@ -34,16 +34,16 @@ unsigned long parseCpuKey(char *buffer, char *target_key) {
 }
 
 Cpu getCpu(size_t size, char *buffer) {
-    unsigned long user = 0;
-    unsigned long nice = 0;
-    unsigned long system = 0;
-    unsigned long idle = 0;
-    unsigned long iowait = 0;
-    unsigned long irq = 0;
-    unsigned long softirq = 0;
-    unsigned long steal = 0;
-    unsigned long guest = 0;
-    unsigned long guest_nice = 0;
+    uint64_t user = 0;
+    uint64_t nice = 0;
+    uint64_t system = 0;
+    uint64_t idle = 0;
+    uint64_t iowait = 0;
+    uint64_t irq = 0;
+    uint64_t softirq = 0;
+    uint64_t steal = 0;
+    uint64_t guest = 0;
+    uint64_t guest_nice = 0;
 
     unsigned number_position = 0;
     unsigned i = 0;
@@ -111,14 +111,14 @@ Cpu getCpu(size_t size, char *buffer) {
         i++;
     }
 
-    unsigned long user_time = user - guest;                             
-    unsigned long nice_time = nice - guest_nice;                         
-    unsigned long idle_all_time = idle + iowait;  
-    unsigned long system_all_time = system + irq + softirq;
-    unsigned long virt_all_time = guest + guest_nice;
-    unsigned long total_time = user_time + nice_time + system_all_time + idle_all_time + steal + virt_all_time;
+    uint64_t user_time = user - guest;                             
+    uint64_t nice_time = nice - guest_nice;                         
+    uint64_t idle_all_time = idle + iowait;  
+    uint64_t system_all_time = system + irq + softirq;
+    uint64_t virt_all_time = guest + guest_nice;
+    uint64_t total_time = user_time + nice_time + system_all_time + idle_all_time + steal + virt_all_time;
 
-    unsigned long processes = parseCpuKey(buffer, "processes");
+    uint64_t processes = parseCpuKey(buffer, "processes");
     Cpu snapshot = { idle_all_time, total_time, processes };
     return snapshot;
 }

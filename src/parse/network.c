@@ -5,8 +5,8 @@
 #include "parse.h"
 
 Network getNetwork(size_t size, char *buffer) {
-    unsigned long rx = 0;
-    unsigned long tx = 0;
+    uint64_t rx = 0;
+    uint64_t tx = 0;
 
     char *line = buffer;
     for (int i = 0; i < 2; i++) {

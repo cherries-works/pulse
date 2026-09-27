@@ -3,6 +3,7 @@
 #include <string.h>
 #include <dirent.h>
 #include <sys/stat.h>
+#include <inttypes.h>
 
 #include "http.h"
 #include "daemon.h"
@@ -33,11 +34,11 @@ JSON_ROUTE(indexMetrics, {
         "{"
         "\"error\":null,"
         "\"success\":true,"
-        "\"timestamp\":%ld,"
-        "\"cpu\":{\"idle\":%ld,\"total\":%ld,\"processes\":%ld},"
-        "\"disk\":{\"available\":%llu,\"total\":%llu,\"reads\":%llu,\"writes\":%llu},"
-        "\"memory\":{\"available\":%ld,\"total\":%ld},"
-        "\"network\":{\"rx\":%ld,\"tx\":%ld},"
+        "\"timestamp\":%" PRIu64 ","
+        "\"cpu\":{\"idle\":%" PRIu64 ",\"total\":%" PRIu64 ",\"processes\":%" PRIu64 "},"
+        "\"disk\":{\"available\":%" PRIu64 ",\"total\":%" PRIu64 ",\"reads\":%" PRIu64 ",\"writes\":%" PRIu64 "},"
+        "\"memory\":{\"available\":%" PRIu64 ",\"total\":%" PRIu64 "},"
+        "\"network\":{\"rx\":%" PRIu64 ",\"tx\":%" PRIu64 "},"
         "\"load\":{\"load1\":%.2f,\"load5\":%.2f,\"load15\":%.2f},"
         "\"processes\":[",
         time(NULL),
@@ -68,7 +69,7 @@ JSON_ROUTE(indexMetrics, {
         }
 
         json_len += (size_t)snprintf(json + json_len, sizeof(json) - json_len,
-            "{\"pid\":%d,\"ram\":%ld,\"cpu\":%ld,\"name\":\"%s\"}",
+            "{\"pid\":%d,\"ram\":%" PRIu64 ",\"cpu\":%" PRIu64 ",\"name\":\"%s\"}",
             snapshot.processes[i].pid,
             snapshot.processes[i].ram,
             snapshot.processes[i].cpu,
@@ -78,7 +79,7 @@ JSON_ROUTE(indexMetrics, {
 
     json_len += (size_t)snprintf(json + json_len, sizeof(json) - json_len,
         "],"
-        "\"uptime\":%ld,"
+        "\"uptime\":%" PRIu64 ","
         "\"temp\":%d"
         "}",
         snapshot.uptime,
@@ -160,7 +161,7 @@ JSON_ROUTE(historyCPU, {
             entry_storer + len,
             entry_storer_size - len,
             "{"
-            "\"timestamp\": %ld,"
+            "\"timestamp\": %" PRIu64 ","
             "\"usage\": %f"
             "}%s",
             strtoul(name, NULL, 10),
@@ -182,7 +183,7 @@ JSON_ROUTE(historyCPU, {
         "{"
         "\"error\":null,"
         "\"success\":true,"
-        "\"timestamp\":%ld,"
+        "\"timestamp\":%" PRIu64 ","
         "\"data\": [%s]"
         "}",
         time(NULL),
@@ -263,7 +264,7 @@ JSON_ROUTE(historyRAM, {
             entry_storer + len,
             entry_storer_size - len,
             "{"
-            "\"timestamp\": %ld,"
+            "\"timestamp\": %" PRIu64 ","
             "\"usage\": %f"
             "}%s",
             strtoul(name, NULL, 10),
@@ -285,7 +286,7 @@ JSON_ROUTE(historyRAM, {
         "{"
         "\"error\":null,"
         "\"success\":true,"
-        "\"timestamp\":%ld,"
+        "\"timestamp\":%" PRIu64 ","
         "\"data\": [%s]"
         "}",
         time(NULL),
@@ -367,7 +368,7 @@ JSON_ROUTE(historyDisk, {
             entry_storer + len,
             entry_storer_size - len,
             "{"
-            "\"timestamp\": %ld,"
+            "\"timestamp\": %" PRIu64 ","
             "\"usage\": %f"
             "}%s",
             strtoul(name, NULL, 10),
@@ -389,7 +390,7 @@ JSON_ROUTE(historyDisk, {
         "{"
         "\"error\":null,"
         "\"success\":true,"
-        "\"timestamp\":%ld,"
+        "\"timestamp\":%" PRIu64 ","
         "\"data\": [%s]"
         "}",
         time(NULL),

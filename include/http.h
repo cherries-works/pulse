@@ -4,6 +4,7 @@
 #include "utils.h"
 
 #include <netinet/in.h>
+#include <stdint.h>
 
 typedef enum {
     GET,
@@ -33,7 +34,7 @@ typedef struct {
 } Route;
 
 typedef struct {
-    unsigned short routesAmount;
+    uint16_t routesAmount;
     Route *routes;
 } RouteHandler;
 
@@ -54,7 +55,7 @@ typedef struct Server {
     int service;
     int protocol;
     int backlog;
-    long interface;
+    int64_t interface;
 
     int socket;
     struct sockaddr_in address;

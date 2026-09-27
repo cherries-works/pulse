@@ -5,21 +5,21 @@
 #include <fcntl.h>
 
 typedef struct {
-    unsigned long idle;
-    unsigned long total;
-    unsigned long processes;
+    uint64_t idle;
+    uint64_t total;
+    uint64_t processes;
 } Cpu;
 
 typedef struct {
-    unsigned long total;
-    unsigned long available;
+    uint64_t total;
+    uint64_t available;
 } Memory;
 
 typedef struct {
-    unsigned long long total;
-    unsigned long long available;
-    unsigned long long read;
-    unsigned long long write;
+    uint64_t total;
+    uint64_t available;
+    uint64_t read;
+    uint64_t write;
 } Disk;
 
 typedef struct {
@@ -34,8 +34,8 @@ typedef struct {
 } Load;
 
 typedef struct {
-    unsigned long rx;
-    unsigned long tx;
+    uint64_t rx;
+    uint64_t tx;
 } Network;
 
 typedef struct {
@@ -56,10 +56,10 @@ typedef struct {
     pid_t pid;
     pid_t parent_pid;
 
-    unsigned long uptime;
-    unsigned long ram;
-    unsigned long cpu;
-    unsigned long threads;
+    uint64_t uptime;
+    uint64_t ram;
+    uint64_t cpu;
+    uint64_t threads;
     
     Status status;
 
@@ -96,7 +96,7 @@ typedef struct {
     Process processes[MAX_PROCESSES];
     unsigned processes_count;
 
-    unsigned long uptime;
+    uint64_t uptime;
     unsigned temp;
 } System;
 
@@ -123,8 +123,8 @@ extern System getSystem(Args args);
 extern Metrics getMetrics(System system2, System system1);
 extern Info getInfo();
 
-extern unsigned long parseMemoryKey(char *buffer, char *target_key);
-extern unsigned long parseUptime(size_t size, char *buffer);
+extern uint64_t parseMemoryKey(char *buffer, char *target_key);
+extern uint64_t parseUptime(size_t size, char *buffer);
 extern unsigned parseTemp();
 
 extern float parseCpuUsage(Cpu snapshot2, Cpu snapshot1);
