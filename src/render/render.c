@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <inttypes.h>
 
 #include "parse.h"
 #include "render.h"
@@ -66,7 +67,7 @@ void printProcessExtra(
 ) {
     printf("   └────── Status %s\n", statuses[process.status]);
     printf("    └────── Parent PID %d\n", process.parent_pid);
-    printf("     └────── Threads %ld\n", process.threads);
+    printf("     └────── Threads %" PRIu64 "\n", process.threads);
 
     char human_readable_time[256];
     formatTimeHumanReadable(process.uptime, human_readable_time, 256);
