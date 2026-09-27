@@ -6,7 +6,7 @@
 #include "parse.h"
 
 // reading the first number
-unsigned long parseUptime(size_t size, char *buffer) {
+uint64_t parseUptime(size_t size, char *buffer) {
     unsigned i = 0;
 
     // should be maximum 16 characters
@@ -24,6 +24,6 @@ unsigned long parseUptime(size_t size, char *buffer) {
         i++;
     }
 
-    unsigned long n = strtoull(number, NULL, 10);
+    uint64_t n = strtoull(number, NULL, 10);
     return n;
 }

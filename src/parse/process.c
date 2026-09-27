@@ -31,8 +31,8 @@ void getProcesses(
     char proc_name[proc_name_size];
     while((proc_entry = readdir(proc_dir)) != NULL) {
         pid_t proc_pid = 0;
-        unsigned long proc_ram = 0;
-        unsigned long proc_cpu = 0;
+        uint64_t proc_ram = 0;
+        uint64_t proc_cpu = 0;
         char *proc_entry_name = proc_entry->d_name;
 
         pid_t pid = (pid_t)atoi(proc_entry_name);
@@ -146,10 +146,10 @@ void getProcess(Process *p, pid_t pid) {
     pid_t proc_pid = 0;
     pid_t proc_parent_pid = 0;
     
-    unsigned long proc_uptime = 0;
-    unsigned long proc_threads = 0;
-    unsigned long proc_ram = 0;
-    unsigned long proc_cpu = 0;
+    uint64_t proc_uptime = 0;
+    uint64_t proc_threads = 0;
+    uint64_t proc_ram = 0;
+    uint64_t proc_cpu = 0;
     proc_pid = pid;
 
     snprintf(

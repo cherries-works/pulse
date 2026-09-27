@@ -4,7 +4,7 @@
 #include "utils.h"
 #include "parse.h"
 
-unsigned long parseMemoryKey(char *buffer, char *target_key) {
+uint64_t parseMemoryKey(char *buffer, char *target_key) {
     char *line = buffer;
     char *value = NULL;
     while(*line) {
@@ -54,8 +54,8 @@ unsigned long parseMemoryKey(char *buffer, char *target_key) {
 }
 
 Memory getMemory(size_t size, char *buffer) {
-    unsigned long memory_total = 0;
-    unsigned long memory_available = 0;
+    uint64_t memory_total = 0;
+    uint64_t memory_available = 0;
 
     char *line = buffer;
 

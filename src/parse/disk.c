@@ -9,11 +9,11 @@ Disk getDisk(size_t size, char *buffer) {
     struct statvfs stat;
     statvfs("/", &stat);
 
-    unsigned long long disk_total = (unsigned long long)stat.f_blocks * stat.f_frsize;
-    unsigned long long disk_available = (unsigned long long)stat.f_bavail * stat.f_frsize;
+    uint64_t disk_total = (uint64_t)stat.f_blocks * stat.f_frsize;
+    uint64_t disk_available = (uint64_t)stat.f_bavail * stat.f_frsize;
 
-    unsigned long read = 0;
-    unsigned long written = 0;
+    uint64_t read = 0;
+    uint64_t written = 0;
 
     char *line = buffer;
 

@@ -9,6 +9,7 @@
 #include <signal.h>
 #include <wait.h>
 #include <unistd.h>
+#include <inttypes.h>
 
 #include "parse.h"
 #include "render.h"
@@ -106,7 +107,7 @@ void help() {
     printf(" > %-20s %-20s\n", "config", "Configures ~/.cherries-works/pulse/config-toml file via nano.");
     printf("     %s%-20s %-20s%s\n", DIM, "--reset", "Resets the config file to the pulse standart config file (destructive).", RESET);
     printf(" > %-20s %-20s\n", "version", "Prints the current version.");
-    printf("     %s%-20s %-20s%s\n", DIM, "--hash", "Prints the commit hash of the build.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--hash", "Prints the commit hash of the bui" PRIu64 ".", RESET);
     printf("\n");
     // stop();
 }
@@ -142,7 +143,7 @@ void info(Args args) {
     
         snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len,
             "{"
-            "\"timestamp\":%ld,"
+            "\"timestamp\":%" PRIu64 ","
             "\"os\":\"%s\","
             "\"cores\":\"%d\","
             "\"cpu_model\":\"%s\","
@@ -240,7 +241,7 @@ void prune(Args args) {
 
     Prune prune = args.prune;
     unsigned keep = args.keep;
-    long unsigned until = unformatTime(args.until);
+    uint64_t until = unformatTime(args.until);
 
     char *home = getenv("HOME");
     if(home == NULL) {
@@ -270,7 +271,7 @@ void prune(Args args) {
 
             snprintf(entry_path, path_size, "%s/%s/history/%s", home, R_CHERRIES_FOLDER_PULSE, entry_name);
 
-            long unsigned _entry_time = unformatTime(entry_name);
+            uint64_t _entry_time = unformatTime(entry_name);
             if(_entry_time < until) {
                 cleanDir(entry_path);
                 path_entries_deleted++;
@@ -300,7 +301,7 @@ void prune(Args args) {
             if(strcmp(entry_name, "..") == 0) continue;
 
             snprintf(entry_path, path_size, "%s/%s/logs/%s", home, R_CHERRIES_FOLDER_PULSE, entry_name);
-            long unsigned _entry_time = unformatTime(entry_name);
+            uint64_t _entry_time = unformatTime(entry_name);
 
             if(_entry_time < until) {
                 remove(entry_path);
@@ -363,12 +364,12 @@ void snapshot(Args args) {
     
         snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len,
             "{"
-            "\"timestamp\":%ld,"
+            "\"timestamp\":%" PRIu64 ","
             "\"metrics\":{\"cpuUsage\":%.2f,\"ramUsage\":%.2f,\"diskUsage\":%.2f,\"read\":%.2f,\"write\":%.2f,\"rx\":%.2f,\"tx\":%.2f},"
-            "\"cpu\":{\"idle\":%ld,\"total\":%ld,\"processes\":%ld},"
-            "\"disk\":{\"available\":%llu,\"total\":%llu,\"reads\":%llu,\"writes\":%llu},"
-            "\"memory\":{\"available\":%ld,\"total\":%ld},"
-            "\"network\":{\"rx\":%ld,\"tx\":%ld},"
+            "\"cpu\":{\"idle\":%" PRIu64 ",\"total\":%" PRIu64 ",\"processes\":%" PRIu64 "},"
+            "\"disk\":{\"available\":%" PRIu64 ",\"total\":%" PRIu64 ",\"reads\":%" PRIu64 ",\"writes\":%" PRIu64 "},"
+            "\"memory\":{\"available\":%" PRIu64 ",\"total\":%" PRIu64 "},"
+            "\"network\":{\"rx\":%" PRIu64 ",\"tx\":%" PRIu64 "},"
             "\"load\":{\"load1\":%.2f,\"load5\":%.2f,\"load15\":%.2f},"
             "\"processes\":[",
             time(NULL),
@@ -407,7 +408,7 @@ void snapshot(Args args) {
             }
     
             snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len,
-                "{\"pid\":%d,\"ram\":%ld,\"cpu\":%ld,\"name\":\"%s\"}",
+                "{\"pid\":%d,\"ram\":%" PRIu64 ",\"cpu\":%" PRIu64 ",\"name\":\"%s\"}",
                 system_snapshot.processes[i].pid,
                 system_snapshot.processes[i].ram,
                 system_snapshot.processes[i].cpu,
@@ -417,7 +418,7 @@ void snapshot(Args args) {
     
         snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len,
             "],"
-            "\"uptime\":%ld,"
+            "\"uptime\":%" PRIu64 ","
             "\"temp\":%d"
             "}",
             system_snapshot.uptime,

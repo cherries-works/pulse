@@ -1,23 +1,25 @@
 #include <stdio.h>
+#include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
 #include <sys/time.h>
+#include <inttypes.h>
 
 void formatTimeHumanReadable(
-    long unsigned seconds, 
+    uint64_t seconds, 
     char* buffer,
     size_t size
 ) {
-    long unsigned days = seconds / 3600 / 24;
-    long unsigned hours = (seconds / 3600) % 24;
-    long unsigned minutes = (seconds % 3600) / 60;
-    long unsigned secs = seconds % 60 % 60 % 60;
+    uint64_t days = seconds / 3600 / 24;
+    uint64_t hours = (seconds / 3600) % 24;
+    uint64_t minutes = (seconds % 3600) / 60;
+    uint64_t secs = seconds % 60 % 60 % 60;
 
     if(days > 0) {
         snprintf(
             buffer, size, 
-            "%ldd %ldh %ldm %lds",
+            "%" PRIu64 "d %" PRIu64 "h %" PRIu64 "m %" PRIu64 "s",
             days,
             hours,
             minutes,
@@ -27,7 +29,7 @@ void formatTimeHumanReadable(
     } else if(hours > 0) {
         snprintf(
             buffer, size, 
-            "%ldh %ldm %lds",
+            "%" PRIu64 "h %" PRIu64 "m %" PRIu64 "s",
             hours,
             minutes,
             secs
@@ -36,7 +38,7 @@ void formatTimeHumanReadable(
     } else {
         snprintf(
             buffer, size, 
-            "%ldm %lds",
+            "%" PRIu64 "m %" PRIu64 "s",
             minutes,
             secs
         );
@@ -51,11 +53,11 @@ void formatTime(time_t _time, char *buffer, size_t size) {
     strftime(buffer, size, "%Y-%m-%d--%H:%M:%S", &tm_info);
 }
 
-long unsigned unformatTime(char *buffer) {
-    const long unsigned year_converter = 60 * 60 * 24 * 30 * 365;
-    const long unsigned month_converter = 60 * 60 * 24 * 30;
-    const long unsigned day_converter = 60 * 60 * 24;
-    long unsigned time = 0;
+uint64_t unformatTime(char *buffer) {
+    const uint64_t year_converter = 60 * 60 * 24 * 30 * 365;
+    const uint64_t month_converter = 60 * 60 * 24 * 30;
+    const uint64_t day_converter = 60 * 60 * 24;
+    uint64_t time = 0;
 
     char *p = buffer;
 
@@ -63,7 +65,7 @@ long unsigned unformatTime(char *buffer) {
     if(!minus) return 0;
     *minus = '\0';
 
-    long unsigned year = (long unsigned)atoi(p);
+    uint64_t year = (uint64_t)atoi(p);
     time += (year * year_converter);
     p = minus + 1;
 
@@ -71,11 +73,11 @@ long unsigned unformatTime(char *buffer) {
     if(!minus) return 0;
     *minus = '\0';
 
-    long unsigned month = (long unsigned)atoi(p);
+    uint64_t month = (uint64_t)atoi(p);
     time += (month * month_converter);
     p = minus + 1;
 
-    long unsigned day = (long unsigned)atoi(p);
+    uint64_t day = (uint64_t)atoi(p);
     time += (day * day_converter);
 
     return time;

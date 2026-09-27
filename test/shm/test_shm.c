@@ -4,6 +4,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <sys/un.h>
+#include <inttypes.h>
 
 #include "utils.h"
 #include "daemon.h"
@@ -27,8 +28,8 @@ void testReadDaemonS() {
     memcpy(&system, &shmp->system, sizeof(System));
     pthread_mutex_unlock(&shmp->lock);
 
-    printf("%lld\n", system.cpu.idle);
-    printf("%lld\n", system.disk.available);
+    printf("%" PRIu64 "\n", system.cpu.idle);
+    printf("%" PRIu64 "\n", system.disk.available);
 }
 
 void testReadDaemonM() {
