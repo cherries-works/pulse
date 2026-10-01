@@ -104,10 +104,11 @@ void help() {
     printf("     %s%-20s %-20s%s\n", DIM, "--keep", "Amount of files to be kept.", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--until", "The date up until when history/logs are kept. (YYYY-MM-DD)", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--prune", "What is suppose to be pruned (history/logs/all).", RESET);
-    printf(" > %-20s %-20s\n", "config", "Configures ~/.cherries-works/pulse/config-toml file via nano.");
-    printf("     %s%-20s %-20s%s\n", DIM, "--reset", "Resets the config file to the pulse standart config file (destructive).", RESET);
+    printf(" > %-20s %-20s\n", "config", "Configures ~/.cherries-works/pulse/config.toml file via nano.");
+    printf("     %s%-20s %-20s%s\n", DIM, "--reset", "Resets the config file to the pulse standard config file (destructive).", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--current", "Prints the current configuration.", RESET);
     printf(" > %-20s %-20s\n", "version", "Prints the current version.");
-    printf("     %s%-20s %-20s%s\n", DIM, "--hash", "Prints the commit hash of the bui" PRIu64 ".", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--hash", "Prints the commit hash of the build.", RESET);
     printf("\n");
     // stop();
 }
@@ -332,6 +333,20 @@ void config(Args args) {
 
     char path[BUFFER_ONE_KB];
     snprintf(path, BUFFER_ONE_KB, "%s/%s/config.toml", home, R_CHERRIES_FOLDER_PULSE);
+    
+    if(args.current) {
+        Config config = parseToml();
+        printf("Alerts\n");
+        printf("CPU:  >= %d%% for %ds\n", config.alerts.CPU.threshold, config.alerts.CPU.duration);
+        printf("RAM:  >= %d%% for %ds\n", config.alerts.RAM.threshold, config.alerts.RAM.duration);
+        printf("Disk: >= %d%% for %ds\n", config.alerts.Disk.threshold, config.alerts.Disk.duration);
+
+        printf("\nNotifications\n");
+        printf("Desktop:  %s\n", config.desktopNotify.enabled ? "enabled" : "disabled");
+        printf("Discord:  %s\n", config.discordNotify.enabled ? "enabled" : "disabled");
+        printf("Command:  %s\n", config.commandNotify.enabled ? "enabled" : "disabled");
+        return;
+    }
 
     if(args.reset) {
         remove(path);
@@ -342,7 +357,6 @@ void config(Args args) {
         }
         return;
     }
-    
     char command[BUFFER_ONE_KB];
     snprintf(command, BUFFER_ONE_KB, "nano %s", path);
 

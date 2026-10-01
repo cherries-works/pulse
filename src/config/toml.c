@@ -16,16 +16,14 @@ int parseWait(char *wait) {
 
     int total_time = 0;
     int saved_time = 0;
+    bool has_number = false;
     for(size_t i = 0; i < size; i++) {
         char w = wait[i];
-        if(w == ' ') continue;
+        if(w == ' ' || w == '\"') continue;
         if(isDigit(w) == 1) {
-            if(saved_time > 0) {
-                saved_time *= 10;
-            }
-
-            saved_time += (int)(w - '0');
-        } else {
+            saved_time = saved_time * 10 + (int)(w - '0');
+            has_number = true;
+        } else if(has_number) {
             if(w == 's') {
                 total_time += saved_time;
             } else if(w == 'm') {
@@ -35,11 +33,8 @@ int parseWait(char *wait) {
             } else if(w == 'd') {
                 total_time += saved_time * 60 * 60 * 24;
             }
-
             saved_time = 0;
-            while(wait[i] != EOF && wait[i] != '\0' && wait[i] != ' ' && isDigit(wait[i]) != 1) {
-                i++;
-            }
+            has_number = false;
         }
     }
 

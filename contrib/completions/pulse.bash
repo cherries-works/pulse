@@ -31,7 +31,7 @@ _pulse() {
             options="--keep --until --prune"
             ;;
         config)
-            options="--reset"
+            options="--reset --current"
             ;;
         *)
             return
@@ -42,7 +42,7 @@ _pulse() {
         # if the argument is already passed in, then dont re-suggest it
         case "$word" in
             --port|--web|--sleep|--headless|--processes|--sort|\
-            --json|--process|--keep|--until|--prune|--reset)
+            --json|--process|--keep|--until|--prune|--reset|--current)
                 options="${options//$word/}"
                 ;;
         esac

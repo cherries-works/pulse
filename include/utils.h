@@ -95,6 +95,8 @@ typedef struct {
     bool reset; // for the CONFIG command
     
     bool hash; // for the VERSION command
+    
+    bool current; // for the CONFIG command
 
     Sort sort; // for the MONITOR / TOP command
 
