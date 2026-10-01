@@ -170,7 +170,10 @@ void getProcess(Process *p, pid_t pid) {
         proc_pid
     );
 
-    readFile(proc_file_name, processes_buffer_size, processes_buffer);
+    if (readFile(proc_file_name, processes_buffer_size, processes_buffer) == 0) {
+        printf("Error: process with pid \"%d\" was not found.\n", (int)proc_pid);
+        exit(EXIT_FAILURE);
+    }
     cursor = processes_buffer;
 
     char *close_bracket = strchr(cursor, ')');

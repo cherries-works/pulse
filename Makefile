@@ -34,8 +34,9 @@ dep = $(obj:.o=.d)
 
 all: $(target)
 
-test:
+test: $(target)
 	$(MAKE) -C test/unit
+	bash test/test_process_not_found.sh "$(CURDIR)/$(target)"
 
 prefix ?= /usr
 bindir ?= $(prefix)/bin
