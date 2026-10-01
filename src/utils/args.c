@@ -34,7 +34,7 @@ Args parseArgs(int argc, char* argv[]) {
         .json = false,
 
         .hash = false,
-
+        .current = false,
         .command = MONITOR,
         .sort = RAM,
         .sleep = 1,
@@ -157,6 +157,10 @@ Args parseArgs(int argc, char* argv[]) {
 
         if(strcmp(arg, "--reset") == 0) {
             p.reset = true;
+        }
+        
+        if(strcmp(arg, "--current") == 0){
+            p.current = true;
         }
     }
 
