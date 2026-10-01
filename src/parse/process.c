@@ -7,7 +7,7 @@
 #include "utils.h"
 #include "parse.h"
 
-void getProcesses(
+unsigned getProcesses(
     Process processes[],
     Args args
 ) {
@@ -23,6 +23,7 @@ void getProcesses(
     }
 
     int keys_until_utime = 14;
+    unsigned process_count = 0;
     
     size_t proc_file_name_size = 32;
     char proc_file_name[proc_file_name_size];
@@ -37,6 +38,7 @@ void getProcesses(
 
         pid_t pid = (pid_t)atoi(proc_entry_name);
         if(pid == 0) continue;
+        process_count++;
         proc_pid = pid;
 
         snprintf(
@@ -117,7 +119,7 @@ void getProcesses(
     }
 
     closedir(proc_dir);
-    return;
+    return process_count;
 }
 
 void getProcess(Process *p, pid_t pid) {

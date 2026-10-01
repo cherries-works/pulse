@@ -36,6 +36,7 @@ JSON_ROUTE(indexMetrics, {
         "\"success\":true,"
         "\"timestamp\":%" PRIu64 ","
         "\"cpu\":{\"idle\":%" PRIu64 ",\"total\":%" PRIu64 ",\"processes\":%" PRIu64 "},"
+        "\"process_count\":%u,"
         "\"disk\":{\"available\":%" PRIu64 ",\"total\":%" PRIu64 ",\"reads\":%" PRIu64 ",\"writes\":%" PRIu64 "},"
         "\"memory\":{\"available\":%" PRIu64 ",\"total\":%" PRIu64 "},"
         "\"network\":{\"rx\":%" PRIu64 ",\"tx\":%" PRIu64 "},"
@@ -46,6 +47,7 @@ JSON_ROUTE(indexMetrics, {
         snapshot.cpu.idle,
         snapshot.cpu.total,
         snapshot.cpu.processes,
+        snapshot.process_count,
 
         snapshot.disk.available,
         snapshot.disk.total,

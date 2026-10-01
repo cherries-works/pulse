@@ -108,6 +108,7 @@ void render(
 
 
     printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
+    printf("│ Running processes: %-52u │\n", system.process_count);
     for(unsigned i = 0; i < args.processes; i++) {
         Process process = system.processes[i];
         printProcess(process, system);
@@ -147,6 +148,7 @@ void renderSnapshot(
 
 
     printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
+    printf("│ Running processes: %-52u │\n", system.process_count);
     for(unsigned i = 0; i < args.processes; i++) {
         Process process = system.processes[i];
         printProcess(process, system);
