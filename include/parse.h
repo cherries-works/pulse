@@ -95,6 +95,7 @@ typedef struct {
 
     Process processes[MAX_PROCESSES];
     unsigned processes_count;
+    unsigned process_count;
 
     uint64_t uptime;
     unsigned temp;
@@ -128,7 +129,7 @@ extern uint64_t parseUptime(size_t size, char *buffer);
 extern unsigned parseTemp();
 
 extern float parseCpuUsage(Cpu snapshot2, Cpu snapshot1);
-extern void getProcesses(Process processes[], Args args);
+extern unsigned getProcesses(Process processes[], Args args);
 extern void getProcess(Process *process, pid_t pid);
 
 #endif

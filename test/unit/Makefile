@@ -20,6 +20,8 @@ required_src = \
 	$(EXIT_NEST)/src/parse/memory.c \
 	$(EXIT_NEST)/src/parse/load.c \
 	$(EXIT_NEST)/src/parse/network.c \
+	$(EXIT_NEST)/src/parse/process.c \
+	$(EXIT_NEST)/src/utils/file.c \
 	$(EXIT_NEST)/src/utils/strings.c \
 	$(EXIT_NEST)/src/utils/constants.c
 

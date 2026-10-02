@@ -70,6 +70,9 @@ Metrics are available as JSON:
 GET /api/metrics
 ```
 
+The **cpu.processes** value is cumulative since boot. The top-level
+**process_count** is the current number of running processes.
+
 Example response:
 
 ```json
@@ -82,6 +85,7 @@ Example response:
     "total": 9973308,
     "processes": 30307
   },
+  "process_count": 250,
   "disk": {
     "available": 70075166720,
     "total": 97574191104,

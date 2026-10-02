@@ -55,7 +55,7 @@ System getSystem(
         .temp = temp
     };
 
-    getProcesses(system.processes, args);
+    system.process_count = getProcesses(system.processes, args);
 
     return system;
 }

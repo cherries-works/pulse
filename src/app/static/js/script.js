@@ -75,7 +75,7 @@ const updateSystem = async () => {
     cpu_percentage.textContent = `${(parsed_cpu_usage).toFixed(2)}%`
     cpu_idle.textContent = Intl.NumberFormat("de").format(_cpu.idle)
     cpu_total.textContent = Intl.NumberFormat("de").format(_cpu.total)
-    cpu_processes.textContent = Intl.NumberFormat("de").format(_cpu.processes)
+    cpu_processes.textContent = Intl.NumberFormat("de").format(json.process_count)
 
     const parsed_memory_usage = ((_memory.total - _memory.available) / _memory.total) * 100;
     memory_percentage.textContent = `${(parsed_memory_usage).toFixed(2)}%`
