@@ -17,6 +17,7 @@ A fast, simple, and efficient monitoring system that just works.
 * Disk I/O statistics
 * Network statistics
 * Load averages
+* Hostname
 * Uptime
 * Running processes
 * Web hosting
@@ -100,6 +101,7 @@ Example response:
     "load5": 1.41,
     "load15": 1.17
   },
+  "hostname": "cherries",
   "processes": [
     {
       "pid": 4503,

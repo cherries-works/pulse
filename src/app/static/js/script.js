@@ -28,6 +28,8 @@ const load_15 = document.querySelector("#load_15")
 
 const uptime = document.querySelector("#uptime")
 
+const hostname = document.querySelector("#hostname")
+
 const processes = document.querySelector(".processes")
 const createProcess = (process, _cpu) => {
     const p = document.createElement("div")
@@ -96,6 +98,8 @@ const updateSystem = async () => {
     io_read.textContent = `${((io_usage.w * 512) / 1024).toFixed(2)}KB/s`
 
     uptime.textContent = formatTimeHumanReadable(json.uptime)
+
+    hostname.textContent = json.hostname
     
     load_1.textContent = _load.load1
     load_5.textContent = _load.load5

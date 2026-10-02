@@ -8,6 +8,7 @@
 #include "http.h"
 #include "daemon.h"
 #include "log.h"
+#include "parse.h"
 
 #define STATIC_ROUTE(fnName, filePath) \
 void fnName(int socket, char *response, size_t response_size) { \
@@ -27,10 +28,14 @@ JSON_ROUTE(indexMetrics, {
     System snapshot;
     readDaemonS(&snapshot);
 
+    Info info = getInfo();
+
     char json[BUFFER_ONE_KB * 32];
     size_t json_len = 0;
 
     json_len += (size_t)snprintf(json + json_len, sizeof(json) - json_len,
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: application/json; charset=UTF-8\r\n\r\n"
         "{"
         "\"error\":null,"
         "\"success\":true,"
@@ -40,6 +45,7 @@ JSON_ROUTE(indexMetrics, {
         "\"memory\":{\"available\":%" PRIu64 ",\"total\":%" PRIu64 "},"
         "\"network\":{\"rx\":%" PRIu64 ",\"tx\":%" PRIu64 "},"
         "\"load\":{\"load1\":%.2f,\"load5\":%.2f,\"load15\":%.2f},"
+        "\"hostname\":\"%s\","
         "\"processes\":[",
         time(NULL),
 
@@ -60,7 +66,9 @@ JSON_ROUTE(indexMetrics, {
 
         snapshot.load.load1,
         snapshot.load.load5,
-        snapshot.load.load15
+        snapshot.load.load15,
+
+        info.hostname
     );
 
     for (unsigned i = 0; i < snapshot.processes_count; i++) {
