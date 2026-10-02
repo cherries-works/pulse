@@ -156,7 +156,7 @@ static void checkAlert(
     int sleep,
     Config *config
 ) {
-    float threshold = (float)alert->threshold / 100;
+    float threshold = (float)alert->threshold;
 
     if (!checkCondition(value, threshold, alert->op)) {
         alert->current_duration = 0;
