@@ -333,13 +333,26 @@ void config(Args args) {
 
     char path[BUFFER_ONE_KB];
     snprintf(path, BUFFER_ONE_KB, "%s/%s/config.toml", home, R_CHERRIES_FOLDER_PULSE);
-    
+   
+    // enum to string conversion
+    const char* operatorToString(Operator op) {
+        switch (op) {
+            case G:  return ">";
+            case E:  return "==";
+            case L:  return "<";
+            case GE: return ">=";
+            case LE: return "<=";
+            case NE: return "!=";
+            default: return ">";
+        }
+    }
+
     if(args.current) {
         Config config = parseToml();
         printf("Alerts\n");
-        printf("CPU:  >= %d%% for %ds\n", config.alerts.CPU.threshold, config.alerts.CPU.duration);
-        printf("RAM:  >= %d%% for %ds\n", config.alerts.RAM.threshold, config.alerts.RAM.duration);
-        printf("Disk: >= %d%% for %ds\n", config.alerts.Disk.threshold, config.alerts.Disk.duration);
+        printf("CPU:  %-2s %d%% for %ds\n", operatorToString(config.alerts.CPU.op), config.alerts.CPU.threshold, config.alerts.CPU.duration);
+        printf("RAM:  %-2s %d%% for %ds\n", operatorToString(config.alerts.RAM.op), config.alerts.RAM.threshold, config.alerts.RAM.duration);
+        printf("Disk: %-2s %d%% for %ds\n", operatorToString(config.alerts.Disk.op), config.alerts.Disk.threshold, config.alerts.Disk.duration);
 
         printf("\nNotifications\n");
         printf("Desktop:  %s\n", config.desktopNotify.enabled ? "enabled" : "disabled");
