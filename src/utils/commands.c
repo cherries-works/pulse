@@ -63,6 +63,9 @@ void stop() {
         remove(file_path);
     }
 
+    failureLog();
+    endLog();
+
     closedir(dir);
 }
 

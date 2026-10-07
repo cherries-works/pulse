@@ -91,8 +91,6 @@ void term(int sig) {
     }
 
     stop();
-    failureLog();
-    endLog();
     exit(EXIT_SUCCESS);
 }
 
@@ -112,9 +110,7 @@ int main(int argc, char* argv[]) {
     Config config = parseToml();
     handle(args, config);
 
-    stop();
-    failureLog();
-    endLog();
+    // stop();
     return 0;
 }
 
