@@ -77,6 +77,9 @@ void handle(Args args, Config _config) {
             break;
     }
 
+    // cannot log, if we stopped the logger
+    if(cmd == STOP) return; 
+
     _log(
         L_INFO,
         "Finished running command"
