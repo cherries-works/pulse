@@ -24,7 +24,6 @@ int setup() {
         closedir(dir);
     }
 
-
     snprintf(path, BUFFER_ONE_KB, "%s/%s", home, R_CHERRIES_FOLDER_PULSE);
     dir = opendir(path);
     if(!dir) {

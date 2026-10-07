@@ -4,9 +4,12 @@
 
 #include "utils.h"
 #include "parse.h"
+#include "log.h"
 
 // reading the first number
 uint64_t parseUptime(size_t size, char *buffer) {
+    _log(L_INFO, "Getting uptime info.");
+
     unsigned i = 0;
 
     // should be maximum 16 characters
@@ -25,5 +28,7 @@ uint64_t parseUptime(size_t size, char *buffer) {
     }
 
     uint64_t n = strtoull(number, NULL, 10);
+
+    _log(L_INFO, "(Done) Getting uptime info.");
     return n;
 }

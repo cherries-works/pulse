@@ -25,6 +25,8 @@ STATIC_ROUTE(indexCwCharts, "./src/app/static/js/cw.charts.js");
 STATIC_ROUTE(indexFavicon, "./src/app/static/assets/favicon.png");
 
 JSON_ROUTE(indexMetrics, {
+    _log(L_INFO, "Preparing route, for metrics.");
+
     System snapshot;
     readDaemonS(&snapshot);
 
@@ -96,6 +98,8 @@ JSON_ROUTE(indexMetrics, {
         snapshot.temp
     );
 
+    _log(L_INFO, "(Done) Preparing route, for metrics.");
+
     routeJSON(
         socket,
         response,
@@ -106,6 +110,7 @@ JSON_ROUTE(indexMetrics, {
 });
 
 JSON_ROUTE(historyCPU, {
+    _log(L_INFO, "Preparing route, for CPU history.");
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
@@ -200,6 +205,9 @@ JSON_ROUTE(historyCPU, {
         entry_storer
     );
 
+
+    _log(L_INFO, "(Done) Preparing route, for CPU history.");
+
     routeJSON(
         socket,
         response,
@@ -209,6 +217,8 @@ JSON_ROUTE(historyCPU, {
 });
 
 JSON_ROUTE(historyRAM, {
+    _log(L_INFO, "Preparing route, for RAM history.");
+
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
@@ -303,6 +313,7 @@ JSON_ROUTE(historyRAM, {
         entry_storer
     );
 
+    _log(L_INFO, "(Done) Preparing route, for RAM history.");
 
     routeJSON(
         socket,
@@ -313,6 +324,8 @@ JSON_ROUTE(historyRAM, {
 });
 
 JSON_ROUTE(historyDisk, {
+    _log(L_INFO, "Preparing route, for Disk history.");
+
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
@@ -407,6 +420,7 @@ JSON_ROUTE(historyDisk, {
         entry_storer
     );
 
+    _log(L_INFO, "(Done) Preparing route, for Disk history.");
 
     routeJSON(
         socket,

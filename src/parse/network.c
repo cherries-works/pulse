@@ -3,8 +3,11 @@
 
 #include "utils.h"
 #include "parse.h"
+#include "log.h"
 
 Network getNetwork(size_t size, char *buffer) {
+    _log(L_INFO, "Getting network info.");
+
     uint64_t rx = 0;
     uint64_t tx = 0;
 
@@ -73,8 +76,9 @@ Network getNetwork(size_t size, char *buffer) {
         }
     }
 
-    Network snapshot = { rx, tx };
+    _log(L_INFO, "(Done) Getting network info.");
 
+    Network snapshot = { rx, tx };
     return snapshot;
 }
 

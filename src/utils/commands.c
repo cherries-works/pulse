@@ -26,7 +26,6 @@ void stop() {
         "Running stop() -> command stop"
     );
 
-
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
@@ -64,17 +63,14 @@ void stop() {
         remove(file_path);
     }
 
-    snprintf(file_path, BUFFER_ONE_KB, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
-    remove(file_path);
-
     closedir(dir);
 }
 
 void help() {
-    // _log(
-    //     L_INFO,
-    //     "Running help() -> command help"
-    // );
+    _log(
+        L_INFO,
+        "Running help() -> command help"
+    );
 
     size_t version_length = strlen(PULSE_VERSION);
     size_t dashes = version_length < 42 ? 43 - version_length : 1;
@@ -110,14 +106,14 @@ void help() {
     printf(" > %-20s %-20s\n", "version", "Prints the current version.");
     printf("     %s%-20s %-20s%s\n", DIM, "--hash", "Prints the commit hash of the build.", RESET);
     printf("\n");
-    // stop();
+    stop();
 }
 
 void top(Args args) {
-    // _log(
-    //     L_INFO,
-    //     "Running top() -> command top"
-    // );
+    _log(
+        L_INFO,
+        "Running top() -> command top"
+    );
 
     System system = getSystem(args);
     printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
@@ -127,14 +123,14 @@ void top(Args args) {
         printProcess(process, system);
     }
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
-    // stop();
+    stop();
 }
 
 void info(Args args) {
-    // _log(
-    //     L_INFO,
-    //     "Running info() -> command info"
-    // );
+    _log(
+        L_INFO,
+        "Running info() -> command info"
+    );
 
     System system = getSystem(args);
     Info info = getInfo();
@@ -170,7 +166,7 @@ void info(Args args) {
         renderInfo(args, system, info);
     }
 
-    // stop();
+    stop();
 }
 
 void monitor(Args args, Config config) {

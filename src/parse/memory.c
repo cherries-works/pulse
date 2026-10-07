@@ -3,6 +3,7 @@
 
 #include "utils.h"
 #include "parse.h"
+#include "log.h"
 
 uint64_t parseMemoryKey(char *buffer, char *target_key) {
     char *line = buffer;
@@ -54,6 +55,8 @@ uint64_t parseMemoryKey(char *buffer, char *target_key) {
 }
 
 Memory getMemory(size_t size, char *buffer) {
+    _log(L_INFO, "Getting memory info.");
+
     uint64_t memory_total = 0;
     uint64_t memory_available = 0;
 
@@ -85,6 +88,8 @@ Memory getMemory(size_t size, char *buffer) {
 
         line = next + 1;
     }
+
+    _log(L_INFO, "(Done) Getting memory info.");
 
     Memory memory = {
         memory_total,

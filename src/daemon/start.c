@@ -16,6 +16,8 @@
 #include "log.h"
 
 void setupDaemon(pid_t pid) {
+    _log(L_INFO, "Preparing Daemon.");
+
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(L_ERROR, "No HOME environment variable");
@@ -31,7 +33,6 @@ void setupDaemon(pid_t pid) {
 
     FILE *f = fopen(daemon_path, "a");
     fclose(f);
-
 
     size_t time_buffer_size = BUFFER_ONE_KB / 8;
     char time_buffer[time_buffer_size];
@@ -65,10 +66,14 @@ void setupDaemon(pid_t pid) {
     if (shmp == MAP_FAILED) {
         exit(EXIT_FAILURE);
     }
+
+    _log(L_INFO, "(Done) Preparing Daemon.");
 }
 
 // check if there is already daemon running
 pid_t checkDaemon() {
+    _log(L_INFO, "Checking for Daemon.");
+
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
@@ -100,9 +105,12 @@ pid_t checkDaemon() {
         name = d + 1;
         int pid = atoi(name);
 
+        _log(L_INFO, "(Done) Checking for Daemon [exists].");
         closedir(dir);
         return pid;
     }
+
+    _log(L_INFO, "(Done) Checking for Daemon.");
 
     closedir(dir);
     return -1;
@@ -124,13 +132,15 @@ pid_t startDaemon(Args args, Config config) {
         }
         sem_post(ready_sem);
         sem_close(ready_sem);
-        
+        _log(
+            L_INFO,
+            "(Done) Starting Daemon"
+        );
         return pid;
     }
 
     pid = fork();
     if (pid == 0) {
-        _log(L_INFO, "Setting up Daemon.");
         setupDaemon(getpid());
 
         sem_t *ready_sem = sem_open(CHERRIES_PULSE_READY_SEM, 0);
@@ -204,6 +214,11 @@ pid_t startDaemon(Args args, Config config) {
         shm_unlink(CHERRIES_PULSE_SHM);
         exit(EXIT_SUCCESS);
     }
+
+    _log(
+        L_INFO,
+        "(Done) Starting Daemon"
+    );
 
     return pid;
 }

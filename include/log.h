@@ -12,6 +12,7 @@ extern void _log(
     const char *message
 );
 extern void failureLog();
+extern void endLog();
 extern time_t getCurrentLog();
 
 #endif

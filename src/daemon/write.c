@@ -17,6 +17,8 @@
 #include "log.h"
 
 void writeHistoryS(System system) {
+    _log(L_INFO, "Writing history [S].");
+
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
@@ -109,10 +111,13 @@ void writeHistoryS(System system) {
     snprintf(buffer, buffer_size, "%" PRIu64 "", system.uptime);
     fwrite(buffer, strlen(buffer), 1, f);
 
+    _log(L_INFO, "(Done) Writing history [S].");
     fclose(f);
 }
 
 void writeHistoryM(Metrics metrics) {
+    _log(L_INFO, "Writing history [M].");
+
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
@@ -166,5 +171,6 @@ void writeHistoryM(Metrics metrics) {
     snprintf(buffer, buffer_size, "%f", metrics.tx);
     fwrite(buffer, strlen(buffer), 1, f);
 
+    _log(L_INFO, "(Done) Writing history [M].");
     fclose(f);
 }

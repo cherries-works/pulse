@@ -5,6 +5,7 @@
 
 #include "utils.h"
 #include "parse.h"
+#include "log.h"
 
 char *PRIORITIES[5] = {
     "x86_pkg_temp",
@@ -15,6 +16,8 @@ char *PRIORITIES[5] = {
 };
 
 unsigned parseTemp() {
+    _log(L_INFO, "Getting temp info.");
+
     size_t file_name_size = BUFFER_ONE_KB / 4;
     char file_name[file_name_size];
 
@@ -66,10 +69,13 @@ unsigned parseTemp() {
             fclose(file_sys);
             
             int temp = atoi(file_buffer);
+        
+            _log(L_INFO, "(Done) Getting temp info.");
             return (unsigned)temp;
         }
     }
 
+    _log(L_INFO, "(Done) Getting temp info [No temp found].");
     return 0;
 }
 

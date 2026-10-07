@@ -51,6 +51,8 @@ void formatMessage(
 }
 
 void notifyDesktop(char *title, char *message, char *resource, float usage) {
+    _log(L_INFO, "Notifying desktop.");
+
     size_t command_size = BUFFER_ONE_KB;
     char command[command_size];
     
@@ -75,6 +77,8 @@ void notifyDesktop(char *title, char *message, char *resource, float usage) {
 }
 
 void notifyDiscord(char *webhook, char *message, char *resource, float usage) {
+    _log(L_INFO, "Notifying discord.");
+
     size_t command_size = BUFFER_ONE_KB * 2;
     char command[command_size];
 
@@ -99,11 +103,15 @@ void notifyDiscord(char *webhook, char *message, char *resource, float usage) {
 }
 
 void notifyCommand(char *command) {
+    _log(L_INFO, "Notifying command.");
+
     int result = system(command);
     if(result <= 0) return;
 }
 
 void notifyAlert(Config *config, char *resource, float usage) {
+    _log(L_INFO, "Notifying with an alert.");
+
     if(config->commandNotify.enabled) {
         if(strlen(config->commandNotify.command) == 0) {
             _log(L_ERROR, "Command notification enabled, but not set (command).");
@@ -135,6 +143,8 @@ void notifyAlert(Config *config, char *resource, float usage) {
             );
         }
     }
+
+    _log(L_INFO, "Done notifying.");
 }
 
 bool checkCondition(float value, float threshold, Operator op) {

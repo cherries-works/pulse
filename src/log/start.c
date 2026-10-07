@@ -61,10 +61,6 @@ void setupLog() {
 time_t getCurrentLog() {
     char *home = getenv("HOME");
     if(home == NULL) {
-        _log(
-            L_ERROR,
-            "No HOME environment variable"
-        );
         return 0;
     }
 
@@ -79,10 +75,13 @@ time_t getCurrentLog() {
 
     buffer[n] = '\0';
     time_t t = (time_t)strtoul(buffer, NULL, 10);
+
     return t;
 }
 
 void failureLog() {
+    _log(L_INFO, "Exiting...");
+
     char *home = getenv("HOME");
     if(home == NULL) {
         printf("No HOME enviroment variable...");
@@ -101,6 +100,32 @@ void failureLog() {
     printf("Exited :: %s\n", path_file);
 }
 
+void endLog() {
+    _log(
+        L_INFO,
+        "Ending logging."
+    );
+
+    char *home = getenv("HOME");
+    if(home == NULL) {
+        _log(
+            L_ERROR,
+            "No HOME environment variable"
+        );
+        return;
+    }
+
+    char file_path[BUFFER_ONE_KB];
+    snprintf(file_path, BUFFER_ONE_KB, "%s/%s/state/log", home, R_CHERRIES_FOLDER_PULSE);
+
+    _log(
+        L_INFO,
+        "(Done) Ending logging."
+    );
+
+    remove(file_path);
+    return;
+}
 
 void _log(
     log_types types, 
@@ -108,7 +133,7 @@ void _log(
 ) {
     time_t _time = getCurrentLog();
     if(_time == 0) {
-        printf("No logger set up...\n");
+        printf("No logger set up... (%s)\n", message);
         return;
     }
 

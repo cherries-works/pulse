@@ -52,10 +52,19 @@ void startRender(Args args) {
             char c;
             ssize_t result = read(STDIN_FILENO, &c, 1);
             if(result <= 0) break;
-            if(c == 'd') break;
+            if(c == 'd') {
+                _log(
+                    L_INFO,
+                    "Detaching from Renderer."
+                );
+                break;
+            }
             if(c == 'q') {
+                _log(
+                    L_INFO,
+                    "Qutting Renderer (Process gets stopped)."
+                );
                 tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-                failureLog();
                 stop();
                 break;
             }

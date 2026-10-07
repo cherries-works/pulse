@@ -88,10 +88,11 @@ struct termios oldt;
 void term(int sig) {
     if(getpid() == render_pid) {
         tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
-        failureLog();
     }
 
     stop();
+    failureLog();
+    endLog();
     exit(EXIT_SUCCESS);
 }
 
@@ -111,6 +112,9 @@ int main(int argc, char* argv[]) {
     Config config = parseToml();
     handle(args, config);
 
+    stop();
+    failureLog();
+    endLog();
     return 0;
 }
 
