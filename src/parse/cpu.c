@@ -35,8 +35,6 @@ uint64_t parseCpuKey(char *buffer, char *target_key) {
 }
 
 Cpu getCpu(size_t size, char *buffer) {
-    _log(L_INFO, "Getting cpu info.");
-
     uint64_t user = 0;
     uint64_t nice = 0;
     uint64_t system = 0;
@@ -122,8 +120,6 @@ Cpu getCpu(size_t size, char *buffer) {
     uint64_t total_time = user_time + nice_time + system_all_time + idle_all_time + steal + virt_all_time;
 
     uint64_t processes = parseCpuKey(buffer, "processes");
-
-    _log(L_INFO, "(Done) Getting cpu info.");
 
     Cpu snapshot = { idle_all_time, total_time, processes };
     return snapshot;

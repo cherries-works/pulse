@@ -12,8 +12,6 @@ unsigned getProcesses(
     Process processes[],
     Args args
 ) {
-    _log(L_INFO, "Getting processes info.");
-
     size_t processes_buffer_size = BUFFER_ONE_KB * 8;
     char processes_buffer[processes_buffer_size];
     
@@ -121,15 +119,11 @@ unsigned getProcesses(
         }
     }
 
-    _log(L_INFO, "(Done) Getting processes info.");
-
     closedir(proc_dir);
     return process_count;
 }
 
 void getProcess(Process *p, pid_t pid) {
-    _log(L_INFO, "Getting process info.");
-
     if(pid == 0) {
         _log(L_ERROR, "Invalid, or no process passed.");
 
@@ -274,6 +268,5 @@ void getProcess(Process *p, pid_t pid) {
     p->threads = proc_threads;
     strcpy(p->name, proc_name);
         
-    _log(L_INFO, "(Done) Getting process info.");
     return;
 }

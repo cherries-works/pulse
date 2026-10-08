@@ -7,8 +7,6 @@
 #include "log.h"
 
 Disk getDisk(size_t size, char *buffer) {
-    _log(L_INFO, "Getting disk info.");
-
     struct statvfs stat;
     statvfs("/", &stat);
 
@@ -42,8 +40,6 @@ Disk getDisk(size_t size, char *buffer) {
             line = next + 1;
         }
     }
-
-    _log(L_INFO, "(Done) Getting disk info.");
 
     Disk snapshot = { disk_total, disk_available, read, written };
     return snapshot;

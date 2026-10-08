@@ -9,8 +9,6 @@
 #include "log.h"
 
 Info getInfo() {
-    _log(L_INFO, "Getting hostname info.");
-
     Kernel kernel = {
         .machine = "",
         .release = "",
@@ -109,6 +107,5 @@ Info getInfo() {
         strcpy(info.os, etc);
     }
 
-    _log(L_INFO, "(Done) Getting hostname info.");
     return info;
 }

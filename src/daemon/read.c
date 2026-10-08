@@ -16,8 +16,6 @@
 #include "log.h"
 
 static struct shmbuf *openSHM() {
-    _log(L_INFO, "Opening SHM.");
-
     int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
     if (fd == -1) {
         _log(L_ERROR, "SHM open failed");
@@ -30,49 +28,38 @@ static struct shmbuf *openSHM() {
         exit(EXIT_FAILURE);
     }
 
-    _log(L_INFO, "(Done) Opening SHM.");
     return shmp;
 }
 
 void readDaemonSM(System *system, Metrics *metrics) {
-    _log(L_INFO, "Reading SHM [SM].");
-
     struct shmbuf *shmp = openSHM();
 
     pthread_mutex_lock(&shmp->lock);
     memcpy(metrics, &shmp->metrics, sizeof(Metrics));
     memcpy(system, &shmp->system, sizeof(System));
     pthread_mutex_unlock(&shmp->lock);
-    _log(L_INFO, "(Done) Reading SHM [SM].");
 }
 
 void readDaemonS(System *system) {
-    _log(L_INFO, "Reading SHM [S].");
     struct shmbuf *shmp = openSHM();
 
     pthread_mutex_lock(&shmp->lock);
     memcpy(system, &shmp->system, sizeof(System));
     pthread_mutex_unlock(&shmp->lock);
-    _log(L_INFO, "(Done) Reading SHM [S].");
 }
 
 void readDaemonM(Metrics *metrics) {
-    _log(L_INFO, "Reading SHM [M].");
     struct shmbuf *shmp = openSHM();
 
     pthread_mutex_lock(&shmp->lock);
     memcpy(metrics, &shmp->metrics, sizeof(Metrics));
     pthread_mutex_unlock(&shmp->lock);
-
-    _log(L_INFO, "(Done) Reading SHM [M].");
 }
 
 void readHistoryS(
     char *path,
     System *system
 ) {
-    _log(L_INFO, "Reading History [S].");
-
     size_t buffer_size = BUFFER_ONE_KB * 4;
     char buffer[buffer_size];
 
@@ -221,8 +208,6 @@ void readHistoryS(
     *n = '\0';
 
     system->memory.total = strtoul(buffer_pointer, NULL, 10);
-
-    _log(L_INFO, "(Done) Reading History [S].");
     fclose(f);
 }
 
@@ -230,8 +215,6 @@ void readHistoryM(
     char *path,
     Metrics *metric
 ) {
-    _log(L_INFO, "Reading History [M].");
-
     size_t buffer_size = BUFFER_ONE_KB * 4;
     char buffer[buffer_size];
 
@@ -328,5 +311,4 @@ void readHistoryM(
     buffer_pointer = n + 1;
 
     fclose(f);
-    _log(L_INFO, "(Done) Reading History [M].");
 }

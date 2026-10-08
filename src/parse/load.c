@@ -6,8 +6,6 @@
 #include "log.h"
 
 Load getLoad(size_t size, char *buffer) {
-    _log(L_INFO, "Getting load info.");
-
     Load load = { 0.0f, 0.0f, 0.0f };
     char *line = buffer;
 
@@ -30,8 +28,6 @@ Load getLoad(size_t size, char *buffer) {
     else return load;
 
     load.load15 = (float)atof(line);
-
-    _log(L_INFO, "(Done) Getting load info.");
     return load;
 }
 

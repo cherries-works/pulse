@@ -9,8 +9,6 @@
 System getSystem(
     Args args
 ) {
-    _log(L_INFO, "Getting system info.");
-
     size_t stat_buffer_size = BUFFER_ONE_KB * 6;
     char stat_buffer[stat_buffer_size];
     readFile(PROC_STAT_FILE, stat_buffer_size, stat_buffer);
@@ -60,7 +58,6 @@ System getSystem(
 
     system.process_count = getProcesses(system.processes, args);
 
-    _log(L_INFO, "(Done) Getting system info.");
     return system;
 }
 
