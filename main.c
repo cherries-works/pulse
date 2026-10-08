@@ -24,68 +24,6 @@
 #include "setup.h"
 #include "config.h"
 
-void handle(Args args, Config _config) {
-    _log(
-        L_INFO,
-        "Handler is parsing..."
-    );
-
-    Command cmd = args.command;
-
-    switch (cmd) {
-        case STOP:
-            stop();
-            break;
-        
-        case HELP:
-            help();
-            break;
-        
-        case MONITOR:
-            monitor(args, _config);
-            break;
-        
-        case INFO:
-            info(args);
-            break;
-        
-        case TOP:
-            top(args);
-            break;
-        
-        case PROCESS:
-            process(args);
-            break;
-        
-        case PRUNE:
-            prune(args);
-            break;
-
-        case CONFIG:
-            config(args);
-            break;
-        
-        case SNAPSHOT:
-            snapshot(args);
-            break;
-
-        case VERSION:
-            version(args);
-            break;
-        
-        default:
-            break;
-    }
-
-    // cannot log, if we stopped the logger
-    if(cmd == STOP) return; 
-
-    _log(
-        L_INFO,
-        "Finished running command"
-    );
-}
-
 pid_t render_pid = 0;
 struct termios oldt;
 void term(int sig) {
@@ -104,16 +42,13 @@ int main(int argc, char* argv[]) {
     signal(SIGINT, term);
 
     int s = setup();
-    if(s < 0) {
-        return -1;
-    }
+    if(s < 0) return -1;
     setupLog();
 
     Args args = parseArgs(argc, argv);
     Config config = parseToml();
     handle(args, config);
 
-    // stop();
     return 0;
 }
 

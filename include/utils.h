@@ -123,5 +123,6 @@ extern void prune(Args args);
 extern void config(Args args);
 extern void snapshot(Args args);
 extern void version(Args args);
+extern void handle(Args args, Config _config);
 
 #endif
