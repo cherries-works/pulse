@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <sys/mman.h>
 
 #include "http.h"
 #include "log.h"
@@ -66,6 +67,24 @@ void serverLaunch(Server *server, CWInfo cwinfo) {
     size_t response_size = BUFFER_ONE_KB * 8;
     char response[response_size];
 
+    CWData *cwdata = openSHM(cwinfo);
+    if (cwdata == NULL) {
+        _log(
+            cwinfo,
+            L_ERROR,
+            "Failed to open SHM."
+        );
+        return;
+    }
+    if (cwdata == MAP_FAILED) {
+        _log(
+            cwinfo,
+            L_ERROR,
+            "MMAP failed on SHM."
+        );
+        return;
+    }
+
     while(true) {
         struct sockaddr_in client_address;
         socklen_t address_len = sizeof(client_address);
@@ -90,7 +109,7 @@ void serverLaunch(Server *server, CWInfo cwinfo) {
         }
 
         Request request = parseRequest(buffer);
-        routeHandle(server->routeHandler, request, new_socket, response, response_size, cwinfo);
+        routeHandle(server->routeHandler, request, new_socket, response, response_size, cwinfo, cwdata);
 
         close(new_socket);
     }

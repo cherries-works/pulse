@@ -12,12 +12,12 @@
 #include "setup.h"
 
 #define STATIC_ROUTE(fnName, filePath) \
-void fnName(int socket, char *response, size_t response_size, CWInfo cwinfo) { \
+void fnName(int socket, char *response, size_t response_size, CWInfo cwinfo, CWData *cwdata) { \
     routeStatic(socket, filePath, response, response_size); \
 }
 
 #define JSON_ROUTE(fnName, body) \
-void fnName(int socket, char *response, size_t response_size, CWInfo cwinfo) body
+void fnName(int socket, char *response, size_t response_size, CWInfo cwinfo, CWData *cwdata) body
 
 STATIC_ROUTE(indexHtml, "./src/app/static/index.html");
 STATIC_ROUTE(indexStyle, "./src/app/static/css/style.css");
@@ -27,7 +27,7 @@ STATIC_ROUTE(indexFavicon, "./src/app/static/assets/favicon.png");
 
 JSON_ROUTE(indexMetrics, {
     System snapshot;
-    readDaemonS(cwinfo, &snapshot);
+    readDaemonS(cwinfo, cwdata, &snapshot);
 
     Info info = getInfo();
 
@@ -173,6 +173,8 @@ JSON_ROUTE(historyCPU, {
 
 
         entry = readdir(dir);
+        if(entry == NULL) break;
+
         _snprintf = snprintf(
             entry_storer + len,
             entry_storer_size - len,
@@ -189,9 +191,9 @@ JSON_ROUTE(historyCPU, {
             _log(cwinfo, L_ERROR, "Finalizing snprintf in while loop failed for historyCPU");
             break;
         }
-        if(entry == NULL) break;
         continue;
     }
+    closedir(dir);
 
     char json[BUFFER_ONE_KB * 32];
     _snprintf = snprintf(
@@ -288,6 +290,8 @@ JSON_ROUTE(historyRAM, {
         }
 
         entry = readdir(dir);
+        if(entry == NULL) break;
+
         _snprintf = snprintf(
             entry_storer + len,
             entry_storer_size - len,
@@ -304,9 +308,9 @@ JSON_ROUTE(historyRAM, {
             _log(cwinfo, L_ERROR, "Finalizing snprintf within while loop failed for historyRAM");
             break;
         }
-        if(entry == NULL) break;
         continue;
     }
+    closedir(dir);
 
     char json[BUFFER_ONE_KB * 32];
     _snprintf = snprintf(
@@ -350,7 +354,7 @@ JSON_ROUTE(historyDisk, {
         _log(cwinfo, L_ERROR, "snprintf failed for historyDisk");
         return;
     }
-    
+
     DIR *dir = opendir(path);
     if(!dir) {
         _log(cwinfo, L_ERROR, "Opening DIR failed for historyDisk");
@@ -403,6 +407,8 @@ JSON_ROUTE(historyDisk, {
         }
 
         entry = readdir(dir);
+        if(entry == NULL) break;
+
         _snprintf = snprintf(
             entry_storer + len,
             entry_storer_size - len,
@@ -419,9 +425,9 @@ JSON_ROUTE(historyDisk, {
             _log(cwinfo, L_ERROR, "Finalizing snprintf within while loop failed for historyDisk");
             break;
         }
-        if(entry == NULL) break;
         continue;
     }
+    closedir(dir);
 
     char json[BUFFER_ONE_KB * 32];
     _snprintf = snprintf(

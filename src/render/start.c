@@ -3,6 +3,7 @@
 #include <stdbool.h>
 #include <termios.h>
 #include <sys/select.h>
+#include <sys/mman.h>
 
 #include "setup.h"
 #include "daemon.h"
@@ -39,10 +40,27 @@ void startRender(Args args, CWInfo cwinfo) {
 
     System snapshot;
     Metrics metrics;
-
     bool look_started = false;
     short total_lines = 14 + (short)args.processes;
-    
+
+    CWData *cwdata = openSHM(cwinfo);
+    if (cwdata == NULL) {
+        _log(
+            cwinfo,
+            L_ERROR,
+            "Failed to open SHM."
+        );
+        return;
+    }
+    if (cwdata == MAP_FAILED) {
+        _log(
+            cwinfo,
+            L_ERROR,
+            "MMAP failed on SHM."
+        );
+        return;
+    }
+
     _log(
         cwinfo,
         L_INFO,
@@ -56,7 +74,7 @@ void startRender(Args args, CWInfo cwinfo) {
             clearLines(total_lines);
         }
 
-        readDaemonSM(cwinfo, &snapshot, &metrics);
+        readDaemonSM(cwinfo, cwdata, &snapshot, &metrics);
         render(args, snapshot, metrics);
 
         fd_set set;

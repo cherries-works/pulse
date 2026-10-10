@@ -15,40 +15,22 @@
 #include "daemon.h"
 #include "log.h"
 
-static CWData *openSHM(CWInfo cwinfo) {
+CWData *openSHM(CWInfo cwinfo) {
     int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
     if (fd == -1) {
         return NULL;
     }
 
-    CWData *shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
-    if (shmp == MAP_FAILED) {
+    CWData *cwdata = mmap(NULL, sizeof(*cwdata), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    if (cwdata == MAP_FAILED) {
         return MAP_FAILED;
     }
 
-    return shmp;
+    return cwdata;
 }
 
-void readDaemonSM(CWInfo cwinfo, System *system, Metrics *metrics) {
-    CWData *shmp = openSHM(cwinfo);
-    if (shmp == NULL) {
-        _log(
-            cwinfo,
-            L_ERROR,
-            "Failed to open SHM."
-        );
-        return;
-    }
-    if (shmp == MAP_FAILED) {
-        _log(
-            cwinfo,
-            L_ERROR,
-            "MMAP failed on SHM."
-        );
-        return;
-    }
-
-    int rc = pthread_mutex_lock(&shmp->lock);
+void readDaemonSM(CWInfo cwinfo, CWData *cwdata, System *system, Metrics *metrics) {
+    int rc = pthread_mutex_lock(&cwdata->lock);
     if (rc != 0) {
         _log(
             cwinfo,
@@ -58,10 +40,10 @@ void readDaemonSM(CWInfo cwinfo, System *system, Metrics *metrics) {
         return;
     }
 
-    memcpy(metrics, &shmp->metrics, sizeof(*metrics));
-    memcpy(system, &shmp->system, sizeof(*system));
+    memcpy(metrics, &cwdata->metrics, sizeof(*metrics));
+    memcpy(system, &cwdata->system, sizeof(*system));
 
-    rc = pthread_mutex_unlock(&shmp->lock);
+    rc = pthread_mutex_unlock(&cwdata->lock);
     if (rc != 0) {
         _log(
             cwinfo,
@@ -71,18 +53,8 @@ void readDaemonSM(CWInfo cwinfo, System *system, Metrics *metrics) {
     }
 }
 
-void readDaemonS(CWInfo cwinfo, System *system) {
-    CWData *shmp = openSHM(cwinfo);
-    if (shmp == NULL || shmp == MAP_FAILED) {
-        _log(
-            cwinfo,
-            L_ERROR,
-            "Failed to open SHM."
-        );
-        return;
-    }
-
-    int rc = pthread_mutex_lock(&shmp->lock);
+void readDaemonS(CWInfo cwinfo, CWData *cwdata, System *system) {
+    int rc = pthread_mutex_lock(&cwdata->lock);
     if (rc != 0) {
         _log(
             cwinfo,
@@ -92,9 +64,9 @@ void readDaemonS(CWInfo cwinfo, System *system) {
         return;
     }
 
-    memcpy(system, &shmp->system, sizeof(*system));
+    memcpy(system, &cwdata->system, sizeof(*system));
 
-    rc = pthread_mutex_unlock(&shmp->lock);
+    rc = pthread_mutex_unlock(&cwdata->lock);
     if (rc != 0) {
         _log(
             cwinfo,
@@ -105,18 +77,8 @@ void readDaemonS(CWInfo cwinfo, System *system) {
 }
 
 
-void readDaemonM(CWInfo cwinfo, Metrics *metrics) {
-    CWData *shmp = openSHM(cwinfo);
-    if (shmp == NULL || shmp == MAP_FAILED) {
-        _log(
-            cwinfo,
-            L_ERROR,
-            "Failed to open SHM."
-        );
-        return;
-    }
-
-    int rc = pthread_mutex_lock(&shmp->lock);
+void readDaemonM(CWInfo cwinfo, CWData *cwdata, Metrics *metrics) {
+    int rc = pthread_mutex_lock(&cwdata->lock);
     if (rc != 0) {
         _log(
             cwinfo,
@@ -126,9 +88,9 @@ void readDaemonM(CWInfo cwinfo, Metrics *metrics) {
         return;
     }
 
-    memcpy(metrics, &shmp->metrics, sizeof(*metrics));
+    memcpy(metrics, &cwdata->metrics, sizeof(*metrics));
 
-    rc = pthread_mutex_unlock(&shmp->lock);
+    rc = pthread_mutex_unlock(&cwdata->lock);
     if (rc != 0) {
         _log(
             cwinfo,
@@ -155,6 +117,7 @@ void readHistoryS(
     size_t size = fread(buffer, 1, buffer_size - 1, f);
     if(size == 0) {
         _log(cwinfo, L_ERROR, "Reading history file failed [S].");
+        fclose(f);
         return;
     }
 
@@ -311,6 +274,7 @@ void readHistoryM(
     size_t size = fread(buffer, 1, buffer_size - 1, f);
     if(size == 0) {
         _log(cwinfo, L_ERROR, "Reading history file failed [M].");
+        fclose(f);
         return;
     }
 

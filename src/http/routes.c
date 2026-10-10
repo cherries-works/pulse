@@ -4,8 +4,10 @@
 #include <netinet/in.h>
 #include <stdarg.h>
 #include <time.h>
+#include <sys/mman.h>
 
 #include "http.h"
+#include "log.h"
 
 char *getFileExtension(char *file_path) {
     char *dot = strrchr(file_path, '.');
@@ -211,7 +213,8 @@ void routeHandle(
     char *response,
     size_t response_size,
 
-    CWInfo cwinfo
+    CWInfo cwinfo,
+    CWData *cwdata
 ) {
     for(int i = 0; i < handler.routesAmount; i++) {
         Route r = handler.routes[i];
@@ -219,7 +222,7 @@ void routeHandle(
         if(request.method != r.method) continue;
         if(strcmp(request.path, r.path) != 0) continue;
 
-        r.handler(new_socket, response, response_size, cwinfo);
+        r.handler(new_socket, response, response_size, cwinfo, cwdata);
         return;
     }
 

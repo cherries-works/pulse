@@ -22,9 +22,10 @@ extern pid_t startDaemon(Args args, Config config, CWInfo cwinfo);
 extern void writeHistoryS(System system, CWInfo cwinfo);
 extern void writeHistoryM(Metrics metrics, CWInfo cwinfo);
 
-extern void readDaemonS(CWInfo cwinfo, System *system);
-extern void readDaemonM(CWInfo cwinfo, Metrics *metrics);
-extern void readDaemonSM(CWInfo cwinfo, System *system, Metrics *metrics);
+extern CWData *openSHM(CWInfo cwinfo);
+extern void readDaemonS(CWInfo cwinfo, CWData *shmp, System *system);
+extern void readDaemonM(CWInfo cwinfo, CWData *shmp, Metrics *metrics);
+extern void readDaemonSM(CWInfo cwinfo, CWData *shmp, System *system, Metrics *metrics);
 
 extern void readHistoryS(CWInfo cwinfo, char *path, System *system);
 extern void readHistoryM(CWInfo cwinfo, char *path, Metrics *metric);

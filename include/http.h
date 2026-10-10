@@ -6,6 +6,10 @@
 #include <netinet/in.h>
 #include <stdint.h>
 
+#include "setup.h"
+#include "daemon.h"
+
+
 typedef enum {
     GET,
     POST,
@@ -25,7 +29,8 @@ typedef void (*RouteFn)(
     int socket,
     char *response,
     size_t response_size,
-    CWInfo cwinfo
+    CWInfo cwinfo,
+    CWData *cwdata
 );
 
 typedef struct {
@@ -55,7 +60,8 @@ extern void routeHandle(
     char *response, 
     size_t response_size,
     
-    CWInfo cwinfo
+    CWInfo cwinfo,
+    CWData *cwdata
 );
 
 typedef struct Server {
