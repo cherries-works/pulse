@@ -9,7 +9,7 @@
 #include "log.h"
 
 unsigned getProcesses(
-    struct CWInfo cwinfo,
+    CWInfo cwinfo,
     Process processes[],
     Args args
 ) {
@@ -125,7 +125,7 @@ unsigned getProcesses(
 }
 
 void getProcess(
-    struct CWInfo cwinfo,
+    CWInfo cwinfo,
     Process *p,
     pid_t pid
 ) {

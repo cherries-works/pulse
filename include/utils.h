@@ -112,18 +112,18 @@ typedef struct {
     char until[64]; // for the PRUNE command
 } Args;
 
-extern Args parseArgs(struct CWInfo cwinfo, int argc, char* argv[]);
+extern Args parseArgs(CWInfo cwinfo, int argc, char* argv[]);
 
-extern void stop(struct CWInfo cwinfo);
-extern void help(struct CWInfo cwinfo);
-extern void top(Args args, struct CWInfo cwinfo);
-extern void info(Args args, struct CWInfo cwinfo);
-extern void monitor(Args args, Config config, struct CWInfo cwinfo);
-extern void process(Args args, struct CWInfo cwinfo);
-extern void prune(Args args, struct CWInfo cwinfo);
-extern void config(Args args, struct CWInfo cwinfo);
-extern void snapshot(Args args, struct CWInfo cwinfo);
+extern void stop(CWInfo cwinfo);
+extern void help(CWInfo cwinfo);
+extern void top(Args args, CWInfo cwinfo);
+extern void info(Args args, CWInfo cwinfo);
+extern void monitor(Args args, Config config, CWInfo cwinfo);
+extern void process(Args args, CWInfo cwinfo);
+extern void prune(Args args, CWInfo cwinfo);
+extern void config(Args args, CWInfo cwinfo);
+extern void snapshot(Args args, CWInfo cwinfo);
 extern void version(Args args);
-extern void handle(Args args, Config _config, struct CWInfo cwinfo);
+extern void handle(Args args, Config _config, CWInfo cwinfo);
 
 #endif

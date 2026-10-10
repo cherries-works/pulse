@@ -15,7 +15,7 @@
 #include "daemon.h"
 #include "log.h"
 
-static struct CWData *openSHM(struct CWInfo cwinfo) {
+static struct CWData *openSHM(CWInfo cwinfo) {
     int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
     if (fd == -1) {
         perror("shm_open");
@@ -31,7 +31,7 @@ static struct CWData *openSHM(struct CWInfo cwinfo) {
     return shmp;
 }
 
-void readDaemonSM(struct CWInfo cwinfo, System *system, Metrics *metrics) {
+void readDaemonSM(CWInfo cwinfo, System *system, Metrics *metrics) {
     struct CWData *shmp = openSHM(cwinfo);
     if (shmp == NULL) {
         _log(
@@ -73,7 +73,7 @@ void readDaemonSM(struct CWInfo cwinfo, System *system, Metrics *metrics) {
     }
 }
 
-void readDaemonS(struct CWInfo cwinfo, System *system) {
+void readDaemonS(CWInfo cwinfo, System *system) {
     struct CWData *shmp = openSHM(cwinfo);
     if (shmp == NULL || shmp == MAP_FAILED) {
         _log(
@@ -107,7 +107,7 @@ void readDaemonS(struct CWInfo cwinfo, System *system) {
 }
 
 
-void readDaemonM(struct CWInfo cwinfo, Metrics *metrics) {
+void readDaemonM(CWInfo cwinfo, Metrics *metrics) {
     struct CWData *shmp = openSHM(cwinfo);
     if (shmp == NULL || shmp == MAP_FAILED) {
         _log(
@@ -141,7 +141,7 @@ void readDaemonM(struct CWInfo cwinfo, Metrics *metrics) {
 }
 
 void readHistoryS(
-    struct CWInfo cwinfo,
+    CWInfo cwinfo,
     char *path,
     System *system
 ) {
@@ -297,7 +297,7 @@ void readHistoryS(
 }
 
 void readHistoryM(
-    struct CWInfo cwinfo,
+    CWInfo cwinfo,
     char *path,
     Metrics *metric
 ) {

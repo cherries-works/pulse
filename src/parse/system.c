@@ -7,7 +7,7 @@
 #include "log.h"
 
 System getSystem(
-    struct CWInfo cwinfo,
+    CWInfo cwinfo,
     Args args
 ) {
     size_t stat_buffer_size = BUFFER_ONE_KB * 6;

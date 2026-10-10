@@ -10,10 +10,10 @@ typedef enum {
 
 extern int setupLog();
 extern void _log(
-    struct CWInfo cwinfo,
+    CWInfo cwinfo,
     log_types type, 
     const char *message
 );
-extern int printLogFile(struct CWInfo cwinfo);
+extern int printLogFile(CWInfo cwinfo);
 
 #endif

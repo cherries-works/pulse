@@ -14,7 +14,7 @@ Server serverContsructor(
     int protocol,
     int backlog,
     uint32_t interface,
-    void (*launch)(Server *server, struct CWInfo cwinfo)
+    void (*launch)(Server *server, CWInfo cwinfo)
 ) {
     Server server;
 
@@ -59,7 +59,7 @@ Server serverContsructor(
     return server;
 };
 
-void serverLaunch(Server *server, struct CWInfo cwinfo) {
+void serverLaunch(Server *server, CWInfo cwinfo) {
     size_t buffer_size = BUFFER_ONE_MB;
     char buffer[buffer_size];
 

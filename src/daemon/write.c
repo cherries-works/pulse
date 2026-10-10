@@ -17,7 +17,7 @@
 #include "log.h"
 #include "setup.h"
 
-void writeHistoryS(System system, struct CWInfo cwinfo) {
+void writeHistoryS(System system, CWInfo cwinfo) {
     size_t time_buffer_size = BUFFER_ONE_KB / 8;
     char time_buffer[time_buffer_size];
     formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
@@ -105,7 +105,7 @@ void writeHistoryS(System system, struct CWInfo cwinfo) {
     fclose(f);
 }
 
-void writeHistoryM(Metrics metrics, struct CWInfo cwinfo) {
+void writeHistoryM(Metrics metrics, CWInfo cwinfo) {
     size_t time_buffer_size = BUFFER_ONE_KB / 8;
     char time_buffer[time_buffer_size];
     formatTime(cwinfo.started_at, time_buffer, time_buffer_size);

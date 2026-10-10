@@ -50,7 +50,7 @@ void formatMessage(
     *out = '\0';
 }
 
-void notifyDesktop(struct CWInfo cwinfo, char *title, char *message, char *resource, float usage) {
+void notifyDesktop(CWInfo cwinfo, char *title, char *message, char *resource, float usage) {
     _log(cwinfo, L_INFO, "Notifying desktop.");
 
     size_t command_size = BUFFER_ONE_KB;
@@ -76,7 +76,7 @@ void notifyDesktop(struct CWInfo cwinfo, char *title, char *message, char *resou
     if(result <= 0) return;
 }
 
-void notifyDiscord(struct CWInfo cwinfo, char *webhook, char *message, char *resource, float usage) {
+void notifyDiscord(CWInfo cwinfo, char *webhook, char *message, char *resource, float usage) {
     _log(cwinfo, L_INFO, "Notifying discord.");
 
     size_t command_size = BUFFER_ONE_KB * 2;
@@ -102,14 +102,14 @@ void notifyDiscord(struct CWInfo cwinfo, char *webhook, char *message, char *res
     if(result <= 0) return;
 }
 
-void notifyCommand(struct CWInfo cwinfo, char *command) {
+void notifyCommand(CWInfo cwinfo, char *command) {
     _log(cwinfo, L_INFO, "Notifying command.");
 
     int result = system(command);
     if(result <= 0) return;
 }
 
-void notifyAlert(struct CWInfo cwinfo, Config *config, char *resource, float usage) {
+void notifyAlert(CWInfo cwinfo, Config *config, char *resource, float usage) {
     _log(cwinfo, L_INFO, "Notifying with an alert.");
 
     if(config->commandNotify.enabled) {
@@ -162,7 +162,7 @@ bool checkCondition(float value, float threshold, Operator op) {
 }
 
 static void checkAlert(
-    struct CWInfo cwinfo,
+    CWInfo cwinfo,
     float value,
     Alert *alert,
     char *name,
@@ -201,7 +201,7 @@ static void checkAlert(
     alert->current_duration = 0;
 }
 
-void checkAlerts(struct CWInfo cwinfo, Metrics *metrics, Args *args, Config *config) {
+void checkAlerts(CWInfo cwinfo, Metrics *metrics, Args *args, Config *config) {
     if (!config->alerts.enabled) return;
 
     int sleep = (int)args->sleep;

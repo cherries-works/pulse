@@ -211,7 +211,7 @@ void routeHandle(
     char *response,
     size_t response_size,
 
-    struct CWInfo cwinfo
+    CWInfo cwinfo
 ) {
     for(int i = 0; i < handler.routesAmount; i++) {
         Route r = handler.routes[i];

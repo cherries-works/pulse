@@ -25,7 +25,7 @@ typedef void (*RouteFn)(
     int socket,
     char *response,
     size_t response_size,
-    struct CWInfo cwinfo
+    CWInfo cwinfo
 );
 
 typedef struct {
@@ -55,7 +55,7 @@ extern void routeHandle(
     char *response, 
     size_t response_size,
     
-    struct CWInfo cwinfo
+    CWInfo cwinfo
 );
 
 typedef struct Server {
@@ -70,7 +70,7 @@ typedef struct Server {
     struct sockaddr_in address;
     RouteHandler routeHandler;
 
-    void (*launch)(struct Server *server, struct CWInfo cwinfo);
+    void (*launch)(struct Server *server, CWInfo cwinfo);
 } Server;
 
 extern Server serverContsructor(
@@ -81,9 +81,9 @@ extern Server serverContsructor(
     int protocol,
     int backlog,
     uint32_t interface,
-    void (*launch)(Server *server, struct CWInfo cwinfo)
+    void (*launch)(Server *server, CWInfo cwinfo)
 );
 
-extern void serverLaunch(Server *server, struct CWInfo cwinfo);
+extern void serverLaunch(Server *server, CWInfo cwinfo);
 
 #endif

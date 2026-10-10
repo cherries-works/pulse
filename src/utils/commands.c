@@ -21,7 +21,7 @@
 #include "config.h"
 #include "setup.h"
 
-void handle(Args args, Config _config, struct CWInfo cwinfo) {
+void handle(Args args, Config _config, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
@@ -85,7 +85,7 @@ void handle(Args args, Config _config, struct CWInfo cwinfo) {
     );
 }
 
-void stop(struct CWInfo cwinfo) {
+void stop(CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
@@ -124,7 +124,7 @@ void stop(struct CWInfo cwinfo) {
     closedir(dir);
 }
 
-void help(struct CWInfo cwinfo) {
+void help(CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
@@ -168,7 +168,7 @@ void help(struct CWInfo cwinfo) {
     stop(cwinfo);
 }
 
-void top(Args args, struct CWInfo cwinfo) {
+void top(Args args, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
@@ -186,7 +186,7 @@ void top(Args args, struct CWInfo cwinfo) {
     stop(cwinfo);
 }
 
-void info(Args args, struct CWInfo cwinfo) {
+void info(Args args, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
@@ -230,7 +230,7 @@ void info(Args args, struct CWInfo cwinfo) {
     stop(cwinfo);
 }
 
-void monitor(Args args, Config config, struct CWInfo cwinfo) {
+void monitor(Args args, Config config, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
@@ -266,7 +266,7 @@ void monitor(Args args, Config config, struct CWInfo cwinfo) {
     return;
 }
 
-void process(Args args, struct CWInfo cwinfo) {
+void process(Args args, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
@@ -293,7 +293,7 @@ void process(Args args, struct CWInfo cwinfo) {
     stop(cwinfo);
 }
 
-void prune(Args args, struct CWInfo cwinfo) {
+void prune(Args args, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
@@ -370,7 +370,7 @@ void prune(Args args, struct CWInfo cwinfo) {
     stop(cwinfo);
 }
 
-void config(Args args, struct CWInfo cwinfo) {
+void config(Args args, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
@@ -425,7 +425,7 @@ void config(Args args, struct CWInfo cwinfo) {
     stop(cwinfo);
 }
 
-void snapshot(Args args, struct CWInfo cwinfo) {
+void snapshot(Args args, CWInfo cwinfo) {
     System system_snapshot = getSystem(cwinfo, args);
     sleep(1);
     System prev_system_snapshot = getSystem(cwinfo, args);

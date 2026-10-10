@@ -24,7 +24,7 @@
 #include "setup.h"
 #include "config.h"
 
-struct CWInfo *_cwinfo = NULL;
+CWInfo *_cwinfo = NULL;
 
 pid_t render_pid = 0;
 struct termios oldt;
@@ -45,7 +45,7 @@ int main(int argc, char* argv[]) {
     tcgetattr(STDIN_FILENO, &oldt);
     signal(SIGINT, term);
 
-    struct CWInfo cwinfo = setup();
+    CWInfo cwinfo = setup();
     _cwinfo = &cwinfo;
 
     Args args = parseArgs(cwinfo, argc, argv);

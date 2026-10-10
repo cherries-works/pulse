@@ -11,7 +11,7 @@
 #include "log.h"
 #include "setup.h"
 
-void setupWebsite(struct CWInfo cwinfo, pid_t pid) {
+void setupWebsite(CWInfo cwinfo, pid_t pid) {
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(cwinfo, L_ERROR, "No HOME environment variable");
@@ -31,7 +31,7 @@ void setupWebsite(struct CWInfo cwinfo, pid_t pid) {
 }
 
 // check if there is already daemon running
-pid_t checkWebsite(struct CWInfo cwinfo) {
+pid_t checkWebsite(CWInfo cwinfo) {
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
@@ -73,7 +73,7 @@ pid_t checkWebsite(struct CWInfo cwinfo) {
 }
 
 
-pid_t startWebsite(Args args, struct CWInfo cwinfo) {
+pid_t startWebsite(Args args, CWInfo cwinfo) {
     _log(cwinfo, L_INFO, "Starting Website");
 
     pid_t pid = checkWebsite(cwinfo);

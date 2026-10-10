@@ -10,8 +10,8 @@
 #include "log.h"
 #include "setup.h"
 
-struct CWInfo setup() {
-    struct CWInfo cwinfo = {
+CWInfo setup() {
+    CWInfo cwinfo = {
         .home = "",
         .pulse = "",
         .log = "",

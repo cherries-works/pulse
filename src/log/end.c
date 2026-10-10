@@ -8,7 +8,7 @@
 #include "log.h"
 #include "setup.h"
 
-int printLogFile(struct CWInfo cwinfo) {
+int printLogFile(CWInfo cwinfo) {
     _log(cwinfo, L_INFO, "Exiting...");
 
     size_t log_time_buffer_size = BUFFER_ONE_KB / 8;

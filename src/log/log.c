@@ -9,7 +9,7 @@
 #include "setup.h"
 
 void _log(
-    struct CWInfo cwinfo,
+    CWInfo cwinfo,
     log_types type, 
     const char *message
 ) {

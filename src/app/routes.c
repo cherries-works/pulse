@@ -12,12 +12,12 @@
 #include "setup.h"
 
 #define STATIC_ROUTE(fnName, filePath) \
-void fnName(int socket, char *response, size_t response_size, struct CWInfo cwinfo) { \
+void fnName(int socket, char *response, size_t response_size, CWInfo cwinfo) { \
     routeStatic(socket, filePath, response, response_size); \
 }
 
 #define JSON_ROUTE(fnName, body) \
-void fnName(int socket, char *response, size_t response_size, struct CWInfo cwinfo) body
+void fnName(int socket, char *response, size_t response_size, CWInfo cwinfo) body
 
 STATIC_ROUTE(indexHtml, "./src/app/static/index.html");
 STATIC_ROUTE(indexStyle, "./src/app/static/css/style.css");

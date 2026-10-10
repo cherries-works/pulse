@@ -9,7 +9,7 @@
 #include "render.h"
 #include "log.h"
 
-void startRender(Args args, struct CWInfo cwinfo) {
+void startRender(Args args, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,

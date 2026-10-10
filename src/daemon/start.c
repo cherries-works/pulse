@@ -16,7 +16,7 @@
 #include "log.h"
 #include "setup.h"
 
-void setupDaemon(pid_t pid, struct CWInfo cwinfo) {
+void setupDaemon(pid_t pid, CWInfo cwinfo) {
     _log(cwinfo, L_INFO, "Preparing Daemon.");
 
     char path_dir[BUFFER_ONE_KB / 2];
@@ -68,7 +68,7 @@ void setupDaemon(pid_t pid, struct CWInfo cwinfo) {
 }
 
 // check if there is already daemon running
-pid_t checkDaemon(struct CWInfo cwinfo) {
+pid_t checkDaemon(CWInfo cwinfo) {
     _log(cwinfo, L_INFO, "Checking for Daemon.");
 
     char path_dir[BUFFER_ONE_KB / 2];
@@ -104,7 +104,7 @@ pid_t checkDaemon(struct CWInfo cwinfo) {
     return -1;
 }
 
-pid_t startDaemon(Args args, Config config, struct CWInfo cwinfo) {
+pid_t startDaemon(Args args, Config config, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,

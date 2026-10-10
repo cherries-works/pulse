@@ -56,6 +56,6 @@ typedef struct {
     CommandNotification commandNotify;
 } Config;
 
-extern Config parseToml(struct CWInfo cwinfo);
+extern Config parseToml(CWInfo cwinfo);
 
 #endif

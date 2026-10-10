@@ -41,7 +41,7 @@ int parseWait(char *wait) {
     return total_time;
 }
 
-Config parseToml(struct CWInfo cwinfo) {
+Config parseToml(CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,

@@ -22,7 +22,7 @@ const char *commands[] = {
     "VERSION",
 };
 
-Args parseArgs(struct CWInfo cwinfo, int argc, char* argv[]) {
+Args parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
     _log(
         cwinfo,
         L_INFO,
