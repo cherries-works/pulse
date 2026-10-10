@@ -15,15 +15,13 @@
 #include "daemon.h"
 #include "log.h"
 
-static struct CWData *openSHM(CWInfo cwinfo) {
+static CWData *openSHM(CWInfo cwinfo) {
     int fd = shm_open(CHERRIES_PULSE_SHM, O_RDWR, 0);
     if (fd == -1) {
-        perror("shm_open");
-        fprintf(stderr, "Shared memory name: %s\n", CHERRIES_PULSE_SHM);
         return NULL;
     }
 
-    struct CWData *shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
+    CWData *shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (shmp == MAP_FAILED) {
         return MAP_FAILED;
     }
@@ -32,7 +30,7 @@ static struct CWData *openSHM(CWInfo cwinfo) {
 }
 
 void readDaemonSM(CWInfo cwinfo, System *system, Metrics *metrics) {
-    struct CWData *shmp = openSHM(cwinfo);
+    CWData *shmp = openSHM(cwinfo);
     if (shmp == NULL) {
         _log(
             cwinfo,
@@ -74,7 +72,7 @@ void readDaemonSM(CWInfo cwinfo, System *system, Metrics *metrics) {
 }
 
 void readDaemonS(CWInfo cwinfo, System *system) {
-    struct CWData *shmp = openSHM(cwinfo);
+    CWData *shmp = openSHM(cwinfo);
     if (shmp == NULL || shmp == MAP_FAILED) {
         _log(
             cwinfo,
@@ -108,7 +106,7 @@ void readDaemonS(CWInfo cwinfo, System *system) {
 
 
 void readDaemonM(CWInfo cwinfo, Metrics *metrics) {
-    struct CWData *shmp = openSHM(cwinfo);
+    CWData *shmp = openSHM(cwinfo);
     if (shmp == NULL || shmp == MAP_FAILED) {
         _log(
             cwinfo,

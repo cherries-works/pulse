@@ -9,11 +9,11 @@
 #include "utils.h"
 #include "config.h"
 
-struct CWData {
+typedef struct {
     pthread_mutex_t lock;
     Metrics metrics;
     System system;
-};
+} CWData;
 
 extern void checkAlerts(CWInfo cwinfo, Metrics *metrics, Args *args, Config *config);
 

@@ -16,8 +16,8 @@ void testReadDaemonS() {
         printf("SHM open failed.\n");
         exit(EXIT_FAILURE);
     }
-    ftruncate(fd, sizeof(struct CWData));
-    struct CWData *shmp;
+    ftruncate(fd, sizeof(CWData));
+    CWData *shmp;
     shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (shmp == MAP_FAILED) {
         printf("Mapping object failed.\n");
@@ -39,8 +39,8 @@ void testReadDaemonM() {
         printf("SHM open failed.\n");
         exit(EXIT_FAILURE);
     }
-    ftruncate(fd, sizeof(struct CWData));
-    struct CWData *shmp;
+    ftruncate(fd, sizeof(CWData));
+    CWData *shmp;
     shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (shmp == MAP_FAILED) {
         printf("Mapping object failed.\n");

@@ -52,12 +52,12 @@ void setupDaemon(pid_t pid, CWInfo cwinfo) {
         return;
     }
 
-    if (ftruncate(shm_fd, sizeof(struct CWData)) == -1) {
+    if (ftruncate(shm_fd, sizeof(CWData)) == -1) {
         _log(cwinfo, L_ERROR, "Truncating SHM failed.");
         return;
     }
 
-    struct CWData *shmp;
+    CWData *shmp;
     shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
     if (shmp == MAP_FAILED) {
         _log(cwinfo, L_ERROR, "MMAPing SHM failed.");
@@ -151,7 +151,7 @@ pid_t startDaemon(Args args, Config config, CWInfo cwinfo) {
             exit(EXIT_FAILURE);
         }
 
-        struct CWData *shmp;
+        CWData *shmp;
         shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, shm_fd, 0);
         if (shmp == MAP_FAILED) {
             _log(
