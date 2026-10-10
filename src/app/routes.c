@@ -153,7 +153,7 @@ JSON_ROUTE(historyCPU, {
         Metrics metric;
         readHistoryM(cwinfo, entry_path, &metric);
 
-        size_t padding = 5;
+        size_t padding = 150; // arbitary number
         size_t len = strlen(entry_storer);
 
         if (len >= entry_storer_size - padding) {
@@ -269,7 +269,7 @@ JSON_ROUTE(historyRAM, {
         Metrics metric;
         readHistoryM(cwinfo, entry_path, &metric);
         
-        size_t padding = 5;
+        size_t padding = 150; // arbitary number
         size_t len = strlen(entry_storer);
 
         if (len >= entry_storer_size - padding) {
@@ -384,7 +384,7 @@ JSON_ROUTE(historyDisk, {
         Metrics metric;
         readHistoryM(cwinfo, entry_path, &metric);
         
-        size_t padding = 5;
+        size_t padding = 150; // arbitary number
         size_t len = strlen(entry_storer);
 
         if (len >= entry_storer_size - padding) {
