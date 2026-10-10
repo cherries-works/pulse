@@ -110,17 +110,23 @@ JSON_ROUTE(historyCPU, {
     size_t path_size = BUFFER_ONE_KB;
     char path[path_size];
 
-    int _snprintf = snprintf(path, path_size - 1, "%s/history", cwinfo.pulse);
+    size_t time_buffer_size = BUFFER_ONE_KB;
+    char time_buffer[time_buffer_size];
+    formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
+
+    int _snprintf = snprintf(path, path_size - 1, "%s/history/%s/metric", cwinfo.pulse, time_buffer);
     if(_snprintf < 0) {
+        _log(cwinfo, L_ERROR, "snprintf failed for historyCPU");
         return;
     }
 
     DIR *dir = opendir(path);
     if(!dir) {
+        _log(cwinfo, L_ERROR, "Opening DIR failed for path in historyCPU");
         return;
     }
 
-    size_t entry_storer_size = BUFFER_ONE_KB * 4;
+    size_t entry_storer_size = BUFFER_ONE_KB * 8;
     char entry_storer[entry_storer_size];
     entry_storer[0] = '\0';
 
@@ -140,6 +146,7 @@ JSON_ROUTE(historyCPU, {
         char entry_path[entry_path_size];
         int _snprintf = snprintf(entry_path, entry_path_size, "%s/%s", path, name);
         if(_snprintf == -1) {
+            _log(cwinfo, L_ERROR, "snprintf failed within while loop for historyCPU");
             break;
         }
 
@@ -148,7 +155,10 @@ JSON_ROUTE(historyCPU, {
 
         size_t padding = 100;
         size_t len = strlen(entry_storer);
-        if(len >= entry_storer_size - padding) break;
+        if(len >= entry_storer_size - padding) {
+            _log(cwinfo, L_ERROR, "Buffer size was exceeded within while loop, for historyCPU");
+            break;
+        }
 
         entry = readdir(dir);
         _snprintf = snprintf(
@@ -164,6 +174,7 @@ JSON_ROUTE(historyCPU, {
         );
 
         if(_snprintf == -1) {
+            _log(cwinfo, L_ERROR, "Finalizing snprintf in while loop failed for historyCPU");
             break;
         }
         if(entry == NULL) break;
@@ -187,6 +198,7 @@ JSON_ROUTE(historyCPU, {
     );
 
     if(_snprintf == -1) {
+        _log(cwinfo, L_ERROR, "Finalizing snprintf failed for historyCPU");
         return;
     }
 
@@ -202,17 +214,23 @@ JSON_ROUTE(historyRAM, {
     size_t path_size = BUFFER_ONE_KB;
     char path[path_size];
 
-    int _snprintf = snprintf(path, path_size - 1, "%s/history", cwinfo.pulse);
+    size_t time_buffer_size = BUFFER_ONE_KB;
+    char time_buffer[time_buffer_size];
+    formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
+
+    int _snprintf = snprintf(path, path_size - 1, "%s/history/%s/metric", cwinfo.pulse, time_buffer);
     if(_snprintf < 0) {
+        _log(cwinfo, L_ERROR, "snprintf failed for historyRAM");
         return;
     }
 
     DIR *dir = opendir(path);
     if(!dir) {
+        _log(cwinfo, L_ERROR, "Opening DIR failed form path in historyRAM");
         return;
     }
 
-    size_t entry_storer_size = BUFFER_ONE_KB * 4;
+    size_t entry_storer_size = BUFFER_ONE_KB * 8;
     char entry_storer[entry_storer_size];
     entry_storer[0] = '\0';
 
@@ -230,17 +248,24 @@ JSON_ROUTE(historyRAM, {
 
         size_t entry_path_size = BUFFER_ONE_KB;
         char entry_path[entry_path_size];
-        snprintf(entry_path, entry_path_size, "%s/%s", path, name);
+        int _snprintf = snprintf(entry_path, entry_path_size, "%s/%s", path, name);
+        if(_snprintf < 0) {
+            _log(cwinfo, L_ERROR, "snprintf failed within while loop for historyRAM");
+            return;
+        }
 
         Metrics metric;
         readHistoryM(cwinfo, entry_path, &metric);
         
         size_t padding = 100;
         size_t len = strlen(entry_storer);
-        if(len >= entry_storer_size - padding) break;
+        if(len >= entry_storer_size - padding) {
+            _log(cwinfo, L_ERROR, "Buffer size was exceeded within while loop, for historyRAM");
+            break;
+        }
 
         entry = readdir(dir);
-        int written = snprintf(
+        _snprintf = snprintf(
             entry_storer + len,
             entry_storer_size - len,
             "{"
@@ -252,13 +277,16 @@ JSON_ROUTE(historyRAM, {
             entry != NULL ? "," : ""
         );
 
-        if(written < 0) break;
+        if(_snprintf < 0) {
+            _log(cwinfo, L_ERROR, "Finalizing snprintf within while loop failed for historyRAM");
+            break;
+        }
         if(entry == NULL) break;
         continue;
     }
 
     char json[BUFFER_ONE_KB * 32];
-    snprintf(
+    _snprintf = snprintf(
         json,
         sizeof(json),
         "HTTP/1.1 200 OK\r\n"
@@ -273,6 +301,11 @@ JSON_ROUTE(historyRAM, {
         entry_storer
     );
 
+    if(_snprintf < 0) {
+        _log(cwinfo, L_ERROR, "Finalizing snprintf failed for historyRAM");
+        return;
+    }
+
     routeJSON(
         socket,
         response,
@@ -282,27 +315,26 @@ JSON_ROUTE(historyRAM, {
 });
 
 JSON_ROUTE(historyDisk, {
-    size_t time_buffer_size = BUFFER_ONE_KB;
-    char time_buffer[BUFFER_ONE_KB];
-    formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
-
     size_t path_size = BUFFER_ONE_KB;
     char path[path_size];
 
-    snprintf(
-        path, path_size, 
-        "%s/history/%s/metric", 
-        cwinfo.pulse,
-        time_buffer
-    );
+    size_t time_buffer_size = BUFFER_ONE_KB;
+    char time_buffer[time_buffer_size];
+    formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
 
+    int _snprintf = snprintf(path, path_size - 1, "%s/history/%s/metric", cwinfo.pulse, time_buffer);
+    if(_snprintf < 0) {
+        _log(cwinfo, L_ERROR, "snprintf failed for historyDisk");
+        return;
+    }
     
     DIR *dir = opendir(path);
     if(!dir) {
+        _log(cwinfo, L_ERROR, "Opening DIR failed for historyDisk");
         return;
     }
 
-    size_t entry_storer_size = BUFFER_ONE_KB * 4;
+    size_t entry_storer_size = BUFFER_ONE_KB * 8;
     char entry_storer[entry_storer_size];
     entry_storer[0] = '\0';
 
@@ -320,17 +352,24 @@ JSON_ROUTE(historyDisk, {
 
         size_t entry_path_size = BUFFER_ONE_KB;
         char entry_path[entry_path_size];
-        snprintf(entry_path, entry_path_size, "%s/%s", path, name);
+        int _snprintf = snprintf(entry_path, entry_path_size, "%s/%s", path, name);
+        if(_snprintf < 0) {
+            _log(cwinfo, L_ERROR, "snprintf within while loop failed for historyDisk");
+            break;
+        }
 
         Metrics metric;
         readHistoryM(cwinfo, entry_path, &metric);
         
         size_t padding = 100;
         size_t len = strlen(entry_storer);
-        if(len >= entry_storer_size - padding) break;
+        if(len >= entry_storer_size - padding) {
+            _log(cwinfo, L_ERROR, "Buffer size was exceeded within while loop, for historyDisk");
+            break;
+        }
 
         entry = readdir(dir);
-        int written = snprintf(
+        _snprintf = snprintf(
             entry_storer + len,
             entry_storer_size - len,
             "{"
@@ -342,13 +381,16 @@ JSON_ROUTE(historyDisk, {
             entry != NULL ? "," : ""
         );
 
-        if(written < 0) break;
+        if(_snprintf < 0) {
+            _log(cwinfo, L_ERROR, "Finalizing snprintf within while loop failed for historyDisk");
+            break;
+        }
         if(entry == NULL) break;
         continue;
     }
 
     char json[BUFFER_ONE_KB * 32];
-    snprintf(
+    _snprintf = snprintf(
         json,
         sizeof(json),
         "HTTP/1.1 200 OK\r\n"
@@ -362,6 +404,11 @@ JSON_ROUTE(historyDisk, {
         time(NULL),
         entry_storer
     );
+
+    if(_snprintf < 0) {
+        _log(cwinfo, L_ERROR, "Finalizing snprintf failed for historyDisk");
+        return;
+    }
 
     routeJSON(
         socket,

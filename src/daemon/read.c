@@ -150,13 +150,13 @@ void readHistoryS(
 
     FILE *f = fopen(path, "r");
     if(f == NULL) {
-        _log(cwinfo, L_ERROR, "History path invalid.");
+        _log(cwinfo, L_ERROR, "History path invalid [readHistoryS].");
         return;
     }
 
     size_t size = fread(buffer, 1, buffer_size - 1, f);
     if(size == 0) {
-        _log(cwinfo, L_ERROR, "Reading history file failed.");
+        _log(cwinfo, L_ERROR, "Reading history file failed [S].");
         return;
     }
 
@@ -306,13 +306,13 @@ void readHistoryM(
 
     FILE *f = fopen(path, "r");
     if(f == NULL) {
-        _log(cwinfo, L_ERROR, "History path invalid.");
+        _log(cwinfo, L_ERROR, "History path invalid [readHistoryM].");
         return;
     }
 
     size_t size = fread(buffer, 1, buffer_size - 1, f);
     if(size == 0) {
-        _log(cwinfo, L_ERROR, "Reading history file failed.");
+        _log(cwinfo, L_ERROR, "Reading history file failed [M].");
         return;
     }
 

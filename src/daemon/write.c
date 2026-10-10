@@ -34,8 +34,12 @@ void writeHistoryS(System system, struct CWInfo cwinfo) {
         _time
     );
 
-    FILE *f = fopen(history_path, "a");
-    
+    FILE *f = fopen(history_path, "w");
+    if(f == NULL) {
+        _log(cwinfo, L_ERROR, "History path invalid [writeHistoryS].");
+        return;
+    }
+
     size_t buffer_size = BUFFER_ONE_KB / 4;
     char buffer[buffer_size];
 
@@ -96,7 +100,7 @@ void writeHistoryS(System system, struct CWInfo cwinfo) {
         fwrite(buffer, strlen(buffer), 1, f);
     }
 
-    snprintf(buffer, buffer_size, "%" PRIu64 "", system.uptime);
+    snprintf(buffer, buffer_size, "%" PRIu64 "\n", system.uptime);
     fwrite(buffer, strlen(buffer), 1, f);
     fclose(f);
 }
@@ -118,7 +122,11 @@ void writeHistoryM(Metrics metrics, struct CWInfo cwinfo) {
         _time
     );
 
-    FILE *f = fopen(history_path, "a");
+    FILE *f = fopen(history_path, "w");
+    if(f == NULL) {
+        _log(cwinfo, L_ERROR, "History path invalid [writeHistoryM].");
+        return;
+    }
 
     size_t buffer_size = BUFFER_ONE_KB / 4;
     char buffer[buffer_size];
@@ -141,7 +149,7 @@ void writeHistoryM(Metrics metrics, struct CWInfo cwinfo) {
     snprintf(buffer, buffer_size, "%f\n", metrics.rx);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    snprintf(buffer, buffer_size, "%f", metrics.tx);
+    snprintf(buffer, buffer_size, "%f\n", metrics.tx);
     fwrite(buffer, strlen(buffer), 1, f);
 
     fclose(f);
