@@ -41,8 +41,9 @@ int parseWait(char *wait) {
     return total_time;
 }
 
-Config parseToml() {
+Config parseToml(struct CWInfo cwinfo) {
     _log(
+        cwinfo,
         L_INFO,
         "Parsing TOML file"
     );
@@ -52,6 +53,7 @@ Config parseToml() {
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
+            cwinfo,
             L_ERROR,
             "No HOME environment variable"
         );

@@ -7,6 +7,7 @@
 #include "log.h"
 
 System getSystem(
+    struct CWInfo cwinfo,
     Args args
 ) {
     size_t stat_buffer_size = BUFFER_ONE_KB * 6;
@@ -56,7 +57,7 @@ System getSystem(
         .temp = temp
     };
 
-    system.process_count = getProcesses(system.processes, args);
+    system.process_count = getProcesses(cwinfo, system.processes, args);
 
     return system;
 }

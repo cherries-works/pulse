@@ -9,11 +9,12 @@
 
 #include "app.h"
 #include "log.h"
+#include "setup.h"
 
-void setupWebsite(pid_t pid) {
+void setupWebsite(struct CWInfo cwinfo, pid_t pid) {
     char *home = getenv("HOME");
     if(home == NULL) {
-        _log(L_ERROR, "No HOME environment variable");
+        _log(cwinfo, L_ERROR, "No HOME environment variable");
         return;
     }
 
@@ -30,10 +31,11 @@ void setupWebsite(pid_t pid) {
 }
 
 // check if there is already daemon running
-pid_t checkWebsite() {
+pid_t checkWebsite(struct CWInfo cwinfo) {
     char *home = getenv("HOME");
     if(home == NULL) {
         _log(
+            cwinfo,
             L_ERROR,
             "No HOME environment variable"
         );
@@ -71,16 +73,16 @@ pid_t checkWebsite() {
 }
 
 
-pid_t startWebsite(Args args) {
-    _log(L_INFO, "Starting Website");
+pid_t startWebsite(Args args, struct CWInfo cwinfo) {
+    _log(cwinfo, L_INFO, "Starting Website");
 
-    pid_t pid = checkWebsite();
+    pid_t pid = checkWebsite(cwinfo);
     if(pid > 0) return pid;
 
     pid = fork();
 
     if (pid == 0) {
-        setupWebsite(getpid());
+        setupWebsite(cwinfo, getpid());
         Route routes[64];
         RouteHandler handler = { 0, routes }; 
         initRoutes(&handler); 
@@ -96,8 +98,7 @@ pid_t startWebsite(Args args) {
             serverLaunch 
         );
 
-        serverLaunch(&server);
-        exit(EXIT_SUCCESS);
+        serverLaunch(&server, cwinfo);
     }
 
     return pid;

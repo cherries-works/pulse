@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 
+#include "setup.h"
+
 typedef enum {
     G,
     E,
@@ -54,6 +56,6 @@ typedef struct {
     CommandNotification commandNotify;
 } Config;
 
-extern Config parseToml();
+extern Config parseToml(struct CWInfo cwinfo);
 
 #endif

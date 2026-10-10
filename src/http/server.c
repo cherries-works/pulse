@@ -14,7 +14,7 @@ Server serverContsructor(
     int protocol,
     int backlog,
     uint32_t interface,
-    void (*launch)(Server *server)
+    void (*launch)(Server *server, struct CWInfo cwinfo)
 ) {
     Server server;
 
@@ -31,7 +31,7 @@ Server serverContsructor(
     server.socket = socket(domain, service, protocol);
     if(server.socket < 0) {
         perror("Failed to initialize/connect to socket...\n");
-        exit(EXIT_FAILURE);
+        return server;
     }
 
     int opt = 1;
@@ -45,12 +45,12 @@ Server serverContsructor(
 
     if (bind(server.socket, (struct sockaddr*)&server.address, sizeof(server.address)) < 0) {
         perror("Failed to bind socket...\n");
-        exit(EXIT_FAILURE);
+        return server;
     }
 
     if(listen(server.socket, server.backlog) < 0) {
         perror("Failed to start listening...\n");
-        exit(EXIT_FAILURE);
+        return server;
     }
 
     server.launch = launch;
@@ -59,7 +59,7 @@ Server serverContsructor(
     return server;
 };
 
-void serverLaunch(Server *server) {
+void serverLaunch(Server *server, struct CWInfo cwinfo) {
     size_t buffer_size = BUFFER_ONE_MB;
     char buffer[buffer_size];
 
@@ -82,6 +82,7 @@ void serverLaunch(Server *server) {
             buffer[bytes_read] = '\0';
         } else {
             _log(
+                cwinfo,
                 L_ERROR,
                 "Failed to read buffer"
             );
@@ -89,7 +90,7 @@ void serverLaunch(Server *server) {
         }
 
         Request request = parseRequest(buffer);
-        routeHandle(server->routeHandler, request, new_socket, response, response_size);
+        routeHandle(server->routeHandler, request, new_socket, response, response_size, cwinfo);
 
         close(new_socket);
     }

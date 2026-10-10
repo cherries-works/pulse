@@ -9,6 +9,7 @@
 #include "log.h"
 
 unsigned getProcesses(
+    struct CWInfo cwinfo,
     Process processes[],
     Args args
 ) {
@@ -19,8 +20,8 @@ unsigned getProcesses(
     DIR *proc_dir = opendir(PROC_DIR);
 
     if(proc_dir == NULL) {
-        perror("Cherries Pulse Error :: Reading /proc failed.");
-        exit(EXIT_FAILURE);
+        _log(cwinfo, L_ERROR, "Cherries Pulse Error :: Reading /proc failed.");
+        return 0;
     }
 
     int keys_until_utime = 14;
@@ -123,12 +124,15 @@ unsigned getProcesses(
     return process_count;
 }
 
-void getProcess(Process *p, pid_t pid) {
+void getProcess(
+    struct CWInfo cwinfo,
+    Process *p,
+    pid_t pid
+) {
     if(pid == 0) {
-        _log(L_ERROR, "Invalid, or no process passed.");
+        _log(cwinfo, L_ERROR, "Invalid, or no process passed.");
 
         printf("Invalid, or no process passed.\n--process (process)\n\n");
-        exit(EXIT_FAILURE);
         return;
     }
 
@@ -178,14 +182,14 @@ void getProcess(Process *p, pid_t pid) {
 
     if (readFile(proc_file_name, processes_buffer_size, processes_buffer) == 0) {
         printf("Error: process with pid \"%d\" was not found.\n", (int)proc_pid);
-        exit(EXIT_FAILURE);
+        return;
     }
     cursor = processes_buffer;
 
     char *close_bracket = strchr(cursor, ')');
     if(!close_bracket) {
         printf("NO CLOSE BRACKET FOR PROCESS\n");
-        exit(EXIT_FAILURE);
+        return;
     }
 
     // skip ) and space.

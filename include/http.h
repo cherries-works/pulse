@@ -24,7 +24,8 @@ extern Request parseRequest(char *buffer);
 typedef void (*RouteFn)(
     int socket,
     char *response,
-    size_t response_size
+    size_t response_size,
+    struct CWInfo cwinfo
 );
 
 typedef struct {
@@ -47,7 +48,15 @@ extern void route(
 
 extern void routeJSON(int new_socket, char *response, size_t response_size, char *json);
 extern void routeStatic(int new_socket, char *file_path, char *response, size_t response_size);
-extern void routeHandle(RouteHandler handler, Request request, int new_socket, char *response, size_t response_size);
+extern void routeHandle(
+    RouteHandler handler, 
+    Request request, 
+    int new_socket, 
+    char *response, 
+    size_t response_size,
+    
+    struct CWInfo cwinfo
+);
 
 typedef struct Server {
     int domain;
@@ -61,7 +70,7 @@ typedef struct Server {
     struct sockaddr_in address;
     RouteHandler routeHandler;
 
-    void (*launch)(struct Server *server);
+    void (*launch)(struct Server *server, struct CWInfo cwinfo);
 } Server;
 
 extern Server serverContsructor(
@@ -72,9 +81,9 @@ extern Server serverContsructor(
     int protocol,
     int backlog,
     uint32_t interface,
-    void (*launch)(Server *server)
+    void (*launch)(Server *server, struct CWInfo cwinfo)
 );
 
-extern void serverLaunch(Server *server);
+extern void serverLaunch(Server *server, struct CWInfo cwinfo);
 
 #endif

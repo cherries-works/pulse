@@ -120,7 +120,7 @@ extern Memory getMemory(size_t size, char *buffer);
 extern Network getNetwork(size_t size, char *buffer);
 extern Load getLoad(size_t size, char *buffer);
 extern Disk getDisk(size_t size, char *buffer);
-extern System getSystem(Args args);
+extern System getSystem(struct CWInfo cwinfo, Args args);
 extern Metrics getMetrics(System system2, System system1);
 extern Info getInfo();
 
@@ -129,7 +129,7 @@ extern uint64_t parseUptime(size_t size, char *buffer);
 extern unsigned parseTemp();
 
 extern float parseCpuUsage(Cpu snapshot2, Cpu snapshot1);
-extern unsigned getProcesses(Process processes[], Args args);
-extern void getProcess(Process *process, pid_t pid);
+extern unsigned getProcesses(struct CWInfo cwinfo, Process processes[], Args args);
+extern void getProcess(struct CWInfo cwinfo, Process *process, pid_t pid);
 
 #endif

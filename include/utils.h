@@ -15,6 +15,7 @@
 #include <fcntl.h>
 
 #include "config.h"
+#include "setup.h"
 
 extern const char *PROC_DIR;
 extern const char *PROC_UPTIME_FILE;
@@ -111,18 +112,18 @@ typedef struct {
     char until[64]; // for the PRUNE command
 } Args;
 
-extern Args parseArgs(int argc, char* argv[]);
+extern Args parseArgs(struct CWInfo cwinfo, int argc, char* argv[]);
 
-extern void stop();
-extern void help();
-extern void top(Args args);
-extern void info(Args args);
-extern void monitor(Args args, Config config);
-extern void process(Args args);
-extern void prune(Args args);
-extern void config(Args args);
-extern void snapshot(Args args);
+extern void stop(struct CWInfo cwinfo);
+extern void help(struct CWInfo cwinfo);
+extern void top(Args args, struct CWInfo cwinfo);
+extern void info(Args args, struct CWInfo cwinfo);
+extern void monitor(Args args, Config config, struct CWInfo cwinfo);
+extern void process(Args args, struct CWInfo cwinfo);
+extern void prune(Args args, struct CWInfo cwinfo);
+extern void config(Args args, struct CWInfo cwinfo);
+extern void snapshot(Args args, struct CWInfo cwinfo);
 extern void version(Args args);
-extern void handle(Args args, Config _config);
+extern void handle(Args args, Config _config, struct CWInfo cwinfo);
 
 #endif

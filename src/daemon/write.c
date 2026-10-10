@@ -15,21 +15,12 @@
 #include "utils.h"
 #include "daemon.h"
 #include "log.h"
+#include "setup.h"
 
-void writeHistoryS(System system) {
-    char *home = getenv("HOME");
-    if(home == NULL) {
-        _log(
-            L_ERROR,
-            "No HOME environment variable"
-        );
-        return;
-    }
-
+void writeHistoryS(System system, struct CWInfo cwinfo) {
     size_t time_buffer_size = BUFFER_ONE_KB / 8;
     char time_buffer[time_buffer_size];
-    time_t log_time = getCurrentLog();
-    formatTime(log_time, time_buffer, time_buffer_size);
+    formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
 
     time_t _time = time(NULL);
 
@@ -37,9 +28,8 @@ void writeHistoryS(System system) {
     char history_path[history_path_size];
     snprintf(
         history_path, history_path_size, 
-        "%s/%s/history/%s/system/%" PRIu64 "", 
-        home, 
-        R_CHERRIES_FOLDER_PULSE, 
+        "%s/history/%s/system/%" PRIu64 "", 
+        cwinfo.pulse,
         time_buffer, 
         _time
     );
@@ -111,20 +101,10 @@ void writeHistoryS(System system) {
     fclose(f);
 }
 
-void writeHistoryM(Metrics metrics) {
-    char *home = getenv("HOME");
-    if(home == NULL) {
-        _log(
-            L_ERROR,
-            "No HOME environment variable"
-        );
-        return;
-    }
-
+void writeHistoryM(Metrics metrics, struct CWInfo cwinfo) {
     size_t time_buffer_size = BUFFER_ONE_KB / 8;
     char time_buffer[time_buffer_size];
-    time_t log_time = getCurrentLog();
-    formatTime(log_time, time_buffer, time_buffer_size);
+    formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
 
     time_t _time = time(NULL);
 
@@ -132,9 +112,8 @@ void writeHistoryM(Metrics metrics) {
     char history_path[history_path_size];
     snprintf(
         history_path, history_path_size, 
-        "%s/%s/history/%s/metric/%" PRIu64 "", 
-        home, 
-        R_CHERRIES_FOLDER_PULSE, 
+        "%s/history/%s/metric/%" PRIu64 "", 
+        cwinfo.pulse,
         time_buffer,
         _time
     );

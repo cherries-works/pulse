@@ -50,8 +50,8 @@ void formatMessage(
     *out = '\0';
 }
 
-void notifyDesktop(char *title, char *message, char *resource, float usage) {
-    _log(L_INFO, "Notifying desktop.");
+void notifyDesktop(struct CWInfo cwinfo, char *title, char *message, char *resource, float usage) {
+    _log(cwinfo, L_INFO, "Notifying desktop.");
 
     size_t command_size = BUFFER_ONE_KB;
     char command[command_size];
@@ -76,8 +76,8 @@ void notifyDesktop(char *title, char *message, char *resource, float usage) {
     if(result <= 0) return;
 }
 
-void notifyDiscord(char *webhook, char *message, char *resource, float usage) {
-    _log(L_INFO, "Notifying discord.");
+void notifyDiscord(struct CWInfo cwinfo, char *webhook, char *message, char *resource, float usage) {
+    _log(cwinfo, L_INFO, "Notifying discord.");
 
     size_t command_size = BUFFER_ONE_KB * 2;
     char command[command_size];
@@ -102,28 +102,29 @@ void notifyDiscord(char *webhook, char *message, char *resource, float usage) {
     if(result <= 0) return;
 }
 
-void notifyCommand(char *command) {
-    _log(L_INFO, "Notifying command.");
+void notifyCommand(struct CWInfo cwinfo, char *command) {
+    _log(cwinfo, L_INFO, "Notifying command.");
 
     int result = system(command);
     if(result <= 0) return;
 }
 
-void notifyAlert(Config *config, char *resource, float usage) {
-    _log(L_INFO, "Notifying with an alert.");
+void notifyAlert(struct CWInfo cwinfo, Config *config, char *resource, float usage) {
+    _log(cwinfo, L_INFO, "Notifying with an alert.");
 
     if(config->commandNotify.enabled) {
         if(strlen(config->commandNotify.command) == 0) {
-            _log(L_ERROR, "Command notification enabled, but not set (command).");
+            _log(cwinfo, L_ERROR, "Command notification enabled, but not set (command).");
         } else {
-            notifyCommand(config->commandNotify.command);
+            notifyCommand(cwinfo, config->commandNotify.command);
         }
     }
     if(config->discordNotify.enabled) {
         if(strlen(config->discordNotify.webhook) == 0 || strlen(config->discordNotify.message) == 0) {
-            _log(L_ERROR, "Discord notification enabled, but not set (webhook or message).");
+            _log(cwinfo, L_ERROR, "Discord notification enabled, but not set (webhook or message).");
         } else {
             notifyDiscord(
+                cwinfo,
                 config->discordNotify.webhook,
                 config->discordNotify.message,
                 resource,
@@ -133,9 +134,10 @@ void notifyAlert(Config *config, char *resource, float usage) {
     }
     if(config->desktopNotify.enabled) {
         if(strlen(config->desktopNotify.title) == 0 || strlen(config->desktopNotify.message) == 0) {
-            _log(L_ERROR, "Desktop notification enabled, but not set (title or message).");
+            _log(cwinfo, L_ERROR, "Desktop notification enabled, but not set (title or message).");
         } else {
             notifyDesktop(
+                cwinfo,
                 config->desktopNotify.title,
                 config->desktopNotify.message,
                 resource,
@@ -144,7 +146,7 @@ void notifyAlert(Config *config, char *resource, float usage) {
         }
     }
 
-    _log(L_INFO, "Done notifying.");
+    _log(cwinfo, L_INFO, "Done notifying.");
 }
 
 bool checkCondition(float value, float threshold, Operator op) {
@@ -160,6 +162,7 @@ bool checkCondition(float value, float threshold, Operator op) {
 }
 
 static void checkAlert(
+    struct CWInfo cwinfo,
     float value,
     Alert *alert,
     char *name,
@@ -191,19 +194,20 @@ static void checkAlert(
     if (alert->current_duration < alert->duration) return;
 
     if (alert->current_cooldown == 0) {
-        notifyAlert(config, name, value);
+        notifyAlert(cwinfo, config, name, value);
         alert->current_cooldown = alert->cooldown;
     }
 
     alert->current_duration = 0;
 }
 
-void checkAlerts(Metrics *metrics, Args *args, Config *config) {
+void checkAlerts(struct CWInfo cwinfo, Metrics *metrics, Args *args, Config *config) {
     if (!config->alerts.enabled) return;
 
     int sleep = (int)args->sleep;
 
     checkAlert(
+        cwinfo,
         metrics->cpuUsage,
         &config->alerts.CPU,
         "CPU",
@@ -212,6 +216,7 @@ void checkAlerts(Metrics *metrics, Args *args, Config *config) {
     );
 
     checkAlert(
+        cwinfo,
         metrics->ramUsage,
         &config->alerts.RAM,
         "RAM",
@@ -220,6 +225,7 @@ void checkAlerts(Metrics *metrics, Args *args, Config *config) {
     );
 
     checkAlert(
+        cwinfo,
         metrics->diskUsage,
         &config->alerts.Disk,
         "Disk",

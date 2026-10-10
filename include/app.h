@@ -3,8 +3,9 @@
 
 #include "http.h"
 #include "utils.h"
+#include "setup.h"
 
-extern pid_t startWebsite(Args args);
+extern pid_t startWebsite(Args args, struct CWInfo cwinfo);
 
 extern void initRoutes(RouteHandler *rh);
 

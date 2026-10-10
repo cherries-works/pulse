@@ -14,14 +14,14 @@ void testReadDaemonS() {
     int fd = shm_open(CHERRIES_PULSE_SHM, O_CREAT | O_RDWR, 0666);
     if(fd == -1) {
         printf("SHM open failed.\n");
-        exit(0);
+        exit(EXIT_FAILURE);
     }
-    ftruncate(fd, sizeof(struct shmbuf));
-    struct shmbuf *shmp;
+    ftruncate(fd, sizeof(struct CWData));
+    struct CWData *shmp;
     shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (shmp == MAP_FAILED) {
         printf("Mapping object failed.\n");
-        exit(0);
+        exit(EXIT_FAILURE);
     }
 
     pthread_mutex_lock(&shmp->lock);
@@ -37,14 +37,14 @@ void testReadDaemonM() {
     int fd = shm_open(CHERRIES_PULSE_SHM, O_CREAT | O_RDWR, 0666);
     if(fd == -1) {
         printf("SHM open failed.\n");
-        exit(0);
+        exit(EXIT_FAILURE);
     }
-    ftruncate(fd, sizeof(struct shmbuf));
-    struct shmbuf *shmp;
+    ftruncate(fd, sizeof(struct CWData));
+    struct CWData *shmp;
     shmp = mmap(NULL, sizeof(*shmp), PROT_READ | PROT_WRITE, MAP_SHARED, fd, 0);
     if (shmp == MAP_FAILED) {
         printf("Mapping object failed.\n");
-        exit(0);
+        exit(EXIT_FAILURE);
     }
 
     pthread_mutex_lock(&shmp->lock);

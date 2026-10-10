@@ -19,9 +19,11 @@
 #include "log.h"
 #include "app.h"
 #include "config.h"
+#include "setup.h"
 
-void handle(Args args, Config _config) {
+void handle(Args args, Config _config, struct CWInfo cwinfo) {
     _log(
+        cwinfo,
         L_INFO,
         "Handler is parsing..."
     );
@@ -30,39 +32,39 @@ void handle(Args args, Config _config) {
 
     switch (cmd) {
         case STOP:
-            stop();
+            stop(cwinfo);
             break;
-        
+
         case HELP:
-            help();
+            help(cwinfo);
             break;
         
         case MONITOR:
-            monitor(args, _config);
+            monitor(args, _config, cwinfo);
             break;
         
         case INFO:
-            info(args);
+            info(args, cwinfo);
             break;
         
         case TOP:
-            top(args);
+            top(args, cwinfo);
             break;
         
         case PROCESS:
-            process(args);
+            process(args, cwinfo);
             break;
         
         case PRUNE:
-            prune(args);
+            prune(args, cwinfo);
             break;
 
         case CONFIG:
-            config(args);
+            config(args, cwinfo);
             break;
         
         case SNAPSHOT:
-            snapshot(args);
+            snapshot(args, cwinfo);
             break;
 
         case VERSION:
@@ -77,34 +79,26 @@ void handle(Args args, Config _config) {
     if(cmd == STOP) return; 
 
     _log(
+        cwinfo,
         L_INFO,
         "Finished running command"
     );
 }
 
-void stop() {
+void stop(struct CWInfo cwinfo) {
     _log(
+        cwinfo,
         L_INFO,
         "Running stop() -> command stop"
     );
-
-    char *home = getenv("HOME");
-    if(home == NULL) {
-        _log(
-            L_ERROR,
-            "No HOME environment variable"
-        );
-        return;
-    }
 
     char file_path[BUFFER_ONE_KB];
     char path_dir[BUFFER_ONE_KB / 2];
     snprintf(
         path_dir,
         BUFFER_ONE_KB / 2,
-        "%s/%s/state",
-        home, 
-        R_CHERRIES_FOLDER_PULSE
+        "%s/state",
+        cwinfo.pulse
     );
 
     DIR *dir = opendir(path_dir);
@@ -125,14 +119,14 @@ void stop() {
         remove(file_path);
     }
 
-    failureLog();
-    endLog();
+    printLogFile(cwinfo);
 
     closedir(dir);
 }
 
-void help() {
+void help(struct CWInfo cwinfo) {
     _log(
+        cwinfo,
         L_INFO,
         "Running help() -> command help"
     );
@@ -171,16 +165,17 @@ void help() {
     printf(" > %-20s %-20s\n", "version", "Prints the current version.");
     printf("     %s%-20s %-20s%s\n", DIM, "--hash", "Prints the commit hash of the build.", RESET);
     printf("\n");
-    stop();
+    stop(cwinfo);
 }
 
-void top(Args args) {
+void top(Args args, struct CWInfo cwinfo) {
     _log(
+        cwinfo,
         L_INFO,
         "Running top() -> command top"
     );
 
-    System system = getSystem(args);
+    System system = getSystem(cwinfo, args);
     printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
     printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
     for(unsigned i = 0; i < args.processes; i++) {
@@ -188,16 +183,17 @@ void top(Args args) {
         printProcess(process, system);
     }
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
-    stop();
+    stop(cwinfo);
 }
 
-void info(Args args) {
+void info(Args args, struct CWInfo cwinfo) {
     _log(
+        cwinfo,
         L_INFO,
         "Running info() -> command info"
     );
 
-    System system = getSystem(args);
+    System system = getSystem(cwinfo, args);
     Info info = getInfo();
     if(args.json) {
         char snapshot_json[BUFFER_ONE_KB * 32];
@@ -231,11 +227,12 @@ void info(Args args) {
         renderInfo(args, system, info);
     }
 
-    stop();
+    stop(cwinfo);
 }
 
-void monitor(Args args, Config config) {
+void monitor(Args args, Config config, struct CWInfo cwinfo) {
     _log(
+        cwinfo,
         L_INFO,
         "Running monitor() -> command monitor"
     );
@@ -244,11 +241,11 @@ void monitor(Args args, Config config) {
     sem_unlink(CHERRIES_PULSE_READY_SEM);
     sem_t *ready_sem = sem_open(CHERRIES_PULSE_READY_SEM, O_CREAT | O_EXCL, 0600, 0);
     if (ready_sem == SEM_FAILED) {
-        _log(L_ERROR, "Failed to create ready semaphore");
-        exit(EXIT_FAILURE);
+        _log(cwinfo, L_ERROR, "Failed to create ready semaphore");
+        return;
     }
 
-    startDaemon(args, config);
+    startDaemon(args, config, cwinfo);
     
     // wait until daemon is ready
     sem_wait(ready_sem);
@@ -259,23 +256,24 @@ void monitor(Args args, Config config) {
     if(args.headless && !args.web) return;
 
     if(args.web) {
-        startWebsite(args);
+        startWebsite(args, cwinfo);
     }
 
     if(!args.headless) {
-        startRender(args);
+        startRender(args, cwinfo);
     }
 
     return;
 }
 
-void process(Args args) {
+void process(Args args, struct CWInfo cwinfo) {
     _log(
+        cwinfo,
         L_INFO,
         "Running process() -> command process"
     );
 
-    System system = getSystem(args);
+    System system = getSystem(cwinfo, args);
 
     Process process = {
         .cpu = 0,
@@ -284,7 +282,7 @@ void process(Args args) {
         .name = ""
     };
 
-    getProcess(&process, args.process);
+    getProcess(cwinfo, &process, args.process);
 
     printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
     printf("┌── PROCESS (%-6d) ─────────────────────────────────────────────────────┐\n", args.process);
@@ -292,11 +290,12 @@ void process(Args args) {
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
     printProcessExtra(process, system);
     printf("───────────────────────────────────────────────────────────────────────────\n");
-    stop();
+    stop(cwinfo);
 }
 
-void prune(Args args) {
+void prune(Args args, struct CWInfo cwinfo) {
     _log(
+        cwinfo,
         L_INFO,
         "Running prune() -> command prune"
     );
@@ -305,16 +304,10 @@ void prune(Args args) {
     unsigned keep = args.keep;
     uint64_t until = unformatTime(args.until);
 
-    char *home = getenv("HOME");
-    if(home == NULL) {
-        _log(L_ERROR, "No HOME environment variable");
-        return;
-    }
-
     size_t path_size = BUFFER_ONE_KB;
     if(prune == HISTORY || prune == ALL) {
         char path[path_size];
-        snprintf(path, path_size, "%s/%s/history", home, R_CHERRIES_FOLDER_PULSE);
+        snprintf(path, path_size, "%s/history", cwinfo.pulse);
 
         unsigned path_entries_count = countDir(path);
         unsigned path_entries_deleted = 0;
@@ -331,7 +324,7 @@ void prune(Args args) {
             if(strcmp(entry_name, ".") == 0) continue;
             if(strcmp(entry_name, "..") == 0) continue;
 
-            snprintf(entry_path, path_size, "%s/%s/history/%s", home, R_CHERRIES_FOLDER_PULSE, entry_name);
+            snprintf(entry_path, path_size, "%s/history/%s", cwinfo.pulse, entry_name);
 
             uint64_t _entry_time = unformatTime(entry_name);
             if(_entry_time < until) {
@@ -345,7 +338,7 @@ void prune(Args args) {
 
     if(prune == LOGS || prune == ALL) {
         char path[path_size];
-        snprintf(path, path_size, "%s/%s/logs", home, R_CHERRIES_FOLDER_PULSE);
+        snprintf(path, path_size, "%s/logs", cwinfo.pulse);
 
         unsigned path_entries_count = countDir(path);
         unsigned path_entries_deleted = 0;
@@ -362,7 +355,7 @@ void prune(Args args) {
             if(strcmp(entry_name, ".") == 0) continue;
             if(strcmp(entry_name, "..") == 0) continue;
 
-            snprintf(entry_path, path_size, "%s/%s/logs/%s", home, R_CHERRIES_FOLDER_PULSE, entry_name);
+            snprintf(entry_path, path_size, "%s/logs/%s", cwinfo.pulse, entry_name);
             uint64_t _entry_time = unformatTime(entry_name);
 
             if(_entry_time < until) {
@@ -374,26 +367,18 @@ void prune(Args args) {
         closedir(dir);
     }
 
-    stop();
+    stop(cwinfo);
 }
 
-void config(Args args) {
+void config(Args args, struct CWInfo cwinfo) {
     _log(
+        cwinfo,
         L_INFO,
         "Running config() -> command config"
     );
 
-    char *home = getenv("HOME");
-    if(home == NULL) {
-        _log(
-            L_ERROR,
-            "No HOME environment variable"
-        );
-        return;
-    }
-
     char path[BUFFER_ONE_KB];
-    snprintf(path, BUFFER_ONE_KB, "%s/%s/config.toml", home, R_CHERRIES_FOLDER_PULSE);
+    snprintf(path, BUFFER_ONE_KB, "%s/config.toml", cwinfo.pulse);
    
     // enum to string conversion
     const char* operatorToString(Operator op) {
@@ -409,7 +394,7 @@ void config(Args args) {
     }
 
     if(args.current) {
-        Config config = parseToml();
+        Config config = parseToml(cwinfo);
         printf("Alerts\n");
         printf("CPU:  %-2s %d%% for %ds\n", operatorToString(config.alerts.CPU.op), config.alerts.CPU.threshold, config.alerts.CPU.duration);
         printf("RAM:  %-2s %d%% for %ds\n", operatorToString(config.alerts.RAM.op), config.alerts.RAM.threshold, config.alerts.RAM.duration);
@@ -427,7 +412,7 @@ void config(Args args) {
         int fd = creat(path, 0644);
         ssize_t result = write(fd, CHERRIES_DEFAULT_TOML, strlen(CHERRIES_DEFAULT_TOML));
         if(result <= 0) {
-            _log(L_ERROR, "Failed to reset config file.");
+            _log(cwinfo, L_ERROR, "Failed to reset config file.");
         }
         return;
     }
@@ -437,13 +422,13 @@ void config(Args args) {
     int result = system(command);
     if(result <= 0) return;
 
-    stop();
+    stop(cwinfo);
 }
 
-void snapshot(Args args) {
-    System system_snapshot = getSystem(args);
+void snapshot(Args args, struct CWInfo cwinfo) {
+    System system_snapshot = getSystem(cwinfo, args);
     sleep(1);
-    System prev_system_snapshot = getSystem(args);
+    System prev_system_snapshot = getSystem(cwinfo, args);
     Metrics metrics = getMetrics(system_snapshot, prev_system_snapshot);
 
     if(args.json) {

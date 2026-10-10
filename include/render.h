@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include "utils.h"
 
-extern void startRender(Args args);
+extern void startRender(Args args, struct CWInfo cwinfo);
 extern void render(
     Args args,
     System system,

@@ -9,24 +9,24 @@
 #include "utils.h"
 #include "config.h"
 
-struct shmbuf {
+struct CWData {
     pthread_mutex_t lock;
     Metrics metrics;
     System system;
 };
 
-extern void checkAlerts(Metrics *metrics, Args *args, Config *config);
+extern void checkAlerts(struct CWInfo cwinfo, Metrics *metrics, Args *args, Config *config);
 
-extern pid_t startDaemon(Args args, Config config);
+extern pid_t startDaemon(Args args, Config config, struct CWInfo cwinfo);
 
-extern void writeHistoryS(System system);
-extern void writeHistoryM(Metrics metrics);
+extern void writeHistoryS(System system, struct CWInfo cwinfo);
+extern void writeHistoryM(Metrics metrics, struct CWInfo cwinfo);
 
-extern void readDaemonS(System *system);
-extern void readDaemonM(Metrics *metrics);
-extern void readDaemonSM(System *system, Metrics *metrics);
+extern void readDaemonS(struct CWInfo cwinfo, System *system);
+extern void readDaemonM(struct CWInfo cwinfo, Metrics *metrics);
+extern void readDaemonSM(struct CWInfo cwinfo, System *system, Metrics *metrics);
 
-extern void readHistoryS(char *path, System *system);
-extern void readHistoryM(char *path, Metrics *metric);
+extern void readHistoryS(struct CWInfo cwinfo, char *path, System *system);
+extern void readHistoryM(struct CWInfo cwinfo, char *path, Metrics *metric);
 
 #endif

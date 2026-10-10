@@ -9,14 +9,15 @@
 #include "daemon.h"
 #include "log.h"
 #include "parse.h"
+#include "setup.h"
 
 #define STATIC_ROUTE(fnName, filePath) \
-void fnName(int socket, char *response, size_t response_size) { \
+void fnName(int socket, char *response, size_t response_size, struct CWInfo cwinfo) { \
     routeStatic(socket, filePath, response, response_size); \
 }
 
 #define JSON_ROUTE(fnName, body) \
-void fnName(int socket, char *response, size_t response_size) body
+void fnName(int socket, char *response, size_t response_size, struct CWInfo cwinfo) body
 
 STATIC_ROUTE(indexHtml, "./src/app/static/index.html");
 STATIC_ROUTE(indexStyle, "./src/app/static/css/style.css");
@@ -25,10 +26,8 @@ STATIC_ROUTE(indexCwCharts, "./src/app/static/js/cw.charts.js");
 STATIC_ROUTE(indexFavicon, "./src/app/static/assets/favicon.png");
 
 JSON_ROUTE(indexMetrics, {
-    _log(L_INFO, "Preparing route, for metrics.");
-
     System snapshot;
-    readDaemonS(&snapshot);
+    readDaemonS(cwinfo, &snapshot);
 
     Info info = getInfo();
 
@@ -98,8 +97,6 @@ JSON_ROUTE(indexMetrics, {
         snapshot.temp
     );
 
-    _log(L_INFO, "(Done) Preparing route, for metrics.");
-
     routeJSON(
         socket,
         response,
@@ -110,37 +107,16 @@ JSON_ROUTE(indexMetrics, {
 });
 
 JSON_ROUTE(historyCPU, {
-    _log(L_INFO, "Preparing route, for CPU history.");
-    char *home = getenv("HOME");
-    if(home == NULL) {
-        _log(
-            L_ERROR,
-            "No HOME environment variable"
-        );
-        return;
-    }
-
-    size_t time_buffer_size = BUFFER_ONE_KB / 8;
-    char time_buffer[time_buffer_size];
-
-    time_t _time = getCurrentLog();
-    formatTime(_time, time_buffer, time_buffer_size);
-
     size_t path_size = BUFFER_ONE_KB;
     char path[path_size];
 
-    snprintf(
-        path, path_size, 
-        "%s/%s/history/%s/metric", 
-        home,
-        R_CHERRIES_FOLDER_PULSE, 
-        time_buffer
-    );
+    int _snprintf = snprintf(path, path_size - 1, "%s/history", cwinfo.pulse);
+    if(_snprintf < 0) {
+        return;
+    }
 
-    
     DIR *dir = opendir(path);
     if(!dir) {
-        _log(L_ERROR, "History file for system not found.");
         return;
     }
 
@@ -162,17 +138,20 @@ JSON_ROUTE(historyCPU, {
 
         size_t entry_path_size = BUFFER_ONE_KB;
         char entry_path[entry_path_size];
-        snprintf(entry_path, entry_path_size, "%s/%s", path, name);
+        int _snprintf = snprintf(entry_path, entry_path_size, "%s/%s", path, name);
+        if(_snprintf == -1) {
+            break;
+        }
 
         Metrics metric;
-        readHistoryM(entry_path, &metric);
+        readHistoryM(cwinfo, entry_path, &metric);
 
         size_t padding = 100;
         size_t len = strlen(entry_storer);
         if(len >= entry_storer_size - padding) break;
 
         entry = readdir(dir);
-        int written = snprintf(
+        _snprintf = snprintf(
             entry_storer + len,
             entry_storer_size - len,
             "{"
@@ -184,13 +163,15 @@ JSON_ROUTE(historyCPU, {
             entry != NULL ? "," : ""
         );
 
-        if(written < 0) break;
+        if(_snprintf == -1) {
+            break;
+        }
         if(entry == NULL) break;
         continue;
     }
 
     char json[BUFFER_ONE_KB * 32];
-    snprintf(
+    _snprintf = snprintf(
         json,
         sizeof(json),
         "HTTP/1.1 200 OK\r\n"
@@ -205,8 +186,9 @@ JSON_ROUTE(historyCPU, {
         entry_storer
     );
 
-
-    _log(L_INFO, "(Done) Preparing route, for CPU history.");
+    if(_snprintf == -1) {
+        return;
+    }
 
     routeJSON(
         socket,
@@ -217,38 +199,16 @@ JSON_ROUTE(historyCPU, {
 });
 
 JSON_ROUTE(historyRAM, {
-    _log(L_INFO, "Preparing route, for RAM history.");
-
-    char *home = getenv("HOME");
-    if(home == NULL) {
-        _log(
-            L_ERROR,
-            "No HOME environment variable"
-        );
-        return;
-    }
-
-    size_t time_buffer_size = BUFFER_ONE_KB / 8;
-    char time_buffer[time_buffer_size];
-
-    time_t _time = getCurrentLog();
-    formatTime(_time, time_buffer, time_buffer_size);
-
     size_t path_size = BUFFER_ONE_KB;
     char path[path_size];
 
-    snprintf(
-        path, path_size, 
-        "%s/%s/history/%s/metric", 
-        home,
-        R_CHERRIES_FOLDER_PULSE, 
-        time_buffer
-    );
+    int _snprintf = snprintf(path, path_size - 1, "%s/history", cwinfo.pulse);
+    if(_snprintf < 0) {
+        return;
+    }
 
-    
     DIR *dir = opendir(path);
     if(!dir) {
-        _log(L_ERROR, "History file for system not found.");
         return;
     }
 
@@ -273,7 +233,7 @@ JSON_ROUTE(historyRAM, {
         snprintf(entry_path, entry_path_size, "%s/%s", path, name);
 
         Metrics metric;
-        readHistoryM(entry_path, &metric);
+        readHistoryM(cwinfo, entry_path, &metric);
         
         size_t padding = 100;
         size_t len = strlen(entry_storer);
@@ -313,8 +273,6 @@ JSON_ROUTE(historyRAM, {
         entry_storer
     );
 
-    _log(L_INFO, "(Done) Preparing route, for RAM history.");
-
     routeJSON(
         socket,
         response,
@@ -324,38 +282,23 @@ JSON_ROUTE(historyRAM, {
 });
 
 JSON_ROUTE(historyDisk, {
-    _log(L_INFO, "Preparing route, for Disk history.");
-
-    char *home = getenv("HOME");
-    if(home == NULL) {
-        _log(
-            L_ERROR,
-            "No HOME environment variable"
-        );
-        return;
-    }
-
-    size_t time_buffer_size = BUFFER_ONE_KB / 8;
-    char time_buffer[time_buffer_size];
-
-    time_t _time = getCurrentLog();
-    formatTime(_time, time_buffer, time_buffer_size);
+    size_t time_buffer_size = BUFFER_ONE_KB;
+    char time_buffer[BUFFER_ONE_KB];
+    formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
 
     size_t path_size = BUFFER_ONE_KB;
     char path[path_size];
 
     snprintf(
         path, path_size, 
-        "%s/%s/history/%s/metric", 
-        home,
-        R_CHERRIES_FOLDER_PULSE, 
+        "%s/history/%s/metric", 
+        cwinfo.pulse,
         time_buffer
     );
 
     
     DIR *dir = opendir(path);
     if(!dir) {
-        _log(L_ERROR, "History file for system not found.");
         return;
     }
 
@@ -380,7 +323,7 @@ JSON_ROUTE(historyDisk, {
         snprintf(entry_path, entry_path_size, "%s/%s", path, name);
 
         Metrics metric;
-        readHistoryM(entry_path, &metric);
+        readHistoryM(cwinfo, entry_path, &metric);
         
         size_t padding = 100;
         size_t len = strlen(entry_storer);
@@ -420,8 +363,6 @@ JSON_ROUTE(historyDisk, {
         entry_storer
     );
 
-    _log(L_INFO, "(Done) Preparing route, for Disk history.");
-
     routeJSON(
         socket,
         response,
@@ -437,6 +378,7 @@ void initRoutes(RouteHandler *rh) {
     route("/js/script.js", indexJs, GET, rh);
     route("/js/cw.charts.js", indexCwCharts, GET, rh);
     route("/assets/favicon.png", indexFavicon, GET, rh);
+
     route("/api/metrics", indexMetrics, GET, rh);
     route("/api/history/cpu", historyCPU, GET, rh);
     route("/api/history/ram", historyRAM, GET, rh);

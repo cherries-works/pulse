@@ -197,7 +197,7 @@ void route(
     Route r = { 
         .path = path,
         .handler = handler,
-        .method = method,
+        .method = method
     };
     
     h->routes[h->routesAmount] = r;
@@ -209,7 +209,9 @@ void routeHandle(
     Request request,
     int new_socket,
     char *response,
-    size_t response_size
+    size_t response_size,
+
+    struct CWInfo cwinfo
 ) {
     for(int i = 0; i < handler.routesAmount; i++) {
         Route r = handler.routes[i];
@@ -217,7 +219,7 @@ void routeHandle(
         if(request.method != r.method) continue;
         if(strcmp(request.path, r.path) != 0) continue;
 
-        r.handler(new_socket, response, response_size);
+        r.handler(new_socket, response, response_size, cwinfo);
         return;
     }
 

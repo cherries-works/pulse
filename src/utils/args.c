@@ -7,6 +7,7 @@
 
 #include "utils.h"
 #include "log.h"
+#include "setup.h"
 
 const char *commands[] = {
     "MONITOR",
@@ -21,8 +22,9 @@ const char *commands[] = {
     "VERSION",
 };
 
-Args parseArgs(int argc, char* argv[]) {
+Args parseArgs(struct CWInfo cwinfo, int argc, char* argv[]) {
     _log(
+        cwinfo,
         L_INFO,
         "Parsing CLI arguments"
     );
@@ -30,7 +32,7 @@ Args parseArgs(int argc, char* argv[]) {
     Args p = {
         .web = false,
         .headless = false,
-        
+
         .json = false,
 
         .hash = false,
@@ -42,7 +44,6 @@ Args parseArgs(int argc, char* argv[]) {
         .processes = 3,
         .process = 0,
         
-
         .prune = ALL,
         .keep = 0,
         .until = "3000-00-00"
@@ -63,7 +64,7 @@ Args parseArgs(int argc, char* argv[]) {
             else if(strcmp(arg, "version") == 0) p.command = VERSION;
             else {
                 printf("Invalid command.\n");
-                exit(EXIT_FAILURE);
+                return p;
             }
         }
     }
@@ -71,6 +72,7 @@ Args parseArgs(int argc, char* argv[]) {
     char log_buffer[256];
     snprintf(log_buffer, 256, "Running command %s", commands[p.command]);
     _log(
+        cwinfo,
         L_INFO,
         log_buffer
     );
@@ -167,12 +169,14 @@ Args parseArgs(int argc, char* argv[]) {
     if(p.command == MONITOR) {
         if(p.headless) {
             _log(
+                cwinfo,
                 L_INFO,
                 "Running headless mode."
             );
         }
         if(p.web) {
             _log(
+                cwinfo,
                 L_INFO,
                 "Running website."
             );
