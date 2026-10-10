@@ -153,12 +153,24 @@ JSON_ROUTE(historyCPU, {
         Metrics metric;
         readHistoryM(cwinfo, entry_path, &metric);
 
-        size_t padding = 100;
+        size_t padding = 5;
         size_t len = strlen(entry_storer);
-        if(len >= entry_storer_size - padding) {
-            _log(cwinfo, L_ERROR, "Buffer size was exceeded within while loop, for historyCPU");
-            break;
+
+        if (len >= entry_storer_size - padding) {
+            size_t drop = len / 2;
+            char *boundary = strchr(entry_storer + drop, '}');
+            if (boundary != NULL) {
+                boundary++;
+                if (*boundary == ',') boundary++;
+
+                memmove(entry_storer, boundary, strlen(boundary) + 1);
+            } else {
+                entry_storer[0] = '\0';
+            }
+
+            len = strlen(entry_storer);
         }
+
 
         entry = readdir(dir);
         _snprintf = snprintf(
@@ -257,11 +269,22 @@ JSON_ROUTE(historyRAM, {
         Metrics metric;
         readHistoryM(cwinfo, entry_path, &metric);
         
-        size_t padding = 100;
+        size_t padding = 5;
         size_t len = strlen(entry_storer);
-        if(len >= entry_storer_size - padding) {
-            _log(cwinfo, L_ERROR, "Buffer size was exceeded within while loop, for historyRAM");
-            break;
+
+        if (len >= entry_storer_size - padding) {
+            size_t drop = len / 2;
+            char *boundary = strchr(entry_storer + drop, '}');
+            if (boundary != NULL) {
+                boundary++;
+                if (*boundary == ',') boundary++;
+
+                memmove(entry_storer, boundary, strlen(boundary) + 1);
+            } else {
+                entry_storer[0] = '\0';
+            }
+
+            len = strlen(entry_storer);
         }
 
         entry = readdir(dir);
@@ -361,11 +384,22 @@ JSON_ROUTE(historyDisk, {
         Metrics metric;
         readHistoryM(cwinfo, entry_path, &metric);
         
-        size_t padding = 100;
+        size_t padding = 5;
         size_t len = strlen(entry_storer);
-        if(len >= entry_storer_size - padding) {
-            _log(cwinfo, L_ERROR, "Buffer size was exceeded within while loop, for historyDisk");
-            break;
+
+        if (len >= entry_storer_size - padding) {
+            size_t drop = len / 2;
+            char *boundary = strchr(entry_storer + drop, '}');
+            if (boundary != NULL) {
+                boundary++;
+                if (*boundary == ',') boundary++;
+
+                memmove(entry_storer, boundary, strlen(boundary) + 1);
+            } else {
+                entry_storer[0] = '\0';
+            }
+
+            len = strlen(entry_storer);
         }
 
         entry = readdir(dir);
