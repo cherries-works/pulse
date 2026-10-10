@@ -57,7 +57,7 @@ To get Pulse running on the web, add the `--web` argument.
 By default Pulse runs on:
 
 ```
-http://localhost:8080
+http://localhost:8383
 ```
 
 The port can be changed with `--port [number]`, which omits the `--web` argument.

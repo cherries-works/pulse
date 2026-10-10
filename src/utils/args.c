@@ -40,7 +40,7 @@ Args parseArgs(struct CWInfo cwinfo, int argc, char* argv[]) {
         .command = MONITOR,
         .sort = RAM,
         .sleep = 1,
-        .port = 8080,
+        .port = 8383,
         .processes = 3,
         .process = 0,
         

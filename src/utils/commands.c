@@ -139,7 +139,7 @@ void help(struct CWInfo cwinfo) {
     printf(" %s ──── \n", PULSE_VERSION);
     printf(" > %-20s %-20s\n", "monitor", "Monitors your device (default option).");
     printf("     %s%-20s %-20s%s\n", DIM, "--port [number]", "Determine the port where the website will be hosted (omits --web).", RESET);
-    printf("     %s%-20s %-20s%s\n", DIM, "--web", "Hosts website (and API) on default port 8080.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--web", "Hosts website (and API) on default port 8383.", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--sleep", "How many seconds the program sleeps before updating (TUI only).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--headless", "Runs program without TUI (currently only useful with --web).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that are being monitored (max. 10).", RESET);

@@ -22,7 +22,7 @@ To see the metrics in your terminal.
 
 ```
     --port [number]      Determine the port where the website will be hosted (omits --web).
-    --web                Hosts website (and API) on default port 8080.
+    --web                Hosts website (and API) on default port 8383.
     --sleep              How many seconds the program sleeps before updating (TUI only).
     --headless           Runs program without TUI (currently only useful with --web).
     --stop               Stops all of the processes that Pulse currently runs.
@@ -35,7 +35,7 @@ To see the metrics in your terminal.
     $ ./dist/pulse --web
 `
 
-To host a Web version of the monitoring system on port 8080 (by default).
+To host a Web version of the monitoring system on port 8383 (by default).
 To change the default port, use the `--port [number]` argument.
 
 Add `--headless` argument to run it without the TUI in the background.
