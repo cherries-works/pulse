@@ -32,21 +32,34 @@ void _log(
     formatTime(t, formatted_time, 128);
 
     size_t _fwrite = fwrite(formatted_time, strlen(formatted_time), 1, f);
-    if(_fwrite == 0) return;
+    if(_fwrite == 0) {
+        fclose(f);
+        return;
+    }
+
     if(type == L_INFO) {
         _fwrite = fwrite(" [INFO] ", 8, 1, f);
     } else if(type == L_ERROR) {
         _fwrite = fwrite(" [ERROR] ", 9, 1, f);
     }
-    if(_fwrite == 0) return;
+
+    if(_fwrite == 0) {
+        fclose(f);
+        return;
+    }
 
     _fwrite = fwrite(message, strlen(message), 1, f);
-    if(_fwrite == 0) return;
+    if(_fwrite == 0) {
+        fclose(f);
+        return;
+    }
     
     _fwrite = fwrite("\n", 1, 1, f);
-    if(_fwrite == 0) return;
+    if(_fwrite == 0) {
+        fclose(f);
+        return;
+    }
     
-    int _fclose = fclose(f);
-    if(_fclose == -1) return;
+    fclose(f);
     return;
 }
