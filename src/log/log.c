@@ -22,8 +22,8 @@ void _log(
     if(_snprintf == -1) return;
 
     FILE *f = fopen(path_file, "a");
-    if(f == NULL) {
-        printf("Opening log file failed (%s).\n", path_file);
+    if(f == NULL) {     
+        printf("Opening log file failed (%s).\nMessage: %s\n", path_file, message);
         return;
     }
 
