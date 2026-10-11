@@ -104,6 +104,7 @@ typedef struct {
     uint16_t port; // for the MONITOR command
     unsigned sleep; // for the MONITOR command
     unsigned processes; // for the MONITOR / TOP command
+    unsigned history_snapshot_interval; // for the MONITOR command
  
     pid_t process; // for the PROCESS command
 

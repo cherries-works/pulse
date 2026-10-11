@@ -1,5 +1,5 @@
 CC=gcc
-LIBS=-lpthread
+LIBS=-lpthread -lz
 INCLUDES=-Iinclude
 
 EXTRA_FLAGS_DEBUG = -fsanitize=address -fno-omit-frame-pointer
@@ -21,7 +21,7 @@ utils = src/utils/constants.c src/utils/file.c src/utils/terminal.c src/utils/st
 parse = src/parse/cpu.c src/parse/disk.c src/parse/load.c src/parse/memory.c src/parse/network.c src/parse/process.c src/parse/system.c src/parse/uptime.c src/parse/info.c src/parse/temp.c
 http = src/http/server.c src/http/request.c src/http/routes.c
 render = src/render/render.c src/render/utils.c src/render/start.c
-daemon = src/daemon/start.c src/daemon/read.c src/daemon/write.c src/daemon/alerts.c
+daemon = src/daemon/start.c src/daemon/read.c src/daemon/write.c src/daemon/alerts.c src/daemon/history.c
 log = src/log/end.c src/log/log.c
 app = src/app/routes.c src/app/start.c
 setup = src/setup/setup.c

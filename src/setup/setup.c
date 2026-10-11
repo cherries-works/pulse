@@ -61,6 +61,14 @@ CWInfo setup() {
         closedir(dir);
     }
 
+    snprintf(path, BUFFER_ONE_KB, "%s/archived", cwinfo.pulse);
+    dir = opendir(path);
+    if(!dir) {
+        mkdir(path, 0755);
+    } else {
+        closedir(dir);
+    }
+
     snprintf(path, BUFFER_ONE_KB, "%s/logs", cwinfo.pulse);
     strcpy(cwinfo.log, path);
 

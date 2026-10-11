@@ -38,11 +38,21 @@ void setupDaemon(pid_t pid, CWInfo cwinfo) {
     
     snprintf(history_path, history_path_size, "%s/history/%s", cwinfo.pulse, time_buffer);
     mkdir(history_path, 0755);
+
+    snprintf(history_path, history_path_size, "%s/archived/%s", cwinfo.pulse, time_buffer);
+    mkdir(history_path, 0755);
     
+
     snprintf(history_path, history_path_size, "%s/history/%s/system", cwinfo.pulse, time_buffer);
     mkdir(history_path, 0755);
 
     snprintf(history_path, history_path_size, "%s/history/%s/metric", cwinfo.pulse, time_buffer);
+    mkdir(history_path, 0755);
+
+    snprintf(history_path, history_path_size, "%s/archived/%s/system", cwinfo.pulse, time_buffer);
+    mkdir(history_path, 0755);
+
+    snprintf(history_path, history_path_size, "%s/archived/%s/metric", cwinfo.pulse, time_buffer);
     mkdir(history_path, 0755);
 
     shm_unlink(CHERRIES_PULSE_SHM);
@@ -179,15 +189,28 @@ pid_t startDaemon(Args args, Config config, CWInfo cwinfo) {
         pthread_mutex_init(&shmp->lock, &attr);
         pthread_mutexattr_destroy(&attr);
 
-        short repetition = 0;
+        unsigned long repetition = 0;
+        unsigned long archiving = 0;
+        unsigned long deletion = 0;
         while(true) {
-            if(repetition % 2 == 0) {
+            if (repetition % args.history_snapshot_interval == 0) {
                 writeHistoryM(metrics, cwinfo);
                 writeHistoryS(system_snapshot, cwinfo);
+
+                if (archiving * args.sleep > ARCHIVE_INTERVAL) {
+                    archiveHistory(cwinfo);
+                }
+
+                if (deletion * args.sleep > DELETION_INTERVAL) {
+                    deleteHistoryArchives(cwinfo);
+                }
+
                 repetition = 0;
             }
 
             repetition++;
+            archiving++;
+            deletion++;
 
             prev_system_snapshot = system_snapshot;
             system_snapshot = getSystem(cwinfo, args);

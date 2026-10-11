@@ -23,7 +23,7 @@ void writeHistoryS(System system, CWInfo cwinfo) {
     formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
 
     time_t _time = time(NULL);
-    time_t hour = _time - (_time % HISTORY_INTERVAL);
+    time_t interval = _time - (_time % HISTORY_INTERVAL);
 
     size_t history_path_size = BUFFER_ONE_KB;
     char history_path[history_path_size];
@@ -32,7 +32,7 @@ void writeHistoryS(System system, CWInfo cwinfo) {
         "%s/history/%s/system/%" PRIu64,
         cwinfo.pulse,
         time_buffer,
-        (uint64_t)hour
+        (uint64_t)interval
     );
 
     FILE *f = fopen(history_path, "a");
@@ -113,7 +113,7 @@ void writeHistoryM(Metrics metrics, CWInfo cwinfo) {
     formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
 
     time_t _time = time(NULL);
-    time_t hour = _time - (_time % HISTORY_INTERVAL);
+    time_t interval = _time - (_time % HISTORY_INTERVAL);
 
     size_t history_path_size = BUFFER_ONE_KB;
     char history_path[history_path_size];
@@ -122,7 +122,7 @@ void writeHistoryM(Metrics metrics, CWInfo cwinfo) {
         "%s/history/%s/metric/%" PRIu64,
         cwinfo.pulse,
         time_buffer,
-        (uint64_t)hour
+        (uint64_t)interval
     );
 
     FILE *f = fopen(history_path, "a");

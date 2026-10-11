@@ -39,7 +39,10 @@ Args parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
         .current = false,
         .command = MONITOR,
         .sort = RAM,
+
         .sleep = 1,
+        .history_snapshot_interval = 2,
+
         .port = 8383,
         .processes = 3,
         .process = 0,
@@ -85,6 +88,13 @@ Args parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
             unsigned sleep = (unsigned)atoi(argv[i + 1]);
             if(sleep <= 0 || sleep > 60) continue;
             p.sleep = sleep;
+        }
+
+        if(strcmp(arg, "--history-snapshot-interval") == 0) {
+            if(i == argc - 1) continue;
+            unsigned history_snapshot_interval = (unsigned)atoi(argv[i + 1]);
+            if(history_snapshot_interval <= 0 || history_snapshot_interval > 3600) continue;
+            p.history_snapshot_interval = history_snapshot_interval;
         }
 
         if(strcmp(arg, "--keep") == 0) {
