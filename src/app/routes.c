@@ -120,7 +120,7 @@ JSON_ROUTE(historyCPU, {
         return;
     }
 
-    size_t entry_storer_size = BUFFER_ONE_KB * 8;
+    size_t entry_storer_size = BUFFER_ONE_KB * 2;
     char entry_storer[entry_storer_size];
     entry_storer[0] = '\0';
 
@@ -147,8 +147,8 @@ JSON_ROUTE(historyCPU, {
         entry_storer
     );
 
-    if(_snprintf == -1) {
-        _log(cwinfo, L_ERROR, "Finalizing snprintf failed for historyCPU");
+    if (_snprintf == -1 || (size_t)_snprintf >= sizeof(json)) {
+        _log(cwinfo, L_ERROR, "Finalizing snprintf failed or response was truncated [historyCPU].");
         return;
     }
 
@@ -180,13 +180,13 @@ JSON_ROUTE(historyRAM, {
         return;
     }
 
-    size_t entry_storer_size = BUFFER_ONE_KB * 8;
+    size_t entry_storer_size = BUFFER_ONE_KB * 2;
     char entry_storer[entry_storer_size];
     entry_storer[0] = '\0';
 
     readHistoryM(
         cwinfo,
-        1,  // RAM
+        2,  // RAM
         entry_storer,
         entry_storer_size
     );
@@ -240,13 +240,13 @@ JSON_ROUTE(historyDisk, {
         return;
     }
 
-    size_t entry_storer_size = BUFFER_ONE_KB * 8;
+    size_t entry_storer_size = BUFFER_ONE_KB * 2;
     char entry_storer[entry_storer_size];
     entry_storer[0] = '\0';
 
     readHistoryM(
         cwinfo,
-        2,  // Disk
+        1,  // Disk
         entry_storer,
         entry_storer_size
     );

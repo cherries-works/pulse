@@ -101,41 +101,50 @@ void readDaemonM(CWInfo cwinfo, CWData *cwdata, Metrics *metrics) {
     }
 }
 
-void appendLatestHistoryPoint(
+#define SAFETY_PADDING 32
+static void appendLatestHistoryPoint(
     char *buffer,
     size_t buffer_size,
     uint64_t timestamp,
     float usage
 ) {
-    size_t point_size = BUFFER_ONE_KB;
-    char point[point_size];
+    if (buffer == NULL || buffer_size == 0) {
+        return;
+    }
 
+    char point[BUFFER_ONE_KB];
     int _snprintf = snprintf(
         point,
-        point_size,
-        "{\"timestamp\":%" PRIu64 ",\"usage\":%f}",
+        sizeof(point),
+        "{\"timestamp\":%" PRIu64 ",\"usage\":%.6f}",
         timestamp,
         usage
     );
 
-    if (
-        _snprintf < 0 || 
-        (size_t)_snprintf >= point_size ||
-        (size_t)_snprintf >= buffer_size
-    ) {
+    if (_snprintf < 0 || (size_t)_snprintf >= sizeof(point)) {
         return;
     }
 
     size_t point_length = (size_t)_snprintf;
+    if (point_length + 1 > buffer_size) {
+        return;
+    }
+
     size_t length = strlen(buffer);
 
-    while (length + point_length + (length > 0 ? 1 : 0) + 1 > buffer_size) {
-        char *comma = strchr(buffer, ',');
+    while (length + point_length + (length > 0 ? 1 : 0) + SAFETY_PADDING > buffer_size) {
+        char *end = strchr(buffer, '}');
 
-        if (comma != NULL) {
-            memmove(buffer, comma + 1, strlen(comma + 1) + 1);
-        } else {
+        if (end == NULL) {
             buffer[0] = '\0';
+        } else {
+            char *next = end + 1;
+
+            if (*next == ',') {
+                next++;
+            }
+
+            memmove(buffer, next, strlen(next) + 1);
         }
 
         length = strlen(buffer);
