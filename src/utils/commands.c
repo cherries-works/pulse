@@ -165,7 +165,6 @@ void help(CWInfo cwinfo) {
     printf(" > %-20s %-20s\n", "version", "Prints the current version.");
     printf("     %s%-20s %-20s%s\n", DIM, "--hash", "Prints the commit hash of the build.", RESET);
     printf("\n");
-    stop(cwinfo);
 }
 
 void top(Args args, CWInfo cwinfo) {
@@ -183,7 +182,6 @@ void top(Args args, CWInfo cwinfo) {
         printProcess(process, system);
     }
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
-    stop(cwinfo);
 }
 
 void info(Args args, CWInfo cwinfo) {
@@ -226,8 +224,6 @@ void info(Args args, CWInfo cwinfo) {
     } else {
         renderInfo(args, system, info);
     }
-
-    stop(cwinfo);
 }
 
 void monitor(Args args, Config config, CWInfo cwinfo) {
@@ -262,8 +258,6 @@ void monitor(Args args, Config config, CWInfo cwinfo) {
     if(!args.headless) {
         startRender(args, cwinfo);
     }
-
-    return;
 }
 
 void process(Args args, CWInfo cwinfo) {
@@ -290,7 +284,6 @@ void process(Args args, CWInfo cwinfo) {
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
     printProcessExtra(process, system);
     printf("───────────────────────────────────────────────────────────────────────────\n");
-    stop(cwinfo);
 }
 
 void prune(Args args, CWInfo cwinfo) {
@@ -366,8 +359,6 @@ void prune(Args args, CWInfo cwinfo) {
 
         closedir(dir);
     }
-
-    stop(cwinfo);
 }
 
 void config(Args args, CWInfo cwinfo) {
@@ -421,8 +412,6 @@ void config(Args args, CWInfo cwinfo) {
 
     int result = system(command);
     if(result <= 0) return;
-
-    stop(cwinfo);
 }
 
 void snapshot(Args args, CWInfo cwinfo) {
