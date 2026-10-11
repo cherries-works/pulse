@@ -174,12 +174,6 @@ JSON_ROUTE(historyRAM, {
         return;
     }
 
-    DIR *dir = opendir(path);
-    if(!dir) {
-        _log(cwinfo, L_ERROR, "Opening DIR failed form path in historyRAM");
-        return;
-    }
-
     size_t entry_storer_size = BUFFER_ONE_KB * 2;
     char entry_storer[entry_storer_size];
     entry_storer[0] = '\0';
@@ -231,12 +225,6 @@ JSON_ROUTE(historyDisk, {
     int _snprintf = snprintf(path, path_size - 1, "%s/history/%s/metric", cwinfo.pulse, time_buffer);
     if(_snprintf < 0) {
         _log(cwinfo, L_ERROR, "snprintf failed for historyDisk");
-        return;
-    }
-
-    DIR *dir = opendir(path);
-    if(!dir) {
-        _log(cwinfo, L_ERROR, "Opening DIR failed for historyDisk");
         return;
     }
 
