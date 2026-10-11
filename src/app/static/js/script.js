@@ -157,7 +157,6 @@ const parseCpuUsage = (snapshot2, snapshot1) => {
     return cpu_usage;
 }
 
-
 const formatTimeHumanReadable = (seconds) => {
     let days = seconds / 3600 / 24;
     days = Math.round(days)

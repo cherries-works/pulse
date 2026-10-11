@@ -120,80 +120,16 @@ JSON_ROUTE(historyCPU, {
         return;
     }
 
-    DIR *dir = opendir(path);
-    if(!dir) {
-        _log(cwinfo, L_ERROR, "Opening DIR failed for path in historyCPU");
-        return;
-    }
-
     size_t entry_storer_size = BUFFER_ONE_KB * 8;
     char entry_storer[entry_storer_size];
     entry_storer[0] = '\0';
 
-    struct dirent *entry = readdir(dir);
-    while(true) {
-        char *name = entry->d_name;
-        if(strcmp(name, ".") == 0) {
-            entry = readdir(dir);
-            continue;
-        }
-        if(strcmp(name, "..") == 0) {
-            entry = readdir(dir);
-            continue;
-        }
-
-        size_t entry_path_size = BUFFER_ONE_KB;
-        char entry_path[entry_path_size];
-        int _snprintf = snprintf(entry_path, entry_path_size, "%s/%s", path, name);
-        if(_snprintf == -1) {
-            _log(cwinfo, L_ERROR, "snprintf failed within while loop for historyCPU");
-            break;
-        }
-
-        Metrics metric;
-        readHistoryM(cwinfo, entry_path, &metric);
-
-        size_t padding = 150; // arbitary number
-        size_t len = strlen(entry_storer);
-
-        if (len >= entry_storer_size - padding) {
-            size_t drop = len / 2;
-            char *boundary = strchr(entry_storer + drop, '}');
-            if (boundary != NULL) {
-                boundary++;
-                if (*boundary == ',') boundary++;
-
-                memmove(entry_storer, boundary, strlen(boundary) + 1);
-            } else {
-                entry_storer[0] = '\0';
-            }
-
-            len = strlen(entry_storer);
-        }
-
-
-        entry = readdir(dir);
-        if(entry == NULL) break;
-
-        _snprintf = snprintf(
-            entry_storer + len,
-            entry_storer_size - len,
-            "{"
-            "\"timestamp\": %" PRIu64 ","
-            "\"usage\": %f"
-            "}%s",
-            strtoul(name, NULL, 10),
-            metric.cpuUsage,
-            entry != NULL ? "," : ""
-        );
-
-        if(_snprintf == -1) {
-            _log(cwinfo, L_ERROR, "Finalizing snprintf in while loop failed for historyCPU");
-            break;
-        }
-        continue;
-    }
-    closedir(dir);
+    readHistoryM(
+        cwinfo,
+        0,  // CPU
+        entry_storer,
+        entry_storer_size
+    );
 
     char json[BUFFER_ONE_KB * 32];
     _snprintf = snprintf(
@@ -248,69 +184,12 @@ JSON_ROUTE(historyRAM, {
     char entry_storer[entry_storer_size];
     entry_storer[0] = '\0';
 
-    struct dirent *entry = readdir(dir);
-    while(true) {
-        char *name = entry->d_name;
-        if(strcmp(name, ".") == 0) {
-            entry = readdir(dir);
-            continue;
-        }
-        if(strcmp(name, "..") == 0) {
-            entry = readdir(dir);
-            continue;
-        }
-
-        size_t entry_path_size = BUFFER_ONE_KB;
-        char entry_path[entry_path_size];
-        int _snprintf = snprintf(entry_path, entry_path_size, "%s/%s", path, name);
-        if(_snprintf < 0) {
-            _log(cwinfo, L_ERROR, "snprintf failed within while loop for historyRAM");
-            return;
-        }
-
-        Metrics metric;
-        readHistoryM(cwinfo, entry_path, &metric);
-        
-        size_t padding = 150; // arbitary number
-        size_t len = strlen(entry_storer);
-
-        if (len >= entry_storer_size - padding) {
-            size_t drop = len / 2;
-            char *boundary = strchr(entry_storer + drop, '}');
-            if (boundary != NULL) {
-                boundary++;
-                if (*boundary == ',') boundary++;
-
-                memmove(entry_storer, boundary, strlen(boundary) + 1);
-            } else {
-                entry_storer[0] = '\0';
-            }
-
-            len = strlen(entry_storer);
-        }
-
-        entry = readdir(dir);
-        if(entry == NULL) break;
-
-        _snprintf = snprintf(
-            entry_storer + len,
-            entry_storer_size - len,
-            "{"
-            "\"timestamp\": %" PRIu64 ","
-            "\"usage\": %f"
-            "}%s",
-            strtoul(name, NULL, 10),
-            metric.ramUsage,
-            entry != NULL ? "," : ""
-        );
-
-        if(_snprintf < 0) {
-            _log(cwinfo, L_ERROR, "Finalizing snprintf within while loop failed for historyRAM");
-            break;
-        }
-        continue;
-    }
-    closedir(dir);
+    readHistoryM(
+        cwinfo,
+        1,  // RAM
+        entry_storer,
+        entry_storer_size
+    );
 
     char json[BUFFER_ONE_KB * 32];
     _snprintf = snprintf(
@@ -365,69 +244,13 @@ JSON_ROUTE(historyDisk, {
     char entry_storer[entry_storer_size];
     entry_storer[0] = '\0';
 
-    struct dirent *entry = readdir(dir);
-    while(true) {
-        char *name = entry->d_name;
-        if(strcmp(name, ".") == 0) {
-            entry = readdir(dir);
-            continue;
-        }
-        if(strcmp(name, "..") == 0) {
-            entry = readdir(dir);
-            continue;
-        }
+    readHistoryM(
+        cwinfo,
+        2,  // Disk
+        entry_storer,
+        entry_storer_size
+    );
 
-        size_t entry_path_size = BUFFER_ONE_KB;
-        char entry_path[entry_path_size];
-        int _snprintf = snprintf(entry_path, entry_path_size, "%s/%s", path, name);
-        if(_snprintf < 0) {
-            _log(cwinfo, L_ERROR, "snprintf within while loop failed for historyDisk");
-            break;
-        }
-
-        Metrics metric;
-        readHistoryM(cwinfo, entry_path, &metric);
-        
-        size_t padding = 150; // arbitary number
-        size_t len = strlen(entry_storer);
-
-        if (len >= entry_storer_size - padding) {
-            size_t drop = len / 2;
-            char *boundary = strchr(entry_storer + drop, '}');
-            if (boundary != NULL) {
-                boundary++;
-                if (*boundary == ',') boundary++;
-
-                memmove(entry_storer, boundary, strlen(boundary) + 1);
-            } else {
-                entry_storer[0] = '\0';
-            }
-
-            len = strlen(entry_storer);
-        }
-
-        entry = readdir(dir);
-        if(entry == NULL) break;
-
-        _snprintf = snprintf(
-            entry_storer + len,
-            entry_storer_size - len,
-            "{"
-            "\"timestamp\": %" PRIu64 ","
-            "\"usage\": %f"
-            "}%s",
-            strtoul(name, NULL, 10),
-            metric.diskUsage,
-            entry != NULL ? "," : ""
-        );
-
-        if(_snprintf < 0) {
-            _log(cwinfo, L_ERROR, "Finalizing snprintf within while loop failed for historyDisk");
-            break;
-        }
-        continue;
-    }
-    closedir(dir);
 
     char json[BUFFER_ONE_KB * 32];
     _snprintf = snprintf(

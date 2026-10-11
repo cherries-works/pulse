@@ -18,29 +18,31 @@
 #include "setup.h"
 
 void writeHistoryS(System system, CWInfo cwinfo) {
-    size_t time_buffer_size = BUFFER_ONE_KB / 8;
+    size_t time_buffer_size = BUFFER_ONE_KB * 8;
     char time_buffer[time_buffer_size];
     formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
 
     time_t _time = time(NULL);
+    time_t hour = _time - (_time % HISTORY_INTERVAL);
 
     size_t history_path_size = BUFFER_ONE_KB;
     char history_path[history_path_size];
     snprintf(
-        history_path, history_path_size, 
-        "%s/history/%s/system/%" PRIu64 "", 
+        history_path, history_path_size,
+        "%s/history/%s/system/%" PRIu64,
         cwinfo.pulse,
-        time_buffer, 
-        _time
+        time_buffer,
+        (uint64_t)hour
     );
 
-    FILE *f = fopen(history_path, "w");
-    if(f == NULL) {
+    FILE *f = fopen(history_path, "a");
+    if (f == NULL) {
         _log(cwinfo, L_ERROR, "History path invalid [writeHistoryS].");
         return;
     }
+    fprintf(f, "%" PRIu64 "\n", (uint64_t)_time);
 
-    size_t buffer_size = BUFFER_ONE_KB / 4;
+    size_t buffer_size = BUFFER_ONE_KB * 4;
     char buffer[buffer_size];
 
     snprintf(buffer, buffer_size, "%" PRIu64 "\n", system.cpu.idle);
@@ -85,50 +87,52 @@ void writeHistoryS(System system, CWInfo cwinfo) {
     snprintf(buffer, buffer_size, "%" PRIu64 "\n", system.network.tx);
     fwrite(buffer, strlen(buffer), 1, f);
 
-
-    for(unsigned i = 0; i < system.processes_count; i++) {
+    for (unsigned i = 0; i < system.processes_count; i++) {
         snprintf(buffer, buffer_size, "%s\n", system.processes[i].name);
         fwrite(buffer, strlen(buffer), 1, f);
-    
+
         snprintf(buffer, buffer_size, "%" PRIu64 "\n", system.processes[i].cpu);
         fwrite(buffer, strlen(buffer), 1, f);
-        
+
         snprintf(buffer, buffer_size, "%d\n", system.processes[i].pid);
         fwrite(buffer, strlen(buffer), 1, f);
-        
+
         snprintf(buffer, buffer_size, "%" PRIu64 "\n", system.processes[i].ram);
         fwrite(buffer, strlen(buffer), 1, f);
     }
 
     snprintf(buffer, buffer_size, "%" PRIu64 "\n", system.uptime);
     fwrite(buffer, strlen(buffer), 1, f);
+
     fclose(f);
 }
 
 void writeHistoryM(Metrics metrics, CWInfo cwinfo) {
-    size_t time_buffer_size = BUFFER_ONE_KB / 8;
+    size_t time_buffer_size = BUFFER_ONE_KB * 8;
     char time_buffer[time_buffer_size];
     formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
 
     time_t _time = time(NULL);
+    time_t hour = _time - (_time % HISTORY_INTERVAL);
 
     size_t history_path_size = BUFFER_ONE_KB;
     char history_path[history_path_size];
     snprintf(
-        history_path, history_path_size, 
-        "%s/history/%s/metric/%" PRIu64 "", 
+        history_path, history_path_size,
+        "%s/history/%s/metric/%" PRIu64,
         cwinfo.pulse,
         time_buffer,
-        _time
+        (uint64_t)hour
     );
 
-    FILE *f = fopen(history_path, "w");
-    if(f == NULL) {
+    FILE *f = fopen(history_path, "a");
+    if (f == NULL) {
         _log(cwinfo, L_ERROR, "History path invalid [writeHistoryM].");
         return;
     }
+    fprintf(f, "%" PRIu64 "\n", (uint64_t)_time);
 
-    size_t buffer_size = BUFFER_ONE_KB / 4;
+    size_t buffer_size = BUFFER_ONE_KB * 4;
     char buffer[buffer_size];
 
     snprintf(buffer, buffer_size, "%f\n", metrics.cpuUsage);

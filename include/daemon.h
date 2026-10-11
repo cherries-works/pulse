@@ -9,6 +9,8 @@
 #include "utils.h"
 #include "config.h"
 
+#define HISTORY_INTERVAL 3600
+
 typedef struct {
     pthread_mutex_t lock;
     Metrics metrics;
@@ -28,6 +30,11 @@ extern void readDaemonM(CWInfo cwinfo, CWData *shmp, Metrics *metrics);
 extern void readDaemonSM(CWInfo cwinfo, CWData *shmp, System *system, Metrics *metrics);
 
 extern void readHistoryS(CWInfo cwinfo, char *path, System *system);
-extern void readHistoryM(CWInfo cwinfo, char *path, Metrics *metric);
+extern void readHistoryM(
+    CWInfo cwinfo,
+    int metric_index,
+    char *entry_storer,
+    size_t entry_storer_size
+);
 
 #endif
