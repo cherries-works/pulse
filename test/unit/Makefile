@@ -1,7 +1,7 @@
 EXIT_NEST = ../..
 
 CC=gcc
-LIBS=-lcriterion
+LIBS=-lcriterion -lz
 INCLUDES=-I$(EXIT_NEST)/include
 
 EXTRA_FLAGS_DEBUG = -fsanitize=address -fno-omit-frame-pointer
@@ -21,8 +21,11 @@ required_src = \
 	$(EXIT_NEST)/src/parse/load.c \
 	$(EXIT_NEST)/src/parse/network.c \
 	$(EXIT_NEST)/src/parse/process.c \
+	$(EXIT_NEST)/src/log/log.c \
+	$(EXIT_NEST)/src/log/end.c \
 	$(EXIT_NEST)/src/utils/file.c \
 	$(EXIT_NEST)/src/utils/strings.c \
+	$(EXIT_NEST)/src/utils/format.c \
 	$(EXIT_NEST)/src/utils/constants.c
 
 test: $(binary)
