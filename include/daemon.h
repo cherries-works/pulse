@@ -15,7 +15,7 @@
 // ARCHIVE_INTERVAL is 3600 * 24 for one day
 // DELETION_INTERVAL is 24 hours * 30 for fixed thirty-days.
 //
-#define HISTORY_INTERVAL 60 * 60
+#define HISTORY_INTERVAL (60 * 60)
 #define ARCHIVE_INTERVAL (HISTORY_INTERVAL * 24)
 #define DELETION_INTERVAL (ARCHIVE_INTERVAL * 30)
 
