@@ -11,8 +11,9 @@ uint64_t parseUptime(size_t size, char *buffer) {
     unsigned i = 0;
 
     // should be maximum 16 characters
-    char number[16];
-    while(i < size) {
+    size_t number_size = 16;
+    char number[number_size];
+    while(i < size && i < number_size) {
         char c = buffer[i];
         if(c == '\0') {
             break;
