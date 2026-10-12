@@ -46,6 +46,14 @@ See [PHILOSOPHY.md](docs/PHILOSOPHY.md) for more information.
 
 ## Installation
 
+### Quick
+
+```bash
+  $ curl -fsSL https://cherries.works/install/pulse.sh | sh
+  $ pulse
+```
+
+### Build from Source 
 ```bash
   $ git clone https://github.com/cherries-works/pulse.git
   $ cd pulse
