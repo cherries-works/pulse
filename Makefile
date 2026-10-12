@@ -5,7 +5,7 @@ INCLUDES=-Iinclude
 EXTRA_FLAGS_DEBUG = -fsanitize=address -fno-omit-frame-pointer
 
 FLAGS=-Wall -Werror -Wextra -Wconversion -Wno-unused-parameter -O3
-VERSION := $(shell git describe --tags --always 2>/dev/null || echo unknown)
+VERSION ?= $(shell git describe --tags --always 2>/dev/null || echo unknown)
 COMMIT  := $(shell git rev-parse --short HEAD 2>/dev/null || echo unknown)
 
 CFLAGS=$(INCLUDES) $(FLAGS) -DPULSE_VERSION=\"$(VERSION)\" -DPULSE_COMMIT=\"$(COMMIT)\"
