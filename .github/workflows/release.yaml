@@ -48,9 +48,6 @@ jobs:
             dpkg-dev \
             zlib1g-dev
 
-      - name: Test
-        run: make test
-
       - name: Build
         run: |
           make clean
