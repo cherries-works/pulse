@@ -1,3 +1,4 @@
+
 name: Release
 
 on:
@@ -11,7 +12,19 @@ permissions:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    name: Build Linux (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-24.04
+            deb_arch: amd64
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
+            deb_arch: arm64
 
     steps:
       - name: Checkout
@@ -28,37 +41,71 @@ jobs:
       - name: Install dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y gcc make
-          sudo apt-get install -y libcriterion-dev
+          sudo apt-get install -y \ 
+            gcc \
+            make \
+            libcriterion-dev \
+            dpkg-dev \
+            zlib1g-dev
 
       - name: Test
         run: make test
 
       - name: Build
-        run: make VERSION="${{ steps.version.outputs.version }}"
+        run: |
+          make clean
+          make VERSION="${{ steps.version.outputs.version }}"
 
-      - name: Package
+      - name: Package tarball
         run: |
           mkdir -p release
-          tar -czf release/pulse_Linux_x86_64.tar.gz \
+          tar -czf "release/pulse_Linux_${{ matrix.arch }}.tar.gz" \
             -C dist pulse
 
-      - name: Generate checksums
+      - name: Package Debian
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          DEB_ARCH: ${{ matrix.deb_arch }}
         run: |
-          cd release
-          sha256sum pulse_Linux_x86_64.tar.gz > checksums.txt
+          mkdir -p package/DEBIAN package/usr/bin
 
-      - name: Upload build
-        if: ${{ !env.ACT }}
+          cp dist/pulse package/usr/bin/pulse
+
+          cat > package/DEBIAN/control <<EOF
+          Package: pulse
+          Version: ${VERSION}
+          Section: utils
+          Priority: optional
+          Architecture: ${DEB_ARCH}
+          Maintainer: Cherries.works <mail@mertk.uk>
+          Description: Lightweight Linux process monitor
+           A lightweight process manager and monitoring tool.
+          EOF
+
+          dpkg-deb --root-owner-group --build \
+            package "release/pulse_${VERSION}_${DEB_ARCH}.deb"
+
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: release
-          path: release/
+          name: build-${{ matrix.arch }}
+          path: release/*
+          if-no-files-found: error
 
   rpm:
-    runs-on: ubuntu-latest
+    name: Build Fedora RPM (${{ matrix.arch }})
+    runs-on: ${{ matrix.runner }}
     container:
       image: fedora:latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: x86_64
+            runner: ubuntu-24.04
+          - arch: aarch64
+            runner: ubuntu-24.04-arm
 
     steps:
       - name: Checkout
@@ -74,7 +121,8 @@ jobs:
             rpm-build \
             git \
             tar \
-            gzip
+            gzip \
+            zlib-devel
 
       - name: Get version
         id: version
@@ -83,9 +131,9 @@ jobs:
           echo "version=$VERSION" >> "$GITHUB_OUTPUT"
 
       - name: Build RPM
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
         run: |
-          VERSION="${{ steps.version.outputs.version }}"
-
           mkdir -p ~/rpmbuild/SOURCES ~/rpmbuild/SPECS
 
           tar -czf ~/rpmbuild/SOURCES/pulse-${VERSION}.tar.gz \
@@ -100,41 +148,47 @@ jobs:
             ~/rpmbuild/SPECS/pulse.spec
 
           mkdir -p release
-          cp ~/rpmbuild/RPMS/x86_64/*.rpm release/
+          cp ~/rpmbuild/RPMS/$(uname -m)/*.rpm release/
 
-      - name: Upload RPM
+      - name: Upload RPM artifacts
         if: ${{ !env.ACT }}
         uses: actions/upload-artifact@v4
         with:
-          name: rpm
-          path: release/
+          name: rpm-${{ matrix.arch }}
+          path: release/*.rpm
+          if-no-files-found: error
 
   release:
+    name: Publish GitHub Release
     needs:
       - build
       - rpm
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
 
     steps:
-      - name: Download build
+      - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
-          name: release
+          pattern: build-*
           path: release
+          merge-multiple: true
 
-      - name: Download RPM
+      - name: Download RPM artifacts
         uses: actions/download-artifact@v4
         with:
-          name: rpm
+          pattern: rpm-*
           path: release
+          merge-multiple: true
+
+      - name: Generate checksums
+        run: |
+          cd release
+          sha256sum * > checksums.txt
 
       - name: Create GitHub Release
-        if: ${{ !env.ACT }}
-        uses: softprops/action-gh-release@v3
+        uses: softprops/action-gh-release@v2
         with:
-          files: |
-            release/pulse_Linux_x86_64.tar.gz
-            release/checksums.txt
-            release/*.rpm
+          files: release/*
+          generate_release_notes: true
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
