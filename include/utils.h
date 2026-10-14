@@ -35,6 +35,7 @@ extern const size_t BUFFER_ONE_MB;
 
 extern void trim(char *buffer);
 extern bool startsWith(char *src, size_t src_size, char *comp, size_t comp_size);
+extern void escapeJson(const char *src, char *dst, size_t size);
 
 extern void clearLine();
 extern void clearLines(short i);

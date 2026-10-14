@@ -79,12 +79,15 @@ JSON_ROUTE(indexMetrics, {
             json_len += (size_t)snprintf(json + json_len, sizeof(json) - json_len, ",");
         }
 
+        char name[sizeof(snapshot.processes[i].name) * 6];
+        escapeJson(snapshot.processes[i].name, name, sizeof(name));
+
         json_len += (size_t)snprintf(json + json_len, sizeof(json) - json_len,
             "{\"pid\":%d,\"ram\":%" PRIu64 ",\"cpu\":%" PRIu64 ",\"name\":\"%s\"}",
             snapshot.processes[i].pid,
             snapshot.processes[i].ram,
             snapshot.processes[i].cpu,
-            snapshot.processes[i].name
+            name
         );
     }
 

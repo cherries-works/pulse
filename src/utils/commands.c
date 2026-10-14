@@ -198,12 +198,15 @@ void top(Args args, CWInfo cwinfo) {
                 top_json_len += (size_t)snprintf(top_json + top_json_len, sizeof(top_json) - top_json_len, ",");
             }
 
+            char name[sizeof(system.processes[i].name) * 6];
+            escapeJson(system.processes[i].name, name, sizeof(name));
+
             top_json_len += (size_t)snprintf(top_json + top_json_len, sizeof(top_json) - top_json_len,
                 "{\"pid\":%d,\"ram\":%" PRIu64 ",\"cpu\":%" PRIu64 ",\"name\":\"%s\"}",
                 system.processes[i].pid,
                 system.processes[i].ram,
                 system.processes[i].cpu,
-                system.processes[i].name
+                name
             );
         }
 
@@ -317,6 +320,9 @@ void process(Args args, CWInfo cwinfo) {
     getProcess(cwinfo, &process, args.process);
 
     if(args.json) {
+        char name[sizeof(process.name) * 6];
+        escapeJson(process.name, name, sizeof(name));
+
         printf(
             "{"
             "\"timestamp\":%" PRIu64 ","
@@ -332,7 +338,7 @@ void process(Args args, CWInfo cwinfo) {
             time(NULL),
             process.pid,
             process.parent_pid,
-            process.name,
+            name,
             statuses[process.status],
             process.threads,
             process.uptime,
@@ -572,12 +578,15 @@ void snapshot(Args args, CWInfo cwinfo) {
                 snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len, ",");
             }
     
+            char name[sizeof(system_snapshot.processes[i].name) * 6];
+            escapeJson(system_snapshot.processes[i].name, name, sizeof(name));
+
             snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len,
                 "{\"pid\":%d,\"ram\":%" PRIu64 ",\"cpu\":%" PRIu64 ",\"name\":\"%s\"}",
                 system_snapshot.processes[i].pid,
                 system_snapshot.processes[i].ram,
                 system_snapshot.processes[i].cpu,
-                system_snapshot.processes[i].name
+                name
             );
         }
     
