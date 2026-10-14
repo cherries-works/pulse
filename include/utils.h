@@ -91,7 +91,7 @@ typedef struct {
     bool web; // for the MONITOR command
     bool headless; // for the MONITOR command
     
-    bool json; // for the SNAPSHOT command
+    bool json; // for the INFO / SNAPSHOT / TOP / PROCESS / PRUNE / CONFIG / VERSION command
     
     bool reset; // for the CONFIG command
     

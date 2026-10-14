@@ -22,16 +22,19 @@ _pulse() {
             options="--json"
             ;;
         top)
-            options="--processes --sort"
+            options="--processes --sort --json"
             ;;
         process)
-            options="--process"
+            options="--process --json"
             ;;
         prune)
-            options="--keep --until --prune"
+            options="--keep --until --prune --json"
             ;;
         config)
-            options="--reset --current"
+            options="--reset --current --json"
+            ;;
+        version)
+            options="--hash --json"
             ;;
         *)
             return
@@ -42,7 +45,7 @@ _pulse() {
         # if the argument is already passed in, then dont re-suggest it
         case "$word" in
             --port|--web|--sleep|--headless|--processes|--sort|\
-            --json|--process|--keep|--until|--prune|--reset|--current)
+            --json|--process|--keep|--until|--prune|--reset|--current|--hash)
                 options="${options//$word/}"
                 ;;
         esac

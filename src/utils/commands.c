@@ -152,19 +152,24 @@ void help(CWInfo cwinfo) {
     printf(" > %-20s %-20s\n", "top", "Prints top processes that are currently running.");
     printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that get printed (max. 100).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the top processes in JSON format.", RESET);
     printf(" > %-20s %-20s\n", "snapshot", "The current snapshot of the system.");
     printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the info of the system in JSON format.", RESET);
     printf(" > %-20s %-20s\n", "process", "Print details about a specific process.");
     printf("     %s%-20s %-20s%s\n", DIM, "--process", "The process PID [required].", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the details of the process in JSON format.", RESET);
     printf(" > %-20s %-20s\n", "prune", "Prunes either logs, history or both.");
     printf("     %s%-20s %-20s%s\n", DIM, "--keep", "Amount of files to be kept.", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--until", "The date up until when history/logs are kept. (YYYY-MM-DD)", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--prune", "What is suppose to be pruned (history/logs/all).", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the amount of deleted history/logs entries in JSON format.", RESET);
     printf(" > %-20s %-20s\n", "config", "Configures ~/.cherries-works/pulse/config.toml file via nano.");
     printf("     %s%-20s %-20s%s\n", DIM, "--reset", "Resets the config file to the pulse standard config file (destructive).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--current", "Prints the current configuration.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the current configuration in JSON format (with --current).", RESET);
     printf(" > %-20s %-20s\n", "version", "Prints the current version.");
     printf("     %s%-20s %-20s%s\n", DIM, "--hash", "Prints the commit hash of the build.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the version and commit hash in JSON format.", RESET);
     printf("\n");
 }
 
@@ -176,6 +181,38 @@ void top(Args args, CWInfo cwinfo) {
     );
 
     System system = getSystem(cwinfo, args);
+
+    if(args.json) {
+        char top_json[BUFFER_ONE_KB * 32];
+        size_t top_json_len = 0;
+
+        top_json_len += (size_t)snprintf(top_json + top_json_len, sizeof(top_json) - top_json_len,
+            "{"
+            "\"timestamp\":%" PRIu64 ","
+            "\"processes\":[",
+            time(NULL)
+        );
+
+        for(unsigned i = 0; i < args.processes; i++) {
+            if(i != 0) {
+                top_json_len += (size_t)snprintf(top_json + top_json_len, sizeof(top_json) - top_json_len, ",");
+            }
+
+            top_json_len += (size_t)snprintf(top_json + top_json_len, sizeof(top_json) - top_json_len,
+                "{\"pid\":%d,\"ram\":%" PRIu64 ",\"cpu\":%" PRIu64 ",\"name\":\"%s\"}",
+                system.processes[i].pid,
+                system.processes[i].ram,
+                system.processes[i].cpu,
+                system.processes[i].name
+            );
+        }
+
+        top_json_len += (size_t)snprintf(top_json + top_json_len, sizeof(top_json) - top_json_len, "]}");
+
+        printf("%s\n", top_json);
+        return;
+    }
+
     printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
     printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
     for(unsigned i = 0; i < args.processes; i++) {
@@ -221,7 +258,7 @@ void info(Args args, CWInfo cwinfo) {
             info.session
         );
 
-        printf("%s", snapshot_json);
+        printf("%s\n", snapshot_json);
     } else {
         renderInfo(args, system, info);
     }
@@ -279,6 +316,32 @@ void process(Args args, CWInfo cwinfo) {
 
     getProcess(cwinfo, &process, args.process);
 
+    if(args.json) {
+        printf(
+            "{"
+            "\"timestamp\":%" PRIu64 ","
+            "\"pid\":%d,"
+            "\"parent_pid\":%d,"
+            "\"name\":\"%s\","
+            "\"status\":\"%s\","
+            "\"threads\":%" PRIu64 ","
+            "\"uptime\":%" PRIu64 ","
+            "\"ram\":%" PRIu64 ","
+            "\"cpu\":%" PRIu64
+            "}\n",
+            time(NULL),
+            process.pid,
+            process.parent_pid,
+            process.name,
+            statuses[process.status],
+            process.threads,
+            process.uptime,
+            process.ram,
+            process.cpu
+        );
+        return;
+    }
+
     printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
     printf("┌── PROCESS (%-6d) ─────────────────────────────────────────────────────┐\n", args.process);
     printProcess(process, system);
@@ -299,6 +362,9 @@ void prune(Args args, CWInfo cwinfo) {
     uint64_t until = unformatTime(args.until);
 
     size_t path_size = BUFFER_ONE_KB;
+    unsigned history_deleted = 0;
+    unsigned logs_deleted = 0;
+
     if(prune == HISTORY || prune == ALL) {
         char path[path_size];
         snprintf(path, path_size, "%s/history", cwinfo.pulse);
@@ -328,6 +394,7 @@ void prune(Args args, CWInfo cwinfo) {
         }
 
         closedir(dir);
+        history_deleted = path_entries_deleted;
     }
 
     if(prune == LOGS || prune == ALL) {
@@ -359,6 +426,20 @@ void prune(Args args, CWInfo cwinfo) {
         }
 
         closedir(dir);
+        logs_deleted = path_entries_deleted;
+    }
+
+    if(args.json) {
+        printf(
+            "{"
+            "\"timestamp\":%" PRIu64 ","
+            "\"history\":%u,"
+            "\"logs\":%u"
+            "}\n",
+            time(NULL),
+            history_deleted,
+            logs_deleted
+        );
     }
 }
 
@@ -387,6 +468,27 @@ void config(Args args, CWInfo cwinfo) {
 
     if(args.current) {
         Config config = parseToml(cwinfo);
+
+        if(args.json) {
+            printf(
+                "{"
+                "\"alerts\":{"
+                "\"cpu\":{\"op\":\"%s\",\"threshold\":%d,\"duration\":%d},"
+                "\"ram\":{\"op\":\"%s\",\"threshold\":%d,\"duration\":%d},"
+                "\"disk\":{\"op\":\"%s\",\"threshold\":%d,\"duration\":%d}"
+                "},"
+                "\"notifications\":{\"desktop\":%s,\"discord\":%s,\"command\":%s}"
+                "}\n",
+                operatorToString(config.alerts.CPU.op), config.alerts.CPU.threshold, config.alerts.CPU.duration,
+                operatorToString(config.alerts.RAM.op), config.alerts.RAM.threshold, config.alerts.RAM.duration,
+                operatorToString(config.alerts.Disk.op), config.alerts.Disk.threshold, config.alerts.Disk.duration,
+                config.desktopNotify.enabled ? "true" : "false",
+                config.discordNotify.enabled ? "true" : "false",
+                config.commandNotify.enabled ? "true" : "false"
+            );
+            return;
+        }
+
         printf("Alerts\n");
         printf("CPU:  %-2s %d%% for %ds\n", operatorToString(config.alerts.CPU.op), config.alerts.CPU.threshold, config.alerts.CPU.duration);
         printf("RAM:  %-2s %d%% for %ds\n", operatorToString(config.alerts.RAM.op), config.alerts.RAM.threshold, config.alerts.RAM.duration);
@@ -488,14 +590,16 @@ void snapshot(Args args, CWInfo cwinfo) {
             system_snapshot.temp
         );
 
-        printf("%s", snapshot_json);
+        printf("%s\n", snapshot_json);
     } else {
         renderSnapshot(args, system_snapshot, metrics);
     }
 }
 
 void version(Args args) {
-    if(args.hash) {
+    if(args.json) {
+        printf("{\"version\":\"%s\",\"commit\":\"%s\"}\n", PULSE_VERSION, PULSE_COMMIT);
+    } else if(args.hash) {
         printf("%s\n", PULSE_COMMIT);
     } else {
         printf("%s\n", PULSE_VERSION);
