@@ -31,6 +31,8 @@ extern void printProcessExtra(
     System system
 );
 
+extern char *statuses[];
+
 extern char *getBars(float val);
 extern char* getColor(float value);
 

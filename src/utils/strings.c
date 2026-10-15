@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <string.h>
 
 #include "utils.h"
@@ -36,4 +37,33 @@ bool startsWith(char *src, size_t src_size, char *comp, size_t comp_size) {
     }
 
     return true;
+}
+
+// escapes a string so it can be put between quotes in a JSON output
+void escapeJson(const char *src, char *dst, size_t size) {
+    if(size == 0) return;
+
+    size_t j = 0;
+    for(size_t i = 0; src[i] != '\0'; i++) {
+        unsigned char c = (unsigned char)src[i];
+        char escaped[8];
+
+        if(c == '"' || c == '\\') {
+            snprintf(escaped, sizeof(escaped), "\\%c", c);
+        } else if(c < 0x20) {
+            snprintf(escaped, sizeof(escaped), "\\u%04x", c);
+        } else {
+            escaped[0] = (char)c;
+            escaped[1] = '\0';
+        }
+
+        // never cut an escape sequence in half
+        size_t escaped_len = strlen(escaped);
+        if(j + escaped_len >= size) break;
+
+        memcpy(dst + j, escaped, escaped_len);
+        j += escaped_len;
+    }
+
+    dst[j] = '\0';
 }
