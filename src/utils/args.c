@@ -39,6 +39,7 @@ Args parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
         .current = false,
         .command = MONITOR,
         .sort = RAM,
+        .no_color = false,
 
         .sleep = 1,
         .history_snapshot_interval = 2,
@@ -54,7 +55,7 @@ Args parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
 
     if(argc > 1) {
         char *arg = argv[1];
-        if(!startsWith(arg, strlen(arg), "--", 2)) {
+        if(!startsWith(arg, strlen(arg), "--", 2) && !startsWith(arg, strlen(arg), "-", 1)) {
             if(strcmp(arg, "monitor") == 0) p.command = MONITOR;
             else if(strcmp(arg, "info") == 0) p.command = INFO;
             else if(strcmp(arg, "help") == 0) p.command = HELP;
@@ -173,6 +174,10 @@ Args parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
         
         if(strcmp(arg, "--current") == 0){
             p.current = true;
+        }
+
+        if(strcmp(arg, "--no-color") == 0 || strcmp(arg, "-nc") == 0) {
+            p.no_color = true;
         }
     }
 

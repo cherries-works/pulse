@@ -35,6 +35,7 @@ extern char *statuses[];
 
 extern char *getBars(float val);
 extern char* getColor(float value);
+extern void disableColors(void);
 
 extern char *RED;
 extern char *GREEN;

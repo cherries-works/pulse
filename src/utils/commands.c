@@ -28,6 +28,10 @@ void handle(Args args, Config _config, CWInfo cwinfo) {
         "Handler is parsing..."
     );
 
+    if (args.no_color) {
+        disableColors();
+    }
+
     Command cmd = args.command;
 
     switch (cmd) {
@@ -134,6 +138,7 @@ void help(CWInfo cwinfo) {
     size_t version_length = strlen(PULSE_VERSION);
     size_t dashes = version_length < 42 ? 43 - version_length : 1;
 
+
     printf("%s%sCherries Pulse%s ", BOLD, RED, RESET);
     for(size_t i = 0; i < dashes; i++) printf("─");
     printf(" %s ──── \n", PULSE_VERSION);
@@ -145,19 +150,25 @@ void help(CWInfo cwinfo) {
     printf("     %s%-20s %-20s%s\n", DIM, "--headless", "Runs program without TUI (currently only useful with --web).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that are being monitored (max. 10).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--no-color or -nc", "removes colors so everything is printed without ANSI styling.", RESET);
     printf(" > %-20s %-20s\n", "info", "Displays system information.");
     printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the info of the system in JSON format.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--no-color or -nc", "removes colors so everything is printed without ANSI styling.", RESET);
     printf(" > %-20s %-20s\n", "stop", "Stops all running processes by Pulse.");
     printf(" > %-20s %-20s\n", "help", "Prints this.");
+    printf("     %s%-20s %-20s%s\n", DIM, "--no-color or -nc", "removes colors so everything is printed without ANSI styling.", RESET);
     printf(" > %-20s %-20s\n", "top", "Prints top processes that are currently running.");
     printf("     %s%-20s %-20s%s\n", DIM, "--processes", "Amount of processes that get printed (max. 100).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--sort", "Sorts the processes between \"cpu\" and \"ram\".", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the top processes in JSON format.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--no-color or -nc", "removes colors so everything is printed without ANSI styling.", RESET);
     printf(" > %-20s %-20s\n", "snapshot", "The current snapshot of the system.");
     printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the info of the system in JSON format.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--no-color or -nc", "removes colors so everything is printed without ANSI styling.", RESET);
     printf(" > %-20s %-20s\n", "process", "Print details about a specific process.");
     printf("     %s%-20s %-20s%s\n", DIM, "--process", "The process PID [required].", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the details of the process in JSON format.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--no-color or -nc", "removes colors so everything is printed without ANSI styling.", RESET);
     printf(" > %-20s %-20s\n", "prune", "Prunes either logs, history or both.");
     printf("     %s%-20s %-20s%s\n", DIM, "--keep", "Amount of files to be kept.", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--until", "The date up until when history/logs are kept. (YYYY-MM-DD)", RESET);

@@ -100,6 +100,8 @@ typedef struct {
     
     bool current; // for the CONFIG command
 
+    bool no_color; // for MONITOR / INFO / HELP / SNAPSHOT / TOP / PROCESS command 
+
     Sort sort; // for the MONITOR / TOP command
 
     uint16_t port; // for the MONITOR command
