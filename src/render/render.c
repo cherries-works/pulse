@@ -4,6 +4,19 @@
 #include "parse.h"
 #include "render.h"
 
+void disableColors(void) {
+    RED       = "";
+    GREEN     = "";
+    YELLOW    = "";
+    BLUE      = "";
+    WHITE     = "";
+
+    BOLD      = "";
+    DIM       = "";
+    ITALIC    = "";
+    UNDERLINE = "";
+}
+
 void printMetric(
     const char* label,
     float usage,
