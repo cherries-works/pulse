@@ -7,7 +7,6 @@
 #include <sys/wait.h>
 #include <fcntl.h>
 #include <signal.h>
-#include <wait.h>
 #include <unistd.h>
 #include <inttypes.h>
 
