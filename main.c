@@ -5,7 +5,6 @@
 #include <pthread.h>
 #include <stdbool.h>
 #include <signal.h>
-#include <wait.h>
 #include <dirent.h>
 #include <sys/types.h>
 #include <sys/stat.h>
