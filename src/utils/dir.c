@@ -60,5 +60,7 @@ unsigned countDir(char *path) {
         continue;
     }
 
+    closedir(dir);
+
     return file_count;
 }
