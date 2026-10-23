@@ -138,7 +138,7 @@ jobs:
             --transform="s,^,pulse-${VERSION}/," \
             .
 
-          cp packaging/fedora/pulse.spec ~/rpmbuild/SPECS/
+          cp packaging/rpm/pulse.spec ~/rpmbuild/SPECS/
 
           rpmbuild -bb \
             --define "_pulse_version ${VERSION}" \
