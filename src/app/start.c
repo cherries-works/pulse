@@ -101,5 +101,6 @@ pid_t startWebsite(Args args, CWInfo cwinfo) {
         serverLaunch(&server, cwinfo);
     }
 
+    _log(cwinfo, L_INFO, "(Done) Starting Website");
     return pid;
 }
