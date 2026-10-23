@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="384" height="384" shape-rendering="crispEdges">
+  <style>
+    /* leaf poses: 4 frames, 300ms each, synced */
+    .la, .lb, .lc, .ld { opacity: 0; animation: cyc 1.2s steps(1) infinite; }
+    .lb { animation-delay: 0.3s; }
+    .lc { animation-delay: 0.6s; }
+    .ld { animation-delay: 0.9s; }
+    @keyframes cyc {
+      0%, 25% { opacity: 1; }
+      25.01%, 100% { opacity: 0; }
+    }
+  </style>
+
+  <!-- plate -->
+  <g>
+    <rect x="4" y="17" width="16" height="1" fill="#8f8672"/>
+    <rect x="2" y="18" width="20" height="1" fill="#f4f1e8"/>
+    <rect x="2" y="19" width="20" height="1" fill="#f4f1e8"/>
+    <rect x="3" y="20" width="18" height="1" fill="#c9c2ae"/>
+    <rect x="6" y="21" width="12" height="1" fill="#c9c2ae"/>
+  </g>
+
+  <!-- cherry body -->
+  <g>
+    <rect x="8" y="8" width="10" height="1" fill="#d1332e"/>
+    <rect x="7" y="9" width="11" height="1" fill="#d1332e"/>
+    <rect x="7" y="10" width="11" height="1" fill="#d1332e"/>
+    <rect x="7" y="11" width="11" height="1" fill="#d1332e"/>
+    <rect x="7" y="12" width="11" height="1" fill="#d1332e"/>
+    <rect x="7" y="13" width="11" height="1" fill="#d1332e"/>
+    <rect x="7" y="14" width="11" height="1" fill="#d1332e"/>
+    <rect x="7" y="15" width="11" height="1" fill="#d1332e"/>
+    <rect x="8" y="16" width="10" height="1" fill="#d1332e"/>
+    <rect x="8" y="17" width="10" height="1" fill="#d1332e"/>
+    <!-- rounded corners -->
+    <rect x="8" y="7" width="8" height="1" fill="#d1332e"/>
+    <!-- shading -->
+    <rect x="15" y="14" width="2" height="1" fill="#8f1f22"/><rect x="16" y="14" width="1" height="1" fill="#8f1f22"/>
+    <rect x="15" y="15" width="1" height="1" fill="#8f1f22"/><rect x="14" y="15" width="1" height="1" fill="#8f1f22"/><rect x="16" y="15" width="1" height="1" fill="#8f1f22"/>
+    <rect x="15" y="16" width="1" height="1" fill="#8f1f22"/>
+    <!-- highlight -->
+    <rect x="10" y="10" width="2" height="1" fill="#f27a6a"/>
+    <rect x="9" y="11" width="2" height="1" fill="#f27a6a"/>
+  </g>
+
+  <!-- stem -->
+  <g>
+    <rect x="12" y="7" width="1" height="1" fill="#7a4a2b"/>
+    <rect x="13" y="6" width="1" height="1" fill="#7a4a2b"/>
+    <rect x="13" y="5" width="1" height="1" fill="#7a4a2b"/>
+    <rect x="14" y="4" width="1" height="1" fill="#7a4a2b"/>
+    <rect x="14" y="3" width="1" height="1" fill="#7a4a2b"/>
+  </g>
+
+  <!-- leaf frame 1: relaxed -->
+  <g class="la">
+    <rect x="15" y="3" width="1" height="1" fill="#3f9b42"/><rect x="16" y="3" width="1" height="1" fill="#3f9b42"/><rect x="17" y="2" width="1" height="1" fill="#3f9b42"/><rect x="17" y="1" width="1" height="1" fill="#3f9b42"/><rect x="16" y="2" width="1" height="1" fill="#3f9b42"/><rect x="18" y="1" width="1" height="1" fill="#66c46a"/><rect x="15" y="2" width="1" height="1" fill="#3f9b42"/>
+    <rect x="13" y="2" width="1" height="1" fill="#3f9b42"/><rect x="12" y="2" width="1" height="1" fill="#3f9b42"/><rect x="11" y="2" width="1" height="1" fill="#3f9b42"/><rect x="10" y="1" width="1" height="1" fill="#3f9b42"/><rect x="12" y="1" width="1" height="1" fill="#3f9b42"/><rect x="11" y="1" width="1" height="1" fill="#66c46a"/><rect x="10" y="0" width="1" height="1" fill="#3f9b42"/>
+  </g>
+
+  <!-- leaf frame 2: lift -->
+  <g class="lb">
+    <rect x="15" y="3" width="1" height="1" fill="#3f9b42"/><rect x="16" y="2" width="1" height="1" fill="#3f9b42"/><rect x="17" y="2" width="1" height="1" fill="#3f9b42"/><rect x="18" y="1" width="1" height="1" fill="#3f9b42"/><rect x="17" y="1" width="1" height="1" fill="#3f9b42"/><rect x="18" y="0" width="1" height="1" fill="#66c46a"/><rect x="16" y="1" width="1" height="1" fill="#3f9b42"/>
+    <rect x="13" y="2" width="1" height="1" fill="#3f9b42"/><rect x="12" y="2" width="1" height="1" fill="#3f9b42"/><rect x="11" y="1" width="1" height="1" fill="#3f9b42"/><rect x="10" y="1" width="1" height="1" fill="#3f9b42"/><rect x="11" y="0" width="1" height="1" fill="#3f9b42"/><rect x="12" y="1" width="1" height="1" fill="#66c46a"/><rect x="10" y="0" width="1" height="1" fill="#66c46a"/>
+  </g>
+
+  <!-- leaf frame 3: flutter -->
+  <g class="lc">
+    <rect x="15" y="2" width="1" height="1" fill="#3f9b42"/><rect x="16" y="2" width="1" height="1" fill="#3f9b42"/><rect x="17" y="1" width="1" height="1" fill="#3f9b42"/><rect x="16" y="1" width="1" height="1" fill="#3f9b42"/><rect x="17" y="0" width="1" height="1" fill="#3f9b42"/><rect x="18" y="0" width="1" height="1" fill="#66c46a"/><rect x="15" y="1" width="1" height="1" fill="#3f9b42"/>
+    <rect x="13" y="2" width="1" height="1" fill="#3f9b42"/><rect x="12" y="1" width="1" height="1" fill="#3f9b42"/><rect x="11" y="1" width="1" height="1" fill="#3f9b42"/><rect x="10" y="0" width="1" height="1" fill="#3f9b42"/><rect x="12" y="0" width="1" height="1" fill="#3f9b42"/><rect x="11" y="0" width="1" height="1" fill="#66c46a"/><rect x="13" y="1" width="1" height="1" fill="#3f9b42"/>
+  </g>
+
+  <!-- leaf frame 4: settle -->
+  <g class="ld">
+    <rect x="15" y="3" width="1" height="1" fill="#3f9b42"/><rect x="16" y="3" width="1" height="1" fill="#3f9b42"/><rect x="17" y="2" width="1" height="1" fill="#3f9b42"/><rect x="16" y="2" width="1" height="1" fill="#3f9b42"/><rect x="17" y="1" width="1" height="1" fill="#66c46a"/><rect x="15" y="2" width="1" height="1" fill="#3f9b42"/><rect x="18" y="2" width="1" height="1" fill="#3f9b42"/>
+    <rect x="13" y="2" width="1" height="1" fill="#3f9b42"/><rect x="12" y="2" width="1" height="1" fill="#3f9b42"/><rect x="11" y="2" width="1" height="1" fill="#3f9b42"/><rect x="10" y="2" width="1" height="1" fill="#3f9b42"/><rect x="11" y="1" width="1" height="1" fill="#66c46a"/><rect x="12" y="1" width="1" height="1" fill="#3f9b42"/><rect x="10" y="1" width="1" height="1" fill="#3f9b42"/>
+  </g>
+</svg>
