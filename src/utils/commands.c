@@ -251,7 +251,7 @@ void info(Args args, CWInfo cwinfo) {
         snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len,
             "{"
             "\"timestamp\":%" PRIu64 ","
-            "\"os\":\"%s\","
+            "\"os\":{\"name\":\"%s\",\"type\":\"%s\"},"
             "\"cores\":\"%d\","
             "\"cpu_model\":\"%s\","
             "\"desktop\":\"%s\","
@@ -260,7 +260,8 @@ void info(Args args, CWInfo cwinfo) {
             "\"session\":\"%s\""
             "}",
             time(NULL),
-            info.os,
+            info.os.name,
+            OS_TYPE_SETTINGS[info.os.type],
             info.cores,
             info.cpu_model,
             info.desktop,

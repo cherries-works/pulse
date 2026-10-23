@@ -15,14 +15,19 @@ Info getInfo() {
         .sysname = ""
     };
 
+    OS os = {
+        .name = "",
+        .type = detect_os()
+    };
+
     Info info = {
         .cpu_model = "",
         .hostname = "",
-        .os = "",
         .desktop = "",
         .session = "",
-        .kernel = kernel,
-        .cores = 0
+        .cores = 0,
+        .os = os,
+        .kernel = kernel
     };
     
     const char *desktop = getenv("XDG_CURRENT_DESKTOP");
@@ -104,7 +109,7 @@ Info getInfo() {
         len = strlen(etc);
         etc[len - 1] = '\0'; // skip the last quote
 
-        strcpy(info.os, etc);
+        strcpy(info.os.name, etc);
     }
 
     return info;

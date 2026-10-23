@@ -3,6 +3,7 @@
 
 #include "parse.h"
 #include "render.h"
+#include "os.h"
 
 void disableColors(void) {
     RED       = "";
@@ -185,7 +186,7 @@ void renderInfo(
     printf(
         "│ %-15s %54s  │\n",
         "OS",
-        info.os
+        info.os.name
     );
 
     printf(

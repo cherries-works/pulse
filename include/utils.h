@@ -27,6 +27,7 @@ extern const char *PROC_LOAD_FILE;
 extern const char *PROC_NET_FILE;
 
 extern const char *ETC_OS_RELEASE;
+extern const char *OS_TYPE_SETTINGS[];
 
 extern const char SPACE_IN_ASCII;
 extern const unsigned ASCII_INT_TO_STRING_NUMNER;

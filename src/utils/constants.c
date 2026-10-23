@@ -13,6 +13,13 @@ const char *ETC_OS_RELEASE = "/etc/os-release";
 
 const char *SYS_THERMAL_ZONE = "/sys/class/thermal/thermal_zone";
 
+const char *OS_TYPE_SETTINGS[] = {
+    "Linux",
+    "MacOS",
+    "Windows",
+    "Unknown"
+};
+
 const char SPACE_IN_ASCII = ' ';
 const unsigned ASCII_INT_TO_STRING_NUMNER = 48;
 const size_t BUFFER_ONE_KB = 1024;

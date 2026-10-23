@@ -1,8 +1,10 @@
 #ifndef PARSE_H
 #define PARSE_H
 
-#include "utils.h"
 #include <fcntl.h>
+
+#include "utils.h"
+#include "os.h"
 
 typedef struct {
     uint64_t idle;
@@ -73,14 +75,19 @@ typedef struct {
 } Kernel;
 
 typedef struct {
-    char os[256];
+    char name[256];
+    OsType type;
+} OS;
+
+typedef struct {
     char hostname[256];
     char cpu_model[256];
     char desktop[256];
     char session[256];
-    
-    Kernel kernel;
     unsigned cores;
+
+    OS os;
+    Kernel kernel;
 } Info;
 
 #define MAX_PROCESSES 100
