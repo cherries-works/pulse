@@ -46,8 +46,10 @@ Args parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
 
         .port = 8383,
         .processes = 3,
-        .process = 0,
         
+        .pid = -1,
+        .name = "",
+
         .prune = ALL,
         .keep = 0,
         .until = "3000-00-00"
@@ -110,6 +112,11 @@ Args parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
             strcpy(p.until, argv[i + 1]);
         }
 
+        if(strcmp(arg, "--name") == 0) {
+            if(i == argc - 1) continue;
+            strcpy(p.name, argv[i + 1]);
+        }
+
         if(strcmp(arg, "--prune") == 0) {
             if(i == argc - 1) continue;
             if(strcmp("history", argv[i + 1]) == 0) {
@@ -130,10 +137,10 @@ Args parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
             p.processes = processes;
         }
 
-        if(strcmp(arg, "--process") == 0) {
+        if(strcmp(arg, "--pid") == 0) {
             if(i == argc - 1) continue;
-            pid_t process = (pid_t)atoi(argv[i + 1]);
-            p.process = process;
+            pid_t pid = (pid_t)atoi(argv[i + 1]);
+            p.pid = pid;
         }
 
         if(strcmp(arg, "--sort") == 0) {

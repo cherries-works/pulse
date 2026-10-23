@@ -110,7 +110,8 @@ typedef struct {
     unsigned processes; // for the MONITOR / TOP command
     unsigned history_snapshot_interval; // for the MONITOR command
  
-    pid_t process; // for the PROCESS command
+    pid_t pid; // for the PROCESS command
+    char name[256]; // for the PROCESS command
 
     Prune prune; // for the PRUNE command
     unsigned keep; // for the PRUNE command

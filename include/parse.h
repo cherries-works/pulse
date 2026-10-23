@@ -137,6 +137,7 @@ extern unsigned parseTemp();
 
 extern float parseCpuUsage(Cpu snapshot2, Cpu snapshot1);
 extern unsigned getProcesses(CWInfo cwinfo, Process processes[], Args args);
-extern void getProcess(CWInfo cwinfo, Process *process, pid_t pid);
+extern int getProcess(CWInfo cwinfo, Process *process, pid_t pid);
+extern pid_t getPidByName(char *name);
 
 #endif

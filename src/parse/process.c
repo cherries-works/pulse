@@ -124,16 +124,16 @@ unsigned getProcesses(
     return process_count;
 }
 
-void getProcess(
+int getProcess(
     CWInfo cwinfo,
     Process *p,
     pid_t pid
 ) {
     if(pid == 0) {
-        _log(cwinfo, L_ERROR, "Invalid, or no process passed.");
+        _log(cwinfo, L_ERROR, "Invalid, or no pid passed.");
 
-        printf("Invalid, or no process passed.\n--process (process)\n\n");
-        return;
+        printf("Invalid, or no pid passed.\n--pid (pid)\n\n");
+        return -1;
     }
 
     size_t processes_buffer_size = BUFFER_ONE_KB * 8;
@@ -182,14 +182,14 @@ void getProcess(
 
     if (readFile(proc_file_name, processes_buffer_size, processes_buffer) == 0) {
         printf("Error: process with pid \"%d\" was not found.\n", (int)proc_pid);
-        return;
+        return -1;
     }
     cursor = processes_buffer;
 
     char *close_bracket = strchr(cursor, ')');
     if(!close_bracket) {
         printf("NO CLOSE BRACKET FOR PROCESS\n");
-        return;
+        return -1;
     }
 
     // skip ) and space.
@@ -272,5 +272,35 @@ void getProcess(
     p->threads = proc_threads;
     strcpy(p->name, proc_name);
         
-    return;
+    return 0;
+}
+
+pid_t getPidByName(char *name) {
+    DIR *proc = opendir("/proc");
+    if(!proc) return -1;
+
+    struct dirent *entry;
+    char comm_file[32];
+    char comm[64];
+
+    while((entry = readdir(proc)) != NULL) {
+        // only numeric entries are pids
+        char beginning = entry->d_name[0];
+        if(beginning < '0' || beginning > '9') continue;
+
+        pid_t pid = (pid_t)atoi(entry->d_name);
+        snprintf(comm_file, sizeof(comm_file), "/proc/%d/comm", pid);
+
+        size_t n = readFile(comm_file, sizeof(comm), comm);
+        if(n <= 0) continue;
+
+        comm[n - 1] = '\0';
+        if(strcmp(comm, name) == 0) {
+            closedir(proc);
+            return (pid_t)atoi(entry->d_name);
+        }
+    }
+
+    closedir(proc);
+    return -1;
 }

@@ -328,7 +328,21 @@ void process(Args args, CWInfo cwinfo) {
         .name = ""
     };
 
-    getProcess(cwinfo, &process, args.process);
+    if(args.pid != -1) {
+        int p = getProcess(cwinfo, &process, args.pid);
+        if(p == -1) return;
+    } else {
+        pid_t _pid = getPidByName(args.name);
+        if(_pid == -1) {
+            _log(cwinfo, L_ERROR, "Invalid, or no name passed.");
+
+            printf("Invalid, or no name passed.\n--name (name)\n\n");
+            return;
+        }
+
+        int p = getProcess(cwinfo, &process, _pid);
+        if(p == -1) return;
+    }
 
     if(args.json) {
         char name[sizeof(process.name) * 6];
@@ -360,7 +374,7 @@ void process(Args args, CWInfo cwinfo) {
     }
 
     printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
-    printf("┌── PROCESS (%-6d) ─────────────────────────────────────────────────────┐\n", args.process);
+    printf("┌── PROCESS (%-6d) ─────────────────────────────────────────────────────┐\n", process.pid);
     printProcess(process, system);
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
     printProcessExtra(process, system);
@@ -484,7 +498,7 @@ void config(Args args, CWInfo cwinfo) {
     }
 
     if(args.current) {
-        Config config = parseToml(cwinfo);
+        Config _config = parseToml(cwinfo);
 
         if(args.json) {
             printf(
@@ -496,25 +510,25 @@ void config(Args args, CWInfo cwinfo) {
                 "},"
                 "\"notifications\":{\"desktop\":%s,\"discord\":%s,\"command\":%s}"
                 "}\n",
-                operatorToString(config.alerts.CPU.op), config.alerts.CPU.threshold, config.alerts.CPU.duration,
-                operatorToString(config.alerts.RAM.op), config.alerts.RAM.threshold, config.alerts.RAM.duration,
-                operatorToString(config.alerts.Disk.op), config.alerts.Disk.threshold, config.alerts.Disk.duration,
-                config.desktopNotify.enabled ? "true" : "false",
-                config.discordNotify.enabled ? "true" : "false",
-                config.commandNotify.enabled ? "true" : "false"
+                operatorToString(_config.alerts.CPU.op), _config.alerts.CPU.threshold, _config.alerts.CPU.duration,
+                operatorToString(_config.alerts.RAM.op), _config.alerts.RAM.threshold, _config.alerts.RAM.duration,
+                operatorToString(_config.alerts.Disk.op), _config.alerts.Disk.threshold, _config.alerts.Disk.duration,
+                _config.desktopNotify.enabled ? "true" : "false",
+                _config.discordNotify.enabled ? "true" : "false",
+                _config.commandNotify.enabled ? "true" : "false"
             );
             return;
         }
 
         printf("Alerts\n");
-        printf("CPU:  %-2s %d%% for %ds\n", operatorToString(config.alerts.CPU.op), config.alerts.CPU.threshold, config.alerts.CPU.duration);
-        printf("RAM:  %-2s %d%% for %ds\n", operatorToString(config.alerts.RAM.op), config.alerts.RAM.threshold, config.alerts.RAM.duration);
-        printf("Disk: %-2s %d%% for %ds\n", operatorToString(config.alerts.Disk.op), config.alerts.Disk.threshold, config.alerts.Disk.duration);
+        printf("CPU:  %-2s %d%% for %ds\n", operatorToString(_config.alerts.CPU.op), _config.alerts.CPU.threshold, _config.alerts.CPU.duration);
+        printf("RAM:  %-2s %d%% for %ds\n", operatorToString(_config.alerts.RAM.op), _config.alerts.RAM.threshold, _config.alerts.RAM.duration);
+        printf("Disk: %-2s %d%% for %ds\n", operatorToString(_config.alerts.Disk.op), _config.alerts.Disk.threshold, _config.alerts.Disk.duration);
 
         printf("\nNotifications\n");
-        printf("Desktop:  %s\n", config.desktopNotify.enabled ? "enabled" : "disabled");
-        printf("Discord:  %s\n", config.discordNotify.enabled ? "enabled" : "disabled");
-        printf("Command:  %s\n", config.commandNotify.enabled ? "enabled" : "disabled");
+        printf("Desktop:  %s\n", _config.desktopNotify.enabled ? "enabled" : "disabled");
+        printf("Discord:  %s\n", _config.discordNotify.enabled ? "enabled" : "disabled");
+        printf("Command:  %s\n", _config.commandNotify.enabled ? "enabled" : "disabled");
         return;
     }
 
