@@ -18,6 +18,32 @@ void disableColors(void) {
     UNDERLINE = "";
 }
 
+void printMetricSingle(
+    const char* label,
+    float usage
+) {
+    printf(
+        "│ %-5s %s%s%5.1f%% %s%s             │\n",
+        label,
+        getColor(usage),
+        BOLD,
+        usage,
+        getBars(usage),
+        RESET
+    );
+}
+
+void printLoadSingle(
+    const char* labal,
+    float usage
+) {
+    printf(
+        "│ %-7s %.2f                    │\n",
+        labal,
+        usage
+    );
+}
+
 void printMetric(
     const char* label,
     float usage,
@@ -34,6 +60,17 @@ void printMetric(
         RESET,
         loadLabel,
         loadValue
+    );
+}
+
+void printTransferSingle(
+    const char* label,
+    float value
+) {
+    printf(
+        "│ %-8s %-6.2f KB/s                 │\n",
+        label,
+        value
     );
 }
 
@@ -93,41 +130,8 @@ void render(
     System system,
     Metrics metrics 
 ) {
-    size_t uptime_buffer_text_size = BUFFER_ONE_KB / 8;
-    char uptime_buffer_text[uptime_buffer_text_size];
-    formatTimeHumanReadable(system.uptime, uptime_buffer_text, uptime_buffer_text_size);
-    if(cwargs.web) {
-        printf("%s%sCherries Pulse%s ────── %d°C ───────── port :: %d ──────── ", BOLD, RED, RESET, system.temp / 1000, cwargs.port);
-    } else {
-        printf("%s%sCherries Pulse%s ───────────────── %d°C ─────────────────── ", BOLD, RED, RESET, system.temp / 1000);
-    }
-    printf("%-7s %s%-20s%s\n",
-        "Uptime:",
-        BOLD,
-        uptime_buffer_text,
-        RESET
-    );
+    renderSnapshot(cwargs, system, metrics);
 
-    printf("┌── RESOURCES ────────────────────────┐ ┌── SYSTEM LOAD ──────────────────┐\n");
-    printMetric("CPU", metrics.cpuUsage, "1 min:", system.load.load1);
-    printMetric("RAM", metrics.ramUsage, "5 min:", system.load.load5);
-    printMetric("DISK", metrics.diskUsage, "15 min:", system.load.load15);
-    printf("└─────────────────────────────────────┘ └─────────────────────────────────┘\n");
-
-
-    printf("┌── NETWORK ──────────────────────────┐ ┌── DISK I/O ─────────────────────┐\n");
-    printTransferRow("RX:", metrics.rx, "READ:", metrics.read);
-    printTransferRow("TX:", metrics.tx / 1024.0f, "WRITE:", metrics.write);
-    printf("└─────────────────────────────────────┘ └─────────────────────────────────┘\n");
-
-
-    printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
-    printf("│ Running processes: %-52u │\n", system.process_count);
-    for(unsigned i = 0; i < cwargs.processes; i++) {
-        Process process = system.processes[i];
-        printProcess(process, system);
-    }
-    printf("└─────────────────────────────────────────────────────────────────────────┘\n");
     printf("Press 'd' to detach | Press 'q' to quit\n");
 }
 
@@ -139,7 +143,11 @@ void renderSnapshot(
     size_t uptime_buffer_text_size = BUFFER_ONE_KB / 8;
     char uptime_buffer_text[uptime_buffer_text_size];
     formatTimeHumanReadable(system.uptime, uptime_buffer_text, uptime_buffer_text_size);
-    printf("%s%sCherries Pulse%s ───────────────── %d°C ─────────────────── ", BOLD, RED, RESET, system.temp / 1000);
+    if(cwargs.web) {
+        printf("%s%sCherries Pulse%s ────── %d°C ───────── port :: %d ──────── ", BOLD, RED, RESET, system.temp / 1000, cwargs.port);
+    } else {
+        printf("%s%sCherries Pulse%s ───────────────── %d°C ─────────────────── ", BOLD, RED, RESET, system.temp / 1000);
+    }
 
     printf("%-7s %s%-20s%s\n",
         "Uptime:",
@@ -148,26 +156,52 @@ void renderSnapshot(
         RESET
     );
 
-    printf("┌── RESOURCES ────────────────────────┐ ┌── SYSTEM LOAD ──────────────────┐\n");
-    printMetric("CPU", metrics.cpuUsage, "1 min:", system.load.load1);
-    printMetric("RAM", metrics.ramUsage, "5 min:", system.load.load5);
-    printMetric("DISK", metrics.diskUsage, "15 min:", system.load.load15);
-    printf("└─────────────────────────────────────┘ └─────────────────────────────────┘\n");
-
-
-    printf("┌── NETWORK ──────────────────────────┐ ┌── DISK I/O ─────────────────────┐\n");
-    printTransferRow("RX:", metrics.rx, "READ:", metrics.read);
-    printTransferRow("TX:", metrics.tx / 1024.0f, "WRITE:", metrics.write);
-    printf("└─────────────────────────────────────┘ └─────────────────────────────────┘\n");
-
-
-    printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
-    printf("│ Running processes: %-52u │\n", system.process_count);
-    for(unsigned i = 0; i < cwargs.processes; i++) {
-        Process process = system.processes[i];
-        printProcess(process, system);
+    if(cwargs.display.resources && cwargs.display.load) {
+        printf("┌── RESOURCES ────────────────────────┐ ┌── SYSTEM LOAD ──────────────────┐\n");
+        printMetric("CPU", metrics.cpuUsage, "1 min:", system.load.load1);
+        printMetric("RAM", metrics.ramUsage, "5 min:", system.load.load5);
+        printMetric("DISK", metrics.diskUsage, "15 min:", system.load.load15);
+        printf("└─────────────────────────────────────┘ └─────────────────────────────────┘\n");
+    } else if(cwargs.display.resources) {
+        printf("┌── RESOURCES ────────────────────────┐\n");
+        printMetricSingle("CPU", metrics.cpuUsage);
+        printMetricSingle("RAM", metrics.ramUsage);
+        printMetricSingle("DISK", metrics.diskUsage);
+        printf("└─────────────────────────────────────┘\n");
+    } else if(cwargs.display.load) {
+        printf("┌── SYSTEM LOAD ──────────────────┐\n");
+        printLoadSingle("1 min:", system.load.load1);
+        printLoadSingle("5 min:", system.load.load5);
+        printLoadSingle("15 min:", system.load.load15);
+        printf("└─────────────────────────────────┘\n");
     }
-    printf("└─────────────────────────────────────────────────────────────────────────┘\n");
+
+    if(cwargs.display.network && cwargs.display.io) {
+        printf("┌── NETWORK ──────────────────────────┐ ┌── DISK I/O ─────────────────────┐\n");
+        printTransferRow("RX:", metrics.rx / 1024.0f, "READ:", metrics.read);
+        printTransferRow("TX:", metrics.tx / 1024.0f, "WRITE:", metrics.write);
+        printf("└─────────────────────────────────────┘ └─────────────────────────────────┘\n");
+    } else if(cwargs.display.network) {
+        printf("┌── NETWORK ───────────────────────────┐\n");
+        printTransferSingle("RX:", metrics.rx / 1024.0f);
+        printTransferSingle("TX:", metrics.tx / 1024.0f);
+        printf("└──────────────────────────────────────┘\n");
+    } else if(cwargs.display.io) {
+        printf("┌── DISK I/O ──────────────────────────┐\n");
+        printTransferSingle("READ:", metrics.read);
+        printTransferSingle("WRITE:", metrics.write);
+        printf("└──────────────────────────────────────┘\n");
+    }
+
+    if(cwargs.display.processes) {
+        printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
+        printf("│ Running processes: %-52u │\n", system.process_count);
+        for(unsigned i = 0; i < cwargs.processes; i++) {
+            Process process = system.processes[i];
+            printProcess(process, system);
+        }
+        printf("└─────────────────────────────────────────────────────────────────────────┘\n");
+    }
 }
 
 void renderInfo(

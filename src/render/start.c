@@ -42,6 +42,16 @@ void startRender(CWArgs cwargs, CWInfo cwinfo) {
     Metrics metrics;
     bool look_started = false;
     short total_lines = 14 + (short)cwargs.processes;
+    if(!cwargs.display.processes) {
+        total_lines -= (short)cwargs.processes;
+        total_lines -= 3;
+    }
+    if(!cwargs.display.network && !cwargs.display.io) {
+        total_lines -= 4;
+    }
+    if(!cwargs.display.resources && !cwargs.display.load) {
+        total_lines -= 5;
+    }
 
     CWData *cwdata = openSHM(cwinfo);
     if (cwdata == NULL) {

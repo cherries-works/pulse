@@ -40,6 +40,13 @@ CWArgs parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
         .command = MONITOR,
         .sort = RAM,
         .no_color = false,
+        .display = {
+            .io = true,
+            .load = true,
+            .network = true,
+            .processes = true,
+            .resources = true
+        },
 
         .sleep = 1,
         .style = 1,
@@ -125,6 +132,43 @@ CWArgs parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
         if(strcmp(arg, "--name") == 0) {
             if(i == argc - 1) continue;
             strcpy(p.name, argv[i + 1]);
+        }
+
+        if(strcmp(arg, "--hide") == 0) {
+            if(i == argc - 1) continue;
+            char *hiding = argv[i + 1];
+            
+            char *split = strchr(hiding, ',');
+            while(split != NULL) {
+                *split = '\0';
+    
+                if(strcmp(hiding, "resources") == 0) {
+                    p.display.resources = false;
+                } else if(strcmp(hiding, "load") == 0) {
+                    p.display.load = false;
+                } else if(strcmp(hiding, "network") == 0) {
+                    p.display.network = false;
+                } else if(strcmp(hiding, "io") == 0) {
+                    p.display.io = false;
+                } else if(strcmp(hiding, "processes") == 0) {
+                    p.display.processes = false;
+                }
+
+                hiding = split + 1;
+                split = strchr(hiding, ',');
+            }
+
+            if(strcmp(hiding, "resources") == 0) {
+                p.display.resources = false;
+            } else if(strcmp(hiding, "load") == 0) {
+                p.display.load = false;
+            } else if(strcmp(hiding, "network") == 0) {
+                p.display.network = false;
+            } else if(strcmp(hiding, "io") == 0) {
+                p.display.io = false;
+            } else if(strcmp(hiding, "processes") == 0) {
+                p.display.processes = false;
+            }
         }
 
         if(strcmp(arg, "--prune") == 0) {

@@ -90,8 +90,18 @@ typedef enum {
 } Command;
 
 typedef struct {
+    bool resources;
+    bool load;
+    bool network;
+    bool io;
+    bool processes;
+} Display;
+
+typedef struct {
     Command command;
-    
+   
+    Display display; // for the MONITOR command
+
     bool web; // for the MONITOR command
     bool headless; // for the MONITOR command
     
