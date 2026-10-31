@@ -40,7 +40,7 @@ JSON_ROUTE(APIStyle, {
         "\"error\":null,"
         "\"success\":true,"
         "\"style\":%d,"
-        "\"uptime\":%" PRIu64
+        "\"timestamp\":%" PRIu64
         "}",
         cwargs.style,
         time(NULL)
