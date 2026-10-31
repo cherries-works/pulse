@@ -73,7 +73,7 @@ CWArgs parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
             else if(strcmp(arg, "stop") == 0) p.command = STOP;
             else if(strcmp(arg, "process") == 0) p.command = PROCESS;
             else if(strcmp(arg, "prune") == 0) p.command = PRUNE;
-            else if(strcmp(arg, "cwconfig") == 0) p.command = CONFIG;
+            else if(strcmp(arg, "config") == 0) p.command = CONFIG;
             else if(strcmp(arg, "snapshot") == 0) p.command = SNAPSHOT;
             else if(strcmp(arg, "version") == 0) p.command = VERSION;
             else if(strcmp(arg, "watch") == 0) p.command = WATCH;
