@@ -25,9 +25,9 @@ typedef struct {
     System system;
 } CWData;
 
-extern void checkAlerts(CWInfo cwinfo, Metrics *metrics, Args *args, Config *config);
+extern void checkAlerts(CWInfo cwinfo, Metrics *metrics, CWArgs *args, CWConfig *config);
 
-extern pid_t startDaemon(Args args, Config config, CWInfo cwinfo);
+extern pid_t startDaemon(CWArgs args, CWConfig config, CWInfo cwinfo);
 
 extern void writeHistoryS(System system, CWInfo cwinfo);
 extern void writeHistoryM(Metrics metrics, CWInfo cwinfo);

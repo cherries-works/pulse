@@ -45,7 +45,7 @@ CWInfo setup() {
         closedir(dir);
     }
 
-    snprintf(path, BUFFER_ONE_KB, "%s/config.toml", cwinfo.pulse);
+    snprintf(path, BUFFER_ONE_KB, "%s/cwconfig.toml", cwinfo.pulse);
     if(access(path,F_OK) != 0) {
         int fd = creat(path, 0644);
 

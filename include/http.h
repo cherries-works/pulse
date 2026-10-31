@@ -1,14 +1,12 @@
 #ifndef HTTP_H
 #define HTTP_H
 
-#include "utils.h"
-
 #include <netinet/in.h>
 #include <stdint.h>
 
 #include "setup.h"
 #include "daemon.h"
-
+#include "utils.h"
 
 typedef enum {
     GET,
@@ -30,7 +28,8 @@ typedef void (*RouteFn)(
     char *response,
     size_t response_size,
     CWInfo cwinfo,
-    CWData *cwdata
+    CWData *cwdata,
+    CWArgs args
 );
 
 typedef struct {
@@ -61,7 +60,8 @@ extern void routeHandle(
     size_t response_size,
     
     CWInfo cwinfo,
-    CWData *cwdata
+    CWData *cwdata,
+    CWArgs cwargs
 );
 
 typedef struct Server {
@@ -76,7 +76,7 @@ typedef struct Server {
     struct sockaddr_in address;
     RouteHandler routeHandler;
 
-    void (*launch)(struct Server *server, CWInfo cwinfo);
+    void (*launch)(struct Server *server, CWInfo cwinfo, CWArgs cwargs);
 } Server;
 
 extern Server serverContsructor(
@@ -87,9 +87,9 @@ extern Server serverContsructor(
     int protocol,
     int backlog,
     uint32_t interface,
-    void (*launch)(Server *server, CWInfo cwinfo)
+    void (*launch)(Server *server, CWInfo cwinfo, CWArgs cwargs)
 );
 
-extern void serverLaunch(Server *server, CWInfo cwinfo);
+extern void serverLaunch(Server *server, CWInfo cwinfo, CWArgs cwargs);
 
 #endif

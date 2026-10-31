@@ -89,15 +89,15 @@ void printProcessExtra(
 }
 
 void render(
-    Args args,
+    CWArgs cwargs,
     System system,
     Metrics metrics 
 ) {
     size_t uptime_buffer_text_size = BUFFER_ONE_KB / 8;
     char uptime_buffer_text[uptime_buffer_text_size];
     formatTimeHumanReadable(system.uptime, uptime_buffer_text, uptime_buffer_text_size);
-    if(args.web) {
-        printf("%s%sCherries Pulse%s ────── %d°C ───────── port :: %d ──────── ", BOLD, RED, RESET, system.temp / 1000, args.port);
+    if(cwargs.web) {
+        printf("%s%sCherries Pulse%s ────── %d°C ───────── port :: %d ──────── ", BOLD, RED, RESET, system.temp / 1000, cwargs.port);
     } else {
         printf("%s%sCherries Pulse%s ───────────────── %d°C ─────────────────── ", BOLD, RED, RESET, system.temp / 1000);
     }
@@ -123,7 +123,7 @@ void render(
 
     printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
     printf("│ Running processes: %-52u │\n", system.process_count);
-    for(unsigned i = 0; i < args.processes; i++) {
+    for(unsigned i = 0; i < cwargs.processes; i++) {
         Process process = system.processes[i];
         printProcess(process, system);
     }
@@ -132,7 +132,7 @@ void render(
 }
 
 void renderSnapshot(
-    Args args,
+    CWArgs cwargs,
     System system,
     Metrics metrics 
 ) {
@@ -163,7 +163,7 @@ void renderSnapshot(
 
     printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
     printf("│ Running processes: %-52u │\n", system.process_count);
-    for(unsigned i = 0; i < args.processes; i++) {
+    for(unsigned i = 0; i < cwargs.processes; i++) {
         Process process = system.processes[i];
         printProcess(process, system);
     }
@@ -171,7 +171,7 @@ void renderSnapshot(
 }
 
 void renderInfo(
-    Args args,
+    CWArgs cwargs,
     System system,
     Info info
 ) {
@@ -229,6 +229,18 @@ void renderInfo(
         "│ %-15s %54s  │\n",
         "Desktop",
         info.desktop
+    );
+
+    printf(
+        "│ %-15s %54s  │\n",
+        "IPv4",
+        info.ip.ipv4
+    );
+
+    printf(
+        "│ %-15s %54s  │\n",
+        "IPv6",
+        info.ip.ipv6
     );
 
     printf(

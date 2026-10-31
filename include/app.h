@@ -5,7 +5,7 @@
 #include "utils.h"
 #include "setup.h"
 
-extern pid_t startWebsite(Args args, CWInfo cwinfo);
+extern pid_t startWebsite(CWArgs args, CWInfo cwinfo);
 
 extern void initRoutes(RouteHandler *rh);
 

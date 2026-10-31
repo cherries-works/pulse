@@ -41,14 +41,14 @@ int parseWait(char *wait) {
     return total_time;
 }
 
-Config parseToml(CWInfo cwinfo) {
+CWConfig parseToml(CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
         "Parsing TOML file"
     );
 
-    Config config = {};
+    CWConfig cwconfig = {};
 
     char *home = getenv("HOME");
     if(home == NULL) {
@@ -57,11 +57,11 @@ Config parseToml(CWInfo cwinfo) {
             L_ERROR,
             "No HOME environment variable"
         );
-        return config;
+        return cwconfig;
     }
 
     char path[BUFFER_ONE_KB];
-    snprintf(path, BUFFER_ONE_KB, "%s/%s/config.toml", home, R_CHERRIES_FOLDER_PULSE);
+    snprintf(path, BUFFER_ONE_KB, "%s/%s/cwconfig.toml", home, R_CHERRIES_FOLDER_PULSE);
 
     char conf[BUFFER_ONE_KB];
     size_t n = readFile(path, BUFFER_ONE_KB, conf);
@@ -124,8 +124,8 @@ Config parseToml(CWInfo cwinfo) {
                 if(startsWith(buf, strlen(buf), "enabled", strlen("enabled"))) {
                     buf = eq + 1;
                     trim(buf);
-                    if(strcmp(buf, "true") == 0) config.alerts.enabled = true;
-                    else config.alerts.enabled = false;
+                    if(strcmp(buf, "true") == 0) cwconfig.alerts.enabled = true;
+                    else cwconfig.alerts.enabled = false;
                 }
             }
 
@@ -134,9 +134,9 @@ Config parseToml(CWInfo cwinfo) {
                 trim(buf);
                 int threshold = atoi(buf);
 
-                if(strcmp(current_target, "ram") == 0) config.alerts.RAM.threshold = threshold;
-                if(strcmp(current_target, "cpu") == 0) config.alerts.CPU.threshold = threshold;
-                if(strcmp(current_target, "disk") == 0) config.alerts.Disk.threshold = threshold;
+                if(strcmp(current_target, "ram") == 0) cwconfig.alerts.RAM.threshold = threshold;
+                if(strcmp(current_target, "cpu") == 0) cwconfig.alerts.CPU.threshold = threshold;
+                if(strcmp(current_target, "disk") == 0) cwconfig.alerts.Disk.threshold = threshold;
             }
 
             if(startsWith(buf, strlen(buf), "duration", strlen("duration"))) {
@@ -145,9 +145,9 @@ Config parseToml(CWInfo cwinfo) {
                 
                 int duration = parseWait(buf);
 
-                if(strcmp(current_target, "ram") == 0) config.alerts.RAM.duration = duration;
-                if(strcmp(current_target, "cpu") == 0) config.alerts.CPU.duration = duration;
-                if(strcmp(current_target, "disk") == 0) config.alerts.Disk.duration = duration;
+                if(strcmp(current_target, "ram") == 0) cwconfig.alerts.RAM.duration = duration;
+                if(strcmp(current_target, "cpu") == 0) cwconfig.alerts.CPU.duration = duration;
+                if(strcmp(current_target, "disk") == 0) cwconfig.alerts.Disk.duration = duration;
             }
 
             if(startsWith(buf, strlen(buf), "cooldown", strlen("cooldown"))){
@@ -156,9 +156,9 @@ Config parseToml(CWInfo cwinfo) {
                 
                 int cooldown = parseWait(buf);
 
-                if(strcmp(current_target, "ram") == 0) config.alerts.RAM.cooldown = cooldown;
-                if(strcmp(current_target, "cpu") == 0) config.alerts.CPU.cooldown = cooldown;
-                if(strcmp(current_target, "disk") == 0) config.alerts.Disk.cooldown = cooldown;
+                if(strcmp(current_target, "ram") == 0) cwconfig.alerts.RAM.cooldown = cooldown;
+                if(strcmp(current_target, "cpu") == 0) cwconfig.alerts.CPU.cooldown = cooldown;
+                if(strcmp(current_target, "disk") == 0) cwconfig.alerts.Disk.cooldown = cooldown;
             }
 
             if(startsWith(buf, strlen(buf), "operator", strlen("operator"))) {
@@ -173,9 +173,9 @@ Config parseToml(CWInfo cwinfo) {
                 if(strcmp(buf, "<") == 0) op = L;
                 if(strcmp(buf, "<=") == 0) op = LE;
 
-                if(strcmp(current_target, "ram") == 0) config.alerts.RAM.op = op;
-                if(strcmp(current_target, "cpu") == 0) config.alerts.CPU.op = op;
-                if(strcmp(current_target, "disk") == 0) config.alerts.Disk.op = op;
+                if(strcmp(current_target, "ram") == 0) cwconfig.alerts.RAM.op = op;
+                if(strcmp(current_target, "cpu") == 0) cwconfig.alerts.CPU.op = op;
+                if(strcmp(current_target, "disk") == 0) cwconfig.alerts.Disk.op = op;
             }
         }
 
@@ -213,9 +213,9 @@ Config parseToml(CWInfo cwinfo) {
                 bool enabled = true;
                 if(strcmp(buf, "false") == 0) enabled = false;
 
-                if(strcmp(current_target, "discord") == 0) config.discordNotify.enabled = enabled;
-                if(strcmp(current_target, "desktop") == 0) config.desktopNotify.enabled = enabled;
-                if(strcmp(current_target, "command") == 0) config.commandNotify.enabled = enabled;
+                if(strcmp(current_target, "discord") == 0) cwconfig.discordNotify.enabled = enabled;
+                if(strcmp(current_target, "desktop") == 0) cwconfig.desktopNotify.enabled = enabled;
+                if(strcmp(current_target, "command") == 0) cwconfig.commandNotify.enabled = enabled;
             }
 
             if(startsWith(buf, strlen(buf), "title", strlen("title"))) {
@@ -223,7 +223,7 @@ Config parseToml(CWInfo cwinfo) {
                 trim(buf);
 
                 if(strcmp(current_target, "desktop") == 0) {
-                    strcpy(config.desktopNotify.title, buf);
+                    strcpy(cwconfig.desktopNotify.title, buf);
                 }
             }
 
@@ -232,10 +232,10 @@ Config parseToml(CWInfo cwinfo) {
                 trim(buf);
 
                 if(strcmp(current_target, "desktop") == 0) {
-                    strcpy(config.desktopNotify.message, buf);
+                    strcpy(cwconfig.desktopNotify.message, buf);
                 }
                 if(strcmp(current_target, "discord") == 0) {
-                    strcpy(config.discordNotify.message, buf);
+                    strcpy(cwconfig.discordNotify.message, buf);
                 }
             }
 
@@ -244,7 +244,7 @@ Config parseToml(CWInfo cwinfo) {
                 trim(buf);
 
                 if(strcmp(current_target, "discord") == 0) {
-                    strcpy(config.discordNotify.webhook, buf);
+                    strcpy(cwconfig.discordNotify.webhook, buf);
                 }
             }
 
@@ -253,7 +253,7 @@ Config parseToml(CWInfo cwinfo) {
                 trim(buf);
 
                 if(strcmp(current_target, "command") == 0) {
-                    strcpy(config.commandNotify.command, buf);
+                    strcpy(cwconfig.commandNotify.command, buf);
                 }
             }
         }
@@ -262,5 +262,5 @@ Config parseToml(CWInfo cwinfo) {
         newline = strchr(buf, '\n');
     }
 
-    return config;
+    return cwconfig;
 }

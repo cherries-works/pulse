@@ -73,7 +73,7 @@ pid_t checkWebsite(CWInfo cwinfo) {
 }
 
 
-pid_t startWebsite(Args args, CWInfo cwinfo) {
+pid_t startWebsite(CWArgs cwargs, CWInfo cwinfo) {
     _log(cwinfo, L_INFO, "Starting Website");
 
     pid_t pid = checkWebsite(cwinfo);
@@ -90,7 +90,7 @@ pid_t startWebsite(Args args, CWInfo cwinfo) {
         Server server = serverContsructor( 
             &handler, // route handler 
             AF_INET, 
-            args.port,
+            cwargs.port,
             SOCK_STREAM, 
             0, // protocol 
             10, // backlog 
@@ -98,7 +98,7 @@ pid_t startWebsite(Args args, CWInfo cwinfo) {
             serverLaunch 
         );
 
-        serverLaunch(&server, cwinfo);
+        serverLaunch(&server, cwinfo, cwargs);
     }
 
     _log(cwinfo, L_INFO, "(Done) Starting Website");

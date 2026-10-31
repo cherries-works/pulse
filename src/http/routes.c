@@ -214,7 +214,8 @@ void routeHandle(
     size_t response_size,
 
     CWInfo cwinfo,
-    CWData *cwdata
+    CWData *cwdata,
+    CWArgs cwargs
 ) {
     for(int i = 0; i < handler.routesAmount; i++) {
         Route r = handler.routes[i];
@@ -222,10 +223,21 @@ void routeHandle(
         if(request.method != r.method) continue;
         if(strcmp(request.path, r.path) != 0) continue;
 
-        r.handler(new_socket, response, response_size, cwinfo, cwdata);
+        r.handler(
+            new_socket,
+            response,
+            response_size,
+            cwinfo,
+            cwdata,
+            cwargs
+        );
         return;
     }
 
-    routeNotFound(new_socket, response, response_size);
+    routeNotFound(
+        new_socket,
+        response,
+        response_size
+    );
     return;
 }

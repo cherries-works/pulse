@@ -11,7 +11,7 @@
 unsigned getProcesses(
     CWInfo cwinfo,
     Process processes[],
-    Args args
+    CWArgs cwargs
 ) {
     size_t processes_buffer_size = BUFFER_ONE_KB * 8;
     char processes_buffer[processes_buffer_size];
@@ -100,9 +100,9 @@ unsigned getProcesses(
             proc_name[name_size - 1] = '\0';
         }
 
-        for(unsigned i = 0; i < args.processes; i++) {
+        for(unsigned i = 0; i < cwargs.processes; i++) {
             bool t = processes[i].ram < proc_ram;
-            if(args.sort == CPU) t = processes[i].cpu < proc_cpu;
+            if(cwargs.sort == CPU) t = processes[i].cpu < proc_cpu;
 
             if(t) {
                 for(unsigned j = 1; j > i; j--) {

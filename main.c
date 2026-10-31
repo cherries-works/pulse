@@ -47,9 +47,9 @@ int main(int argc, char* argv[]) {
     CWInfo cwinfo = setup();
     _cwinfo = &cwinfo;
 
-    Args args = parseArgs(cwinfo, argc, argv);
-    Config config = parseToml(cwinfo);
-    handle(args, config, cwinfo);
+    CWArgs cwargs = parseArgs(cwinfo, argc, argv);
+    CWConfig cwconfig = parseToml(cwinfo);
+    handle(cwargs, cwconfig, cwinfo);
 
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     return 0;

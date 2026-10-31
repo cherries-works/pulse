@@ -85,6 +85,8 @@ typedef enum {
     CONFIG,
     SNAPSHOT,
     VERSION,
+    WATCH,
+    REMOTE,
 } Command;
 
 typedef struct {
@@ -101,35 +103,37 @@ typedef struct {
     
     bool current; // for the CONFIG command
 
-    bool no_color; // for MONITOR / INFO / HELP / SNAPSHOT / TOP / PROCESS command 
+    bool no_color; // for MONITOR / INFO / HELP / SNAPSHOT / TOP / PROCESS / WATCH command 
 
     Sort sort; // for the MONITOR / TOP command
+
+    uint8_t style; // for the MONITOR command (1/2/3)
 
     uint16_t port; // for the MONITOR command
     unsigned sleep; // for the MONITOR command
     unsigned processes; // for the MONITOR / TOP command
     unsigned history_snapshot_interval; // for the MONITOR command
  
-    pid_t pid; // for the PROCESS command
-    char name[256]; // for the PROCESS command
+    pid_t pid; // for the PROCESS / WATCH command
+    char name[256]; // for the PROCESS / WATCH command
 
     Prune prune; // for the PRUNE command
     unsigned keep; // for the PRUNE command
     char until[64]; // for the PRUNE command
-} Args;
+} CWArgs;
 
-extern Args parseArgs(CWInfo cwinfo, int argc, char* argv[]);
+extern CWArgs parseArgs(CWInfo cwinfo, int argc, char* argv[]);
 
 extern void stop(CWInfo cwinfo);
 extern void help(CWInfo cwinfo);
-extern void top(Args args, CWInfo cwinfo);
-extern void info(Args args, CWInfo cwinfo);
-extern void monitor(Args args, Config config, CWInfo cwinfo);
-extern void process(Args args, CWInfo cwinfo);
-extern void prune(Args args, CWInfo cwinfo);
-extern void config(Args args, CWInfo cwinfo);
-extern void snapshot(Args args, CWInfo cwinfo);
-extern void version(Args args);
-extern void handle(Args args, Config _config, CWInfo cwinfo);
+extern void top(CWArgs cwargs, CWInfo cwinfo);
+extern void info(CWArgs cwargs, CWInfo cwinfo);
+extern void monitor(CWArgs cwargs, CWConfig cwconfig, CWInfo cwinfo);
+extern void process(CWArgs cwargs, CWInfo cwinfo);
+extern void prune(CWArgs cwargs, CWInfo cwinfo);
+extern void config(CWArgs cwargs, CWInfo cwinfo);
+extern void snapshot(CWArgs cwargs, CWInfo cwinfo);
+extern void version(CWArgs cwargs);
+extern void handle(CWArgs cwargs, CWConfig cwconfig, CWInfo cwinfo);
 
 #endif

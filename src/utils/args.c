@@ -22,14 +22,14 @@ const char *commands[] = {
     "VERSION",
 };
 
-Args parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
+CWArgs parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
     _log(
         cwinfo,
         L_INFO,
         "Parsing CLI arguments"
     );
 
-    Args p = {
+    CWArgs p = {
         .web = false,
         .headless = false,
 
@@ -42,6 +42,7 @@ Args parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
         .no_color = false,
 
         .sleep = 1,
+        .style = 1,
         .history_snapshot_interval = 2,
 
         .port = 8383,
@@ -65,9 +66,11 @@ Args parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
             else if(strcmp(arg, "stop") == 0) p.command = STOP;
             else if(strcmp(arg, "process") == 0) p.command = PROCESS;
             else if(strcmp(arg, "prune") == 0) p.command = PRUNE;
-            else if(strcmp(arg, "config") == 0) p.command = CONFIG;
+            else if(strcmp(arg, "cwconfig") == 0) p.command = CONFIG;
             else if(strcmp(arg, "snapshot") == 0) p.command = SNAPSHOT;
             else if(strcmp(arg, "version") == 0) p.command = VERSION;
+            else if(strcmp(arg, "watch") == 0) p.command = WATCH;
+            else if(strcmp(arg, "remote") == 0) p.command = REMOTE;
             else {
                 printf("Invalid command.\n");
                 return p;
@@ -91,6 +94,13 @@ Args parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
             unsigned sleep = (unsigned)atoi(argv[i + 1]);
             if(sleep <= 0 || sleep > 60) continue;
             p.sleep = sleep;
+        }
+
+        if(strcmp(arg, "--style") == 0) {
+            if(i == argc - 1) continue;
+            uint8_t style = (uint8_t)atoi(argv[i + 1]);
+            if(style <= 0 || style > 3) continue;
+            p.style = style;
         }
 
         if(strcmp(arg, "--history-snapshot-interval") == 0) {

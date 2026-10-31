@@ -4,19 +4,19 @@
 #include <stdlib.h>
 #include "utils.h"
 
-extern void startRender(Args args, CWInfo cwinfo);
+extern void startRender(CWArgs args, CWInfo cwinfo);
 extern void render(
-    Args args,
+    CWArgs args,
     System system,
     Metrics metrics
 );
 extern void renderSnapshot(
-    Args args,
+    CWArgs args,
     System system,
     Metrics metrics
 );
 extern void renderInfo(
-    Args args,
+    CWArgs args,
     System system,
     Info info
 );

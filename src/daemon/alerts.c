@@ -109,37 +109,37 @@ void notifyCommand(CWInfo cwinfo, char *command) {
     if(result <= 0) return;
 }
 
-void notifyAlert(CWInfo cwinfo, Config *config, char *resource, float usage) {
+void notifyAlert(CWInfo cwinfo, CWConfig *cwconfig, char *resource, float usage) {
     _log(cwinfo, L_INFO, "Notifying with an alert.");
 
-    if(config->commandNotify.enabled) {
-        if(strlen(config->commandNotify.command) == 0) {
+    if(cwconfig->commandNotify.enabled) {
+        if(strlen(cwconfig->commandNotify.command) == 0) {
             _log(cwinfo, L_ERROR, "Command notification enabled, but not set (command).");
         } else {
-            notifyCommand(cwinfo, config->commandNotify.command);
+            notifyCommand(cwinfo, cwconfig->commandNotify.command);
         }
     }
-    if(config->discordNotify.enabled) {
-        if(strlen(config->discordNotify.webhook) == 0 || strlen(config->discordNotify.message) == 0) {
+    if(cwconfig->discordNotify.enabled) {
+        if(strlen(cwconfig->discordNotify.webhook) == 0 || strlen(cwconfig->discordNotify.message) == 0) {
             _log(cwinfo, L_ERROR, "Discord notification enabled, but not set (webhook or message).");
         } else {
             notifyDiscord(
                 cwinfo,
-                config->discordNotify.webhook,
-                config->discordNotify.message,
+                cwconfig->discordNotify.webhook,
+                cwconfig->discordNotify.message,
                 resource,
                 usage
             );
         }
     }
-    if(config->desktopNotify.enabled) {
-        if(strlen(config->desktopNotify.title) == 0 || strlen(config->desktopNotify.message) == 0) {
+    if(cwconfig->desktopNotify.enabled) {
+        if(strlen(cwconfig->desktopNotify.title) == 0 || strlen(cwconfig->desktopNotify.message) == 0) {
             _log(cwinfo, L_ERROR, "Desktop notification enabled, but not set (title or message).");
         } else {
             notifyDesktop(
                 cwinfo,
-                config->desktopNotify.title,
-                config->desktopNotify.message,
+                cwconfig->desktopNotify.title,
+                cwconfig->desktopNotify.message,
                 resource,
                 usage
             );
@@ -167,7 +167,7 @@ static void checkAlert(
     Alert *alert,
     char *name,
     int sleep,
-    Config *config
+    CWConfig *cwconfig
 ) {
     float threshold = (float)alert->threshold;
 
@@ -194,42 +194,42 @@ static void checkAlert(
     if (alert->current_duration < alert->duration) return;
 
     if (alert->current_cooldown == 0) {
-        notifyAlert(cwinfo, config, name, value);
+        notifyAlert(cwinfo, cwconfig, name, value);
         alert->current_cooldown = alert->cooldown;
     }
 
     alert->current_duration = 0;
 }
 
-void checkAlerts(CWInfo cwinfo, Metrics *metrics, Args *args, Config *config) {
-    if (!config->alerts.enabled) return;
+void checkAlerts(CWInfo cwinfo, Metrics *metrics, CWArgs *cwargs, CWConfig *cwconfig) {
+    if (!cwconfig->alerts.enabled) return;
 
-    int sleep = (int)args->sleep;
+    int sleep = (int)cwargs->sleep;
 
     checkAlert(
         cwinfo,
         metrics->cpuUsage,
-        &config->alerts.CPU,
+        &cwconfig->alerts.CPU,
         "CPU",
         sleep,
-        config
+        cwconfig
     );
 
     checkAlert(
         cwinfo,
         metrics->ramUsage,
-        &config->alerts.RAM,
+        &cwconfig->alerts.RAM,
         "RAM",
         sleep,
-        config
+        cwconfig
     );
 
     checkAlert(
         cwinfo,
         metrics->diskUsage,
-        &config->alerts.Disk,
+        &cwconfig->alerts.Disk,
         "Disk",
         sleep,
-        config
+        cwconfig
     );
 }

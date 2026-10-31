@@ -15,7 +15,7 @@ Server serverContsructor(
     int protocol,
     int backlog,
     uint32_t interface,
-    void (*launch)(Server *server, CWInfo cwinfo)
+    void (*launch)(Server *server, CWInfo cwinfo, CWArgs cwargs)
 ) {
     Server server;
 
@@ -60,7 +60,7 @@ Server serverContsructor(
     return server;
 };
 
-void serverLaunch(Server *server, CWInfo cwinfo) {
+void serverLaunch(Server *server, CWInfo cwinfo, CWArgs cwargs) {
     size_t buffer_size = BUFFER_ONE_MB;
     char buffer[buffer_size];
 
@@ -109,7 +109,16 @@ void serverLaunch(Server *server, CWInfo cwinfo) {
         }
 
         Request request = parseRequest(buffer);
-        routeHandle(server->routeHandler, request, new_socket, response, response_size, cwinfo, cwdata);
+        routeHandle(
+            server->routeHandler,
+            request,
+            new_socket,
+            response,
+            response_size,
+            cwinfo,
+            cwdata,
+            cwargs
+        );
 
         close(new_socket);
     }

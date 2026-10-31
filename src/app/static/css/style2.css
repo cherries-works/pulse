@@ -1,0 +1,295 @@
+@import url('https://fonts.googleapis.com/css2?family=Bitcount+Grid+Single:wght@100..900&family=Fredoka:wght@300..700&family=Archivo+Black&display=swap');
+
+html {
+    --paper: #5c554b;
+    --surface: #353229;
+    --ink: #111111;
+    --red: #FF3D3D;
+    --blue: #4D7CFF;
+    --yellow: #FFC93D;
+    --gray: #111111;
+    --black: #F5F0E8;
+    --border: 3px solid var(--ink);
+    --radius: 0px;
+    --shadow: 6px 6px 0 var(--ink);
+}
+
+* {
+    font-family: "Fredoka";
+    font-weight: normal;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: var(--ink);
+    color: var(--ink);
+    min-height: 100dvh;
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    height: fit-content;
+    padding-bottom: 2rem;
+    box-sizing: border-box;
+}
+
+.emphasis {
+    color: var(--ink);
+    font-family: "Bitcount Grid Single";
+}
+
+.header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: var(--surface);
+    color: var(--ink);
+    margin: 1rem;
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.header .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: fit-content;
+}
+
+.header .title img {
+    width: 3rem;
+    height: 3rem;
+    border: var(--border);
+    background: var(--paper);
+}
+
+.header .title p {
+    font-family: "Archivo Black", "Bitcount Grid Single", sans-serif;
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--red);
+    text-transform: uppercase;
+}
+
+.header .name {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+    width: fit-content;
+}
+
+.header .name p {
+    font-family: "Archivo Black", "Bitcount Grid Single", sans-serif;
+    font-size: 2rem;
+    color: var(--red);
+    text-transform: uppercase;
+}
+
+.header .status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.header .status p {
+    font-family: "Bitcount Grid Single", sans-serif;
+    font-size: 1rem;
+    color: #fff;
+    background: var(--blue);
+    padding: 0.5rem 1rem;
+    border: 2px solid var(--ink);
+    border-radius: var(--radius);
+    text-transform: uppercase;
+}
+
+.top {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    background: var(--surface);
+    color: var(--ink);
+    padding: 1rem;
+    margin: 0 1rem;
+    width: calc(100% - 2rem);
+    gap: 1.5rem;
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.top p {
+    color: var(--ink);
+}
+
+.top p .emphasis {
+    background: var(--yellow);
+    border: 2px solid var(--ink);
+    padding: 0.1rem 0.5rem;
+}
+
+.monitor_wrapper {
+    position: relative;
+    display: block;
+    width: calc(100% - 2rem);
+    height: fit-content;
+    margin: 1rem;
+}
+
+.monitor {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: fit-content;
+    padding: 1rem;
+    box-sizing: border-box;
+    gap: 2rem;
+    border: var(--border);
+    border-radius: var(--radius);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.monitor > section {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 3px solid var(--ink);
+    justify-content: space-between;
+}
+
+.monitor > section:last-child {
+    border-bottom: 0;
+}
+
+.monitor > section > section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1rem;
+    color: var(--ink);
+    flex: 1 1 30%;
+    min-width: 0;
+    background: var(--paper);
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: 4px 4px 0 var(--ink);
+}
+
+.monitor > section > section > .title {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.monitor > section > section > .title > p {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.monitor > section > section > .title > h1 {
+    color: var(--red);
+    font-family: "Archivo Black", "Bitcount Grid Single", sans-serif;
+    font-size: 3rem;
+}
+
+.monitor > section > section > .data {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.monitor > section > section > .data > p {
+    font-size: 1.2rem;
+}
+
+.monitor > section > section > .data > .load {
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+}
+
+.monitor > section > section > .data > .load > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.monitor > section > section > .data > .load > div > h1 {
+    color: var(--red);
+}
+
+.monitor > section > section > .data > .load > div > p {
+    color: var(--ink);
+}
+
+.monitor > section > section > .data > .processes {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 1rem 0;
+}
+
+.monitor > section > section > .data > .processes > .process {
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+}
+
+.monitor > section > section > .data > .processes > .process > p {
+    font-size: 1.5rem;
+    width: 15rem;
+}
+
+.monitor > section > section > .data > .process_keys {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+    padding: 1rem 0;
+    border-bottom: 3px dotted var(--ink);
+}
+
+.monitor > section > section > .data > .process_keys > p {
+    color: var(--blue);
+    font-size: 1.5rem;
+    width: 15rem;
+    text-transform: uppercase;
+}
+
+.graphs_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 1rem;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+cw-chart {
+    border: var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    display: block;
+    box-sizing: border-box;
+    width: 500px;
+    height: 500px;
+    background: var(--paper);
+    box-shadow: 4px 4px 0 var(--ink);
+}

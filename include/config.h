@@ -54,8 +54,8 @@ typedef struct {
     DesktopNotification desktopNotify;
     DiscordNotification discordNotify;
     CommandNotification commandNotify;
-} Config;
+} CWConfig;
 
-extern Config parseToml(CWInfo cwinfo);
+extern CWConfig parseToml(CWInfo cwinfo);
 
 #endif

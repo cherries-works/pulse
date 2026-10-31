@@ -20,18 +20,18 @@
 #include "config.h"
 #include "setup.h"
 
-void handle(Args args, Config _config, CWInfo cwinfo) {
+void handle(CWArgs cwargs, CWConfig _cwconfig, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
         "Handler is parsing..."
     );
 
-    if (args.no_color) {
+    if (cwargs.no_color) {
         disableColors();
     }
 
-    Command cmd = args.command;
+    Command cmd = cwargs.command;
 
     switch (cmd) {
         case STOP:
@@ -43,35 +43,35 @@ void handle(Args args, Config _config, CWInfo cwinfo) {
             break;
         
         case MONITOR:
-            monitor(args, _config, cwinfo);
+            monitor(cwargs, _cwconfig, cwinfo);
             break;
         
         case INFO:
-            info(args, cwinfo);
+            info(cwargs, cwinfo);
             break;
         
         case TOP:
-            top(args, cwinfo);
+            top(cwargs, cwinfo);
             break;
         
         case PROCESS:
-            process(args, cwinfo);
+            process(cwargs, cwinfo);
             break;
         
         case PRUNE:
-            prune(args, cwinfo);
+            prune(cwargs, cwinfo);
             break;
 
         case CONFIG:
-            config(args, cwinfo);
+            config(cwargs, cwinfo);
             break;
         
         case SNAPSHOT:
-            snapshot(args, cwinfo);
+            snapshot(cwargs, cwinfo);
             break;
 
         case VERSION:
-            version(args);
+            version(cwargs);
             break;
         
         default:
@@ -144,6 +144,7 @@ void help(CWInfo cwinfo) {
     printf(" > %-20s %-20s\n", "monitor", "Monitors your device (default option).");
     printf("     %s%-20s %-20s%s\n", DIM, "--port [number]", "Determine the port where the website will be hosted (omits --web).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--web", "Hosts website (and API) on default port 8383.", RESET);
+    printf("     %s%-20s %-20s%s\n", DIM, "--style", "1/2/3, styling choices.", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--history-snapshot-interval", "The interval defines how many sleeps (-sleep) have to pass for a history snapshot to be taken (default: 2).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--sleep", "How many seconds the program sleeps before updating (TUI only).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--headless", "Runs program without TUI (currently only useful with --web).", RESET);
@@ -173,8 +174,8 @@ void help(CWInfo cwinfo) {
     printf("     %s%-20s %-20s%s\n", DIM, "--until", "The date up until when history/logs are kept. (YYYY-MM-DD)", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--prune", "What is suppose to be pruned (history/logs/all).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the amount of deleted history/logs entries in JSON format.", RESET);
-    printf(" > %-20s %-20s\n", "config", "Configures ~/.cherries-works/pulse/config.toml file via nano.");
-    printf("     %s%-20s %-20s%s\n", DIM, "--reset", "Resets the config file to the pulse standard config file (destructive).", RESET);
+    printf(" > %-20s %-20s\n", "cwconfig", "Configures ~/.cherries-works/pulse/cwconfig.toml file via nano.");
+    printf("     %s%-20s %-20s%s\n", DIM, "--reset", "Resets the cwconfig file to the pulse standard cwconfig file (destructive).", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--current", "Prints the current configuration.", RESET);
     printf("     %s%-20s %-20s%s\n", DIM, "--json", "Prints the current configuration in JSON format (with --current).", RESET);
     printf(" > %-20s %-20s\n", "version", "Prints the current version.");
@@ -183,16 +184,16 @@ void help(CWInfo cwinfo) {
     printf("\n");
 }
 
-void top(Args args, CWInfo cwinfo) {
+void top(CWArgs cwargs, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
         "Running top() -> command top"
     );
 
-    System system = getSystem(cwinfo, args);
+    System system = getSystem(cwinfo, cwargs);
 
-    if(args.json) {
+    if(cwargs.json) {
         char top_json[BUFFER_ONE_KB * 32];
         size_t top_json_len = 0;
 
@@ -203,7 +204,7 @@ void top(Args args, CWInfo cwinfo) {
             time(NULL)
         );
 
-        for(unsigned i = 0; i < args.processes; i++) {
+        for(unsigned i = 0; i < cwargs.processes; i++) {
             if(i != 0) {
                 top_json_len += (size_t)snprintf(top_json + top_json_len, sizeof(top_json) - top_json_len, ",");
             }
@@ -228,23 +229,23 @@ void top(Args args, CWInfo cwinfo) {
 
     printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
     printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
-    for(unsigned i = 0; i < args.processes; i++) {
+    for(unsigned i = 0; i < cwargs.processes; i++) {
         Process process = system.processes[i];
         printProcess(process, system);
     }
     printf("└─────────────────────────────────────────────────────────────────────────┘\n");
 }
 
-void info(Args args, CWInfo cwinfo) {
+void info(CWArgs cwargs, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
         "Running info() -> command info"
     );
 
-    System system = getSystem(cwinfo, args);
+    System system = getSystem(cwinfo, cwargs);
     Info info = getInfo();
-    if(args.json) {
+    if(cwargs.json) {
         char snapshot_json[BUFFER_ONE_KB * 32];
         size_t snapshot_json_len = 0;
     
@@ -274,11 +275,11 @@ void info(Args args, CWInfo cwinfo) {
 
         printf("%s\n", snapshot_json);
     } else {
-        renderInfo(args, system, info);
+        renderInfo(cwargs, system, info);
     }
 }
 
-void monitor(Args args, Config config, CWInfo cwinfo) {
+void monitor(CWArgs cwargs, CWConfig cwconfig, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
@@ -293,33 +294,33 @@ void monitor(Args args, Config config, CWInfo cwinfo) {
         return;
     }
 
-    startDaemon(args, config, cwinfo);
-    
+    startDaemon(cwargs, cwconfig, cwinfo);
+
     // wait until daemon is ready
     sem_wait(ready_sem);
     sem_post(ready_sem);
     sem_close(ready_sem);
     sem_unlink(CHERRIES_PULSE_READY_SEM);
 
-    if(args.headless && !args.web) return;
+    if(cwargs.headless && !cwargs.web) return;
 
-    if(args.web) {
-        startWebsite(args, cwinfo);
+    if(cwargs.web) {
+        startWebsite(cwargs, cwinfo);
     }
 
-    if(!args.headless) {
-        startRender(args, cwinfo);
+    if(!cwargs.headless) {
+        startRender(cwargs, cwinfo);
     }
 }
 
-void process(Args args, CWInfo cwinfo) {
+void process(CWArgs cwargs, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
         "Running process() -> command process"
     );
 
-    System system = getSystem(cwinfo, args);
+    System system = getSystem(cwinfo, cwargs);
 
     Process process = {
         .cpu = 0,
@@ -328,11 +329,11 @@ void process(Args args, CWInfo cwinfo) {
         .name = ""
     };
 
-    if(args.pid != -1) {
-        int p = getProcess(cwinfo, &process, args.pid);
+    if(cwargs.pid != -1) {
+        int p = getProcess(cwinfo, &process, cwargs.pid);
         if(p == -1) return;
     } else {
-        pid_t _pid = getPidByName(args.name);
+        pid_t _pid = getPidByName(cwargs.name);
         if(_pid == -1) {
             _log(cwinfo, L_ERROR, "Invalid, or no name passed.");
 
@@ -344,7 +345,7 @@ void process(Args args, CWInfo cwinfo) {
         if(p == -1) return;
     }
 
-    if(args.json) {
+    if(cwargs.json) {
         char name[sizeof(process.name) * 6];
         escapeJson(process.name, name, sizeof(name));
 
@@ -381,16 +382,16 @@ void process(Args args, CWInfo cwinfo) {
     printf("───────────────────────────────────────────────────────────────────────────\n");
 }
 
-void prune(Args args, CWInfo cwinfo) {
+void prune(CWArgs cwargs, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
         "Running prune() -> command prune"
     );
 
-    Prune prune = args.prune;
-    unsigned keep = args.keep;
-    uint64_t until = unformatTime(args.until);
+    Prune prune = cwargs.prune;
+    unsigned keep = cwargs.keep;
+    uint64_t until = unformatTime(cwargs.until);
 
     size_t path_size = BUFFER_ONE_KB;
     unsigned history_deleted = 0;
@@ -460,7 +461,7 @@ void prune(Args args, CWInfo cwinfo) {
         logs_deleted = path_entries_deleted;
     }
 
-    if(args.json) {
+    if(cwargs.json) {
         printf(
             "{"
             "\"timestamp\":%" PRIu64 ","
@@ -474,15 +475,15 @@ void prune(Args args, CWInfo cwinfo) {
     }
 }
 
-void config(Args args, CWInfo cwinfo) {
+void config(CWArgs cwargs, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
-        "Running config() -> command config"
+        "Running cwconfig() -> command cwconfig"
     );
 
     char path[BUFFER_ONE_KB];
-    snprintf(path, BUFFER_ONE_KB, "%s/config.toml", cwinfo.pulse);
+    snprintf(path, BUFFER_ONE_KB, "%s/cwconfig.toml", cwinfo.pulse);
    
     // enum to string conversion
     const char* operatorToString(Operator op) {
@@ -497,10 +498,10 @@ void config(Args args, CWInfo cwinfo) {
         }
     }
 
-    if(args.current) {
-        Config _config = parseToml(cwinfo);
+    if(cwargs.current) {
+        CWConfig _cwconfig = parseToml(cwinfo);
 
-        if(args.json) {
+        if(cwargs.json) {
             printf(
                 "{"
                 "\"alerts\":{"
@@ -510,34 +511,34 @@ void config(Args args, CWInfo cwinfo) {
                 "},"
                 "\"notifications\":{\"desktop\":%s,\"discord\":%s,\"command\":%s}"
                 "}\n",
-                operatorToString(_config.alerts.CPU.op), _config.alerts.CPU.threshold, _config.alerts.CPU.duration,
-                operatorToString(_config.alerts.RAM.op), _config.alerts.RAM.threshold, _config.alerts.RAM.duration,
-                operatorToString(_config.alerts.Disk.op), _config.alerts.Disk.threshold, _config.alerts.Disk.duration,
-                _config.desktopNotify.enabled ? "true" : "false",
-                _config.discordNotify.enabled ? "true" : "false",
-                _config.commandNotify.enabled ? "true" : "false"
+                operatorToString(_cwconfig.alerts.CPU.op), _cwconfig.alerts.CPU.threshold, _cwconfig.alerts.CPU.duration,
+                operatorToString(_cwconfig.alerts.RAM.op), _cwconfig.alerts.RAM.threshold, _cwconfig.alerts.RAM.duration,
+                operatorToString(_cwconfig.alerts.Disk.op), _cwconfig.alerts.Disk.threshold, _cwconfig.alerts.Disk.duration,
+                _cwconfig.desktopNotify.enabled ? "true" : "false",
+                _cwconfig.discordNotify.enabled ? "true" : "false",
+                _cwconfig.commandNotify.enabled ? "true" : "false"
             );
             return;
         }
 
         printf("Alerts\n");
-        printf("CPU:  %-2s %d%% for %ds\n", operatorToString(_config.alerts.CPU.op), _config.alerts.CPU.threshold, _config.alerts.CPU.duration);
-        printf("RAM:  %-2s %d%% for %ds\n", operatorToString(_config.alerts.RAM.op), _config.alerts.RAM.threshold, _config.alerts.RAM.duration);
-        printf("Disk: %-2s %d%% for %ds\n", operatorToString(_config.alerts.Disk.op), _config.alerts.Disk.threshold, _config.alerts.Disk.duration);
+        printf("CPU:  %-2s %d%% for %ds\n", operatorToString(_cwconfig.alerts.CPU.op), _cwconfig.alerts.CPU.threshold, _cwconfig.alerts.CPU.duration);
+        printf("RAM:  %-2s %d%% for %ds\n", operatorToString(_cwconfig.alerts.RAM.op), _cwconfig.alerts.RAM.threshold, _cwconfig.alerts.RAM.duration);
+        printf("Disk: %-2s %d%% for %ds\n", operatorToString(_cwconfig.alerts.Disk.op), _cwconfig.alerts.Disk.threshold, _cwconfig.alerts.Disk.duration);
 
         printf("\nNotifications\n");
-        printf("Desktop:  %s\n", _config.desktopNotify.enabled ? "enabled" : "disabled");
-        printf("Discord:  %s\n", _config.discordNotify.enabled ? "enabled" : "disabled");
-        printf("Command:  %s\n", _config.commandNotify.enabled ? "enabled" : "disabled");
+        printf("Desktop:  %s\n", _cwconfig.desktopNotify.enabled ? "enabled" : "disabled");
+        printf("Discord:  %s\n", _cwconfig.discordNotify.enabled ? "enabled" : "disabled");
+        printf("Command:  %s\n", _cwconfig.commandNotify.enabled ? "enabled" : "disabled");
         return;
     }
 
-    if(args.reset) {
+    if(cwargs.reset) {
         remove(path);
         int fd = creat(path, 0644);
         ssize_t result = write(fd, CHERRIES_DEFAULT_TOML, strlen(CHERRIES_DEFAULT_TOML));
         if(result <= 0) {
-            _log(cwinfo, L_ERROR, "Failed to reset config file.");
+            _log(cwinfo, L_ERROR, "Failed to reset cwconfig file.");
         }
         return;
     }
@@ -548,13 +549,13 @@ void config(Args args, CWInfo cwinfo) {
     if(result <= 0) return;
 }
 
-void snapshot(Args args, CWInfo cwinfo) {
-    System system_snapshot = getSystem(cwinfo, args);
+void snapshot(CWArgs cwargs, CWInfo cwinfo) {
+    System system_snapshot = getSystem(cwinfo, cwargs);
     sleep(1);
-    System prev_system_snapshot = getSystem(cwinfo, args);
+    System prev_system_snapshot = getSystem(cwinfo, cwargs);
     Metrics metrics = getMetrics(system_snapshot, prev_system_snapshot);
 
-    if(args.json) {
+    if(cwargs.json) {
         char snapshot_json[BUFFER_ONE_KB * 32];
         size_t snapshot_json_len = 0;
     
@@ -626,14 +627,14 @@ void snapshot(Args args, CWInfo cwinfo) {
 
         printf("%s\n", snapshot_json);
     } else {
-        renderSnapshot(args, system_snapshot, metrics);
+        renderSnapshot(cwargs, system_snapshot, metrics);
     }
 }
 
-void version(Args args) {
-    if(args.json) {
+void version(CWArgs cwargs) {
+    if(cwargs.json) {
         printf("{\"version\":\"%s\",\"commit\":\"%s\"}\n", PULSE_VERSION, PULSE_COMMIT);
-    } else if(args.hash) {
+    } else if(cwargs.hash) {
         printf("%s\n", PULSE_COMMIT);
     } else {
         printf("%s\n", PULSE_VERSION);

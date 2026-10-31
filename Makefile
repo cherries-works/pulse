@@ -18,7 +18,7 @@ target = $(bin)/$(progname)
 
 main = main.c
 utils = src/utils/constants.c src/utils/file.c src/utils/terminal.c src/utils/strings.c src/utils/format.c src/utils/args.c src/utils/commands.c src/utils/dir.c
-parse = src/parse/cpu.c src/parse/disk.c src/parse/load.c src/parse/memory.c src/parse/network.c src/parse/process.c src/parse/system.c src/parse/uptime.c src/parse/info.c src/parse/temp.c
+parse = src/parse/cpu.c src/parse/disk.c src/parse/load.c src/parse/memory.c src/parse/network.c src/parse/process.c src/parse/system.c src/parse/uptime.c src/parse/info.c src/parse/temp.c src/parse/ip.c
 http = src/http/server.c src/http/request.c src/http/routes.c
 render = src/render/render.c src/render/utils.c src/render/start.c
 daemon = src/daemon/start.c src/daemon/read.c src/daemon/write.c src/daemon/alerts.c src/daemon/history.c

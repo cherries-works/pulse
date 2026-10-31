@@ -8,7 +8,7 @@
 
 System getSystem(
     CWInfo cwinfo,
-    Args args
+    CWArgs cwargs
 ) {
     size_t stat_buffer_size = BUFFER_ONE_KB * 6;
     char stat_buffer[stat_buffer_size];
@@ -51,13 +51,13 @@ System getSystem(
         .network = network,
         
         .processes = {},
-        .processes_count = args.processes,
+        .processes_count = cwargs.processes,
 
         .uptime = uptime,
         .temp = temp
     };
 
-    system.process_count = getProcesses(cwinfo, system.processes, args);
+    system.process_count = getProcesses(cwinfo, system.processes, cwargs);
 
     return system;
 }

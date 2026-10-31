@@ -114,7 +114,7 @@ pid_t checkDaemon(CWInfo cwinfo) {
     return -1;
 }
 
-pid_t startDaemon(Args args, Config config, CWInfo cwinfo) {
+pid_t startDaemon(CWArgs cwargs, CWConfig cwconfig, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
@@ -172,7 +172,7 @@ pid_t startDaemon(Args args, Config config, CWInfo cwinfo) {
             exit(EXIT_FAILURE);
         }
 
-        System system_snapshot = getSystem(cwinfo, args);
+        System system_snapshot = getSystem(cwinfo, cwargs);
         System prev_system_snapshot = system_snapshot;
 
         Metrics metrics = getMetrics(prev_system_snapshot, system_snapshot);
@@ -193,15 +193,15 @@ pid_t startDaemon(Args args, Config config, CWInfo cwinfo) {
         unsigned long archiving = 0;
         unsigned long deletion = 0;
         while(true) {
-            if (repetition % args.history_snapshot_interval == 0) {
+            if (repetition % cwargs.history_snapshot_interval == 0) {
                 writeHistoryM(metrics, cwinfo);
                 writeHistoryS(system_snapshot, cwinfo);
 
-                if (archiving * args.sleep > ARCHIVE_INTERVAL) {
+                if (archiving * cwargs.sleep > ARCHIVE_INTERVAL) {
                     archiveHistory(cwinfo);
                 }
 
-                if (deletion * args.sleep > DELETION_INTERVAL) {
+                if (deletion * cwargs.sleep > DELETION_INTERVAL) {
                     deleteHistoryArchives(cwinfo);
                 }
 
@@ -213,7 +213,7 @@ pid_t startDaemon(Args args, Config config, CWInfo cwinfo) {
             deletion++;
 
             prev_system_snapshot = system_snapshot;
-            system_snapshot = getSystem(cwinfo, args);
+            system_snapshot = getSystem(cwinfo, cwargs);
             metrics = getMetrics(prev_system_snapshot, system_snapshot);
 
             pthread_mutex_lock(&shmp->lock);
@@ -221,8 +221,8 @@ pid_t startDaemon(Args args, Config config, CWInfo cwinfo) {
             shmp->system = system_snapshot;
             pthread_mutex_unlock(&shmp->lock);
 
-            checkAlerts(cwinfo, &metrics, &args, &config);
-            sleep(args.sleep);
+            checkAlerts(cwinfo, &metrics, &cwargs, &cwconfig);
+            sleep(cwargs.sleep);
         }
 
         shm_unlink(CHERRIES_PULSE_SHM);

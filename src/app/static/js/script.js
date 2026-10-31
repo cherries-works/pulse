@@ -180,6 +180,36 @@ const formatTimeHumanReadable = (seconds) => {
 }
 
 
+const main_stylesheet_1 = document.querySelector("#main_stylesheet_1")
+const main_stylesheet_2 = document.querySelector("#main_stylesheet_2")
+const main_stylesheet_3 = document.querySelector("#main_stylesheet_3")
+setTimeout(async () => {
+    const f = await fetch("/api/style")
+    const json = await f.json()
+    if(!json.success) return
+
+    const _style = json.style
+    const _style_number = Number(_style)
+    switch(_style_number) {
+        case 1: {
+            main_stylesheet_2.remove()
+            main_stylesheet_3.remove()
+            break
+        }
+        case 2: {
+            main_stylesheet_1.remove()
+            main_stylesheet_3.remove()
+            break
+        }
+        case 3: {
+            main_stylesheet_1.remove()
+            main_stylesheet_2.remove()
+            break
+        }
+    }
+})
+
 setInterval(async () => {
     await updateSystem()
 }, 1000)
+

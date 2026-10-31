@@ -10,7 +10,7 @@
 #include "render.h"
 #include "log.h"
 
-void startRender(Args args, CWInfo cwinfo) {
+void startRender(CWArgs cwargs, CWInfo cwinfo) {
     _log(
         cwinfo,
         L_INFO,
@@ -41,7 +41,7 @@ void startRender(Args args, CWInfo cwinfo) {
     System snapshot;
     Metrics metrics;
     bool look_started = false;
-    short total_lines = 14 + (short)args.processes;
+    short total_lines = 14 + (short)cwargs.processes;
 
     CWData *cwdata = openSHM(cwinfo);
     if (cwdata == NULL) {
@@ -75,14 +75,14 @@ void startRender(Args args, CWInfo cwinfo) {
         }
 
         readDaemonSM(cwinfo, cwdata, &snapshot, &metrics);
-        render(args, snapshot, metrics);
+        render(cwargs, snapshot, metrics);
 
         fd_set set;
         FD_ZERO(&set);
         FD_SET(STDIN_FILENO, &set);
 
         struct timeval tv = {
-            .tv_sec = args.sleep,
+            .tv_sec = cwargs.sleep,
             .tv_usec = 0
         };
 

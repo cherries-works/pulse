@@ -1,0 +1,291 @@
+@import url('https://fonts.googleapis.com/css2?family=Bitcount+Grid+Single:wght@100..900&family=Fredoka:wght@300..700&display=swap');
+
+html {
+    --dark: #0F1115;
+    --red: #f64e4e;
+    --bg: #161A21;
+    --gray: #262C37;
+    --dark-gray: #8B93A1;
+    --black: #0F1115;
+    --text: #E6E9EF;
+    --border: 1px solid var(--gray);
+    --radius: 3px;
+    --shadow: 0 .5rem 1rem rgba(0, 0, 0, 0.35);
+}
+
+* {
+    font-family: "Fredoka";
+    font-weight: normal;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background-color: var(--black);
+    color: var(--text);
+    min-height: 100dvh;
+}
+
+.hero {
+    display: flex;
+    flex-direction: column;
+    min-height: 100%;
+    height: fit-content;
+    padding-bottom: 2rem;
+    box-sizing: border-box;
+}
+
+.emphasis {
+    color: var(--text);
+    font-family: "Bitcount Grid Single";
+}
+
+.header {
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background-color: var(--bg);
+    color: var(--text);
+    margin: 1rem;
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.header .title {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    width: fit-content;
+}
+
+.header .title img {
+    width: 3rem;
+    height: 3rem;
+    border-radius: var(--radius);
+}
+
+.header .title p {
+    font-family: "Bitcount Grid Single", sans-serif;
+    font-size: 1.5rem;
+    margin: 0;
+    color: var(--text);
+}
+
+.header .name {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-inline: auto;
+    width: fit-content;
+}
+
+.header .name p {
+    font-size: 1.5rem;
+    color: var(--red);
+    font-weight: normal;
+}
+
+.header .status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+}
+
+.header .status p {
+    font-family: "Bitcount Grid Single", sans-serif;
+    font-size: 1rem;
+    color: var(--dark-gray);
+    background: var(--dark);
+    padding: 0.5rem 1rem;
+    border: var(--border);
+    border-radius: 5px;
+}
+
+.top {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    width: calc(100% - 2rem);
+    background: var(--bg);
+    color: var(--text);
+    padding: 1rem;
+    margin: 0 1rem;
+    gap: 1.5rem;
+    border: var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+}
+
+.top p {
+    color: var(--dark-gray);
+}
+
+.top p .emphasis {
+    color: var(--text);
+}
+
+.monitor_wrapper {
+    position: relative;
+    display: block;
+    width: calc(100% - 2rem);
+    height: fit-content;
+    margin: 1rem;
+}
+
+.monitor {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: fit-content;
+    padding: 1rem;
+    box-sizing: border-box;
+    gap: 2rem;
+    border: var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    box-shadow: var(--shadow);
+}
+
+.monitor > section {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--gray);
+    justify-content: space-between;
+}
+
+.monitor > section:last-child {
+    border-bottom: 0;
+}
+
+.monitor > section > section {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    padding: 1.25rem;
+    color: var(--text);
+    flex: 1 1 30%;
+    min-width: 0;
+    background: var(--dark);
+    border: var(--border);
+    border-radius: var(--radius);
+}
+
+.monitor > section > section > .title {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.monitor > section > section > .title > p {
+    font-size: 1rem;
+    color: var(--dark-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+}
+
+.monitor > section > section > .title > h1 {
+    color: var(--red);
+    font-size: 2.5rem;
+    font-weight: normal;
+}
+
+.monitor > section > section > .data {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.monitor > section > section > .data > p {
+    font-size: 1rem;
+    color: var(--dark-gray);
+}
+
+.monitor > section > section > .data > .load {
+    display: flex;
+    justify-content: space-between;
+    width: 50%;
+}
+
+.monitor > section > section > .data > .load > div {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.monitor > section > section > .data > .load > div > h1 {
+    color: var(--red);
+    font-size: 2rem;
+    font-weight: normal;
+}
+
+.monitor > section > section > .data > .load > div > p {
+    color: var(--dark-gray);
+    font-size: 1rem;
+}
+
+.monitor > section > section > .data > .processes {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    padding: 1rem 0;
+}
+
+.monitor > section > section > .data > .processes > .process {
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+}
+
+.monitor > section > section > .data > .processes > .process > p {
+    font-size: 1.2rem;
+    width: 15rem;
+}
+
+.monitor > section > section > .data > .process_keys {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    gap: 3rem;
+    padding: 1rem 0;
+    border-bottom: 1px solid var(--gray);
+}
+
+.monitor > section > section > .data > .process_keys > p {
+    color: var(--red);
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1rem;
+    width: 15rem;
+}
+
+.graphs_wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 1rem;
+    gap: 1rem;
+    justify-content: space-between;
+}
+
+cw-chart {
+    border: var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+    display: block;
+    box-sizing: border-box;
+    width: 500px;
+    height: 500px;
+    background: var(--dark);
+}

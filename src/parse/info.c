@@ -27,7 +27,8 @@ Info getInfo() {
         .session = "",
         .cores = 0,
         .os = os,
-        .kernel = kernel
+        .kernel = kernel,
+        .ip = {}
     };
     
     const char *desktop = getenv("XDG_CURRENT_DESKTOP");
@@ -111,6 +112,8 @@ Info getInfo() {
 
         strcpy(info.os.name, etc);
     }
+
+    info.ip = parseIp(info.hostname);
 
     return info;
 }

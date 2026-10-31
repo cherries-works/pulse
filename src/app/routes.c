@@ -10,22 +10,52 @@
 #include "log.h"
 #include "parse.h"
 #include "setup.h"
+#include "utils.h"
 
 #define STATIC_ROUTE(fnName, filePath) \
-void fnName(int socket, char *response, size_t response_size, CWInfo cwinfo, CWData *cwdata) { \
+void fnName(int socket, char *response, size_t response_size, CWInfo cwinfo, CWData *cwdata, CWArgs cwargs) { \
     routeStatic(socket, filePath, response, response_size); \
 }
 
 #define JSON_ROUTE(fnName, body) \
-void fnName(int socket, char *response, size_t response_size, CWInfo cwinfo, CWData *cwdata) body
+void fnName(int socket, char *response, size_t response_size, CWInfo cwinfo, CWData *cwdata, CWArgs cwargs) body
 
 STATIC_ROUTE(indexHtml, "./src/app/static/index.html");
 STATIC_ROUTE(indexStyle, "./src/app/static/css/style.css");
+STATIC_ROUTE(indexStyle2, "./src/app/static/css/style2.css");
+STATIC_ROUTE(indexStyle3, "./src/app/static/css/style3.css");
+STATIC_ROUTE(indexMediaQuery, "./src/app/static/css/media.css");
 STATIC_ROUTE(indexJs, "./src/app/static/js/script.js");
 STATIC_ROUTE(indexCwCharts, "./src/app/static/js/cw.charts.js");
 STATIC_ROUTE(indexFavicon, "./src/app/static/assets/favicon.png");
 
-JSON_ROUTE(indexMetrics, {
+JSON_ROUTE(APIStyle, {
+    char json[BUFFER_ONE_KB * 32];
+    size_t json_len = 0;
+
+    json_len += (size_t)snprintf(json + json_len, sizeof(json) - json_len,
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: application/json; charset=UTF-8\r\n\r\n"
+        "{"
+        "\"error\":null,"
+        "\"success\":true,"
+        "\"style\":%d,"
+        "\"uptime\":%" PRIu64
+        "}",
+        cwargs.style,
+        time(NULL)
+    );
+
+    routeJSON(
+        socket,
+        response,
+        response_size,
+
+        json
+    );
+});
+
+JSON_ROUTE(APIMetrics, {
     System snapshot;
     readDaemonS(cwinfo, cwdata, &snapshot);
 
@@ -42,6 +72,7 @@ JSON_ROUTE(indexMetrics, {
         "\"success\":true,"
         "\"timestamp\":%" PRIu64 ","
         "\"cpu\":{\"idle\":%" PRIu64 ",\"total\":%" PRIu64 ",\"processes\":%" PRIu64 "},"
+        "\"ip\":{\"ipv4\":\"%s\",\"ipv6\":\"%s\"},"
         "\"process_count\":%u,"
         "\"disk\":{\"available\":%" PRIu64 ",\"total\":%" PRIu64 ",\"reads\":%" PRIu64 ",\"writes\":%" PRIu64 "},"
         "\"memory\":{\"available\":%" PRIu64 ",\"total\":%" PRIu64 "},"
@@ -54,6 +85,10 @@ JSON_ROUTE(indexMetrics, {
         snapshot.cpu.idle,
         snapshot.cpu.total,
         snapshot.cpu.processes,
+
+        info.ip.ipv4,
+        info.ip.ipv6,
+
         snapshot.process_count,
 
         snapshot.disk.available,
@@ -109,7 +144,7 @@ JSON_ROUTE(indexMetrics, {
     );
 });
 
-JSON_ROUTE(historyCPU, {
+JSON_ROUTE(APIHistoryCPU, {
     size_t path_size = BUFFER_ONE_KB;
     char path[path_size];
 
@@ -119,7 +154,7 @@ JSON_ROUTE(historyCPU, {
 
     int _snprintf = snprintf(path, path_size - 1, "%s/history/%s/metric", cwinfo.pulse, time_buffer);
     if(_snprintf < 0) {
-        _log(cwinfo, L_ERROR, "snprintf failed for historyCPU");
+        _log(cwinfo, L_ERROR, "snprintf failed for APIHistoryCPU");
         return;
     }
 
@@ -151,7 +186,7 @@ JSON_ROUTE(historyCPU, {
     );
 
     if (_snprintf == -1 || (size_t)_snprintf >= sizeof(json)) {
-        _log(cwinfo, L_ERROR, "Finalizing snprintf failed or response was truncated [historyCPU].");
+        _log(cwinfo, L_ERROR, "Finalizing snprintf failed or response was truncated [APIHistoryCPU].");
         return;
     }
 
@@ -163,7 +198,7 @@ JSON_ROUTE(historyCPU, {
     );
 });
 
-JSON_ROUTE(historyRAM, {
+JSON_ROUTE(APIHistoryRAM, {
     size_t path_size = BUFFER_ONE_KB;
     char path[path_size];
 
@@ -173,7 +208,7 @@ JSON_ROUTE(historyRAM, {
 
     int _snprintf = snprintf(path, path_size - 1, "%s/history/%s/metric", cwinfo.pulse, time_buffer);
     if(_snprintf < 0) {
-        _log(cwinfo, L_ERROR, "snprintf failed for historyRAM");
+        _log(cwinfo, L_ERROR, "snprintf failed for APIHistoryRAM");
         return;
     }
 
@@ -205,7 +240,7 @@ JSON_ROUTE(historyRAM, {
     );
 
     if(_snprintf < 0) {
-        _log(cwinfo, L_ERROR, "Finalizing snprintf failed for historyRAM");
+        _log(cwinfo, L_ERROR, "Finalizing snprintf failed for APIHistoryRAM");
         return;
     }
 
@@ -217,7 +252,7 @@ JSON_ROUTE(historyRAM, {
     );
 });
 
-JSON_ROUTE(historyDisk, {
+JSON_ROUTE(APIHistoryDisk, {
     size_t path_size = BUFFER_ONE_KB;
     char path[path_size];
 
@@ -227,7 +262,7 @@ JSON_ROUTE(historyDisk, {
 
     int _snprintf = snprintf(path, path_size - 1, "%s/history/%s/metric", cwinfo.pulse, time_buffer);
     if(_snprintf < 0) {
-        _log(cwinfo, L_ERROR, "snprintf failed for historyDisk");
+        _log(cwinfo, L_ERROR, "snprintf failed for APIHistoryDisk");
         return;
     }
 
@@ -260,7 +295,7 @@ JSON_ROUTE(historyDisk, {
     );
 
     if(_snprintf < 0) {
-        _log(cwinfo, L_ERROR, "Finalizing snprintf failed for historyDisk");
+        _log(cwinfo, L_ERROR, "Finalizing snprintf failed for APIHistoryDisk");
         return;
     }
 
@@ -276,12 +311,16 @@ JSON_ROUTE(historyDisk, {
 void initRoutes(RouteHandler *rh) {
     route("/", indexHtml, GET, rh);
     route("/css/style.css", indexStyle, GET, rh);
+    route("/css/style2.css", indexStyle2, GET, rh);
+    route("/css/style3.css", indexStyle3, GET, rh);
+    route("/css/media.css", indexMediaQuery, GET, rh);
     route("/js/script.js", indexJs, GET, rh);
     route("/js/cw.charts.js", indexCwCharts, GET, rh);
     route("/assets/favicon.png", indexFavicon, GET, rh);
 
-    route("/api/metrics", indexMetrics, GET, rh);
-    route("/api/history/cpu", historyCPU, GET, rh);
-    route("/api/history/ram", historyRAM, GET, rh);
-    route("/api/history/disk", historyDisk, GET, rh);
+    route("/api/style", APIStyle, GET, rh);
+    route("/api/metrics", APIMetrics, GET, rh);
+    route("/api/history/cpu", APIHistoryCPU, GET, rh);
+    route("/api/history/ram", APIHistoryRAM, GET, rh);
+    route("/api/history/disk", APIHistoryDisk, GET, rh);
 }

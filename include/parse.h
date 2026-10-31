@@ -1,6 +1,7 @@
 #ifndef PARSE_H
 #define PARSE_H
 
+#include <netinet/in.h>
 #include <fcntl.h>
 
 #include "utils.h"
@@ -79,6 +80,12 @@ typedef struct {
     OsType type;
 } OS;
 
+
+typedef struct {
+    char ipv4[INET_ADDRSTRLEN];
+    char ipv6[INET6_ADDRSTRLEN];
+} IP;
+
 typedef struct {
     char hostname[256];
     char cpu_model[256];
@@ -88,6 +95,7 @@ typedef struct {
 
     OS os;
     Kernel kernel;
+    IP ip;
 } Info;
 
 #define MAX_PROCESSES 100
@@ -127,16 +135,17 @@ extern Memory getMemory(size_t size, char *buffer);
 extern Network getNetwork(size_t size, char *buffer);
 extern Load getLoad(size_t size, char *buffer);
 extern Disk getDisk(size_t size, char *buffer);
-extern System getSystem(CWInfo cwinfo, Args args);
+extern System getSystem(CWInfo cwinfo, CWArgs args);
 extern Metrics getMetrics(System system2, System system1);
 extern Info getInfo();
+extern IP parseIp(char *hostname);
 
 extern uint64_t parseMemoryKey(char *buffer, char *target_key);
 extern uint64_t parseUptime(size_t size, char *buffer);
 extern unsigned parseTemp();
 
 extern float parseCpuUsage(Cpu snapshot2, Cpu snapshot1);
-extern unsigned getProcesses(CWInfo cwinfo, Process processes[], Args args);
+extern unsigned getProcesses(CWInfo cwinfo, Process processes[], CWArgs args);
 extern int getProcess(CWInfo cwinfo, Process *process, pid_t pid);
 extern pid_t getPidByName(char *name);
 
