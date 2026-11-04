@@ -1,0 +1,28 @@
+# Maintainer: Mert <mail@mertk.uk>
+pkgname=pulse
+pkgver=0.5.0
+pkgrel=1
+pkgdesc="Lightweight Linux process monitoring tool"
+arch=('x86_64' 'aarch64')
+url="https://github.com/cherries-works/pulse"
+license=('MIT')
+depends=('glibc' 'zlib')
+makedepends=('gcc' 'make')
+source=("${url}/archive/v${pkgver}/pulse-${pkgver}.tar.gz")
+# Generate with: makepkg -g >> PKGBUILD
+# sha256sums=('')
+
+build() {
+    cd "pulse-${pkgver}"
+    make
+}
+
+package() {
+    cd "pulse-${pkgver}"
+    make install destdir="${pkgdir}" prefix="/usr"
+
+    install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+    install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+}
+
+# vim:set ts=4 sw=4 et:

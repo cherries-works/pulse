@@ -1,0 +1,17 @@
+Source: pulse
+Section: admin
+Priority: optional
+Maintainer: Mert <mail@mertk.uk>
+Build-Depends: debhelper-compat (= 13),
+               gcc,
+               make,
+               zlib1g-dev,
+               libpthread-stubs0-dev
+Standards-Version: 4.6.2.0
+Homepage: https://github.com/cherries-works/pulse
+Rules-Requires-Root: no
+
+Package: pulse
+Architecture: linux-any
+Depends: ${misc:Depends}, ${shlibs:Depends}
+Description: A Linux monitoring dashboard written entirely in C, with a custom HTTP server, metric collection via /proc, and a lightweight web interface.
