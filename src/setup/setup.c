@@ -4,10 +4,9 @@
 #include <dirent.h>
 #include <unistd.h>
 #include <sys/stat.h>
-#include <signal.h>
+#include <fcntl.h>
 
 #include "utils.h"
-#include "log.h"
 #include "setup.h"
 
 CWInfo setup() {

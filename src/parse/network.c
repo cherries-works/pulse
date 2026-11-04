@@ -3,7 +3,6 @@
 
 #include "utils.h"
 #include "parse.h"
-#include "log.h"
 
 Network getNetwork(size_t size, char *buffer) {
     uint64_t rx = 0;

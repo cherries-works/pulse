@@ -8,7 +8,7 @@
 
 // reading the first number
 uint64_t parseUptime(size_t size, char *buffer) {
-    unsigned i = 0;
+    size_t i = 0;
 
     // should be maximum 16 characters
     size_t number_size = 16;

@@ -15,7 +15,7 @@ char *PRIORITIES[5] = {
     "acpitz"
 };
 
-unsigned parseTemp() {
+uint8_t parseTemp() {
     size_t file_name_size = BUFFER_ONE_KB / 4;
     char file_name[file_name_size];
 
@@ -68,7 +68,7 @@ unsigned parseTemp() {
             
             int temp = atoi(file_buffer);
         
-            return (unsigned)temp;
+            return (uint8_t)temp;
         }
     }
 

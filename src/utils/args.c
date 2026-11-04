@@ -85,8 +85,8 @@ CWArgs parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
         }
     }
 
-    char log_buffer[256];
-    snprintf(log_buffer, 256, "Running command %s", commands[p.command]);
+    char log_buffer[BUFFER_ONE_KB / 4];
+    snprintf(log_buffer, BUFFER_ONE_KB / 4, "Running command %s", commands[p.command]);
     _log(
         cwinfo,
         L_INFO,
@@ -98,9 +98,16 @@ CWArgs parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
 
         if(strcmp(arg, "--sleep") == 0) {
             if(i == argc - 1) continue;
-            unsigned sleep = (unsigned)atoi(argv[i + 1]);
-            if(sleep <= 0 || sleep > 60) continue;
+            float sleep = (float)atof(argv[i + 1]);
+            if(sleep <= 0.0 || sleep > 60.0) continue;
             p.sleep = sleep;
+        }
+
+        if(strcmp(arg, "--history-snapshot-interval") == 0) {
+            if(i == argc - 1) continue;
+            float history_snapshot_interval = (float)atof(argv[i + 1]);
+            if(history_snapshot_interval <= 0.0 || history_snapshot_interval > 3600.0) continue;
+            p.history_snapshot_interval = history_snapshot_interval;
         }
 
         if(strcmp(arg, "--style") == 0) {
@@ -110,17 +117,10 @@ CWArgs parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
             p.style = style;
         }
 
-        if(strcmp(arg, "--history-snapshot-interval") == 0) {
-            if(i == argc - 1) continue;
-            unsigned history_snapshot_interval = (unsigned)atoi(argv[i + 1]);
-            if(history_snapshot_interval <= 0 || history_snapshot_interval > 3600) continue;
-            p.history_snapshot_interval = history_snapshot_interval;
-        }
-
         if(strcmp(arg, "--keep") == 0) {
             if(i == argc - 1) continue;
-            unsigned keep = (unsigned)atoi(argv[i + 1]);
-            if(keep <= 0) continue;
+            uint8_t keep = (uint8_t)atoi(argv[i + 1]);
+            if(keep <= 0 || keep > 200) continue;
             p.keep = keep;
         }
 
@@ -182,7 +182,7 @@ CWArgs parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
 
         if(strcmp(arg, "--processes") == 0) {
             if(i == argc - 1) continue;
-            unsigned processes = (unsigned)atoi(argv[i + 1]);
+            uint8_t processes = (uint8_t)atoi(argv[i + 1]);
             if(p.command == MONITOR) {
                 if(processes <= 0 || processes > 10) continue;
             } else if(p.command == TOP) {

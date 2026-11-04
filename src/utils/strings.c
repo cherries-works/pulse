@@ -45,7 +45,7 @@ void escapeJson(const char *src, char *dst, size_t size) {
 
     size_t j = 0;
     for(size_t i = 0; src[i] != '\0'; i++) {
-        unsigned char c = (unsigned char)src[i];
+        uint8_t c = (uint8_t)src[i];
         char escaped[8];
 
         if(c == '"' || c == '\\') {

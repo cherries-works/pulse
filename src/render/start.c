@@ -41,18 +41,6 @@ void startRender(CWArgs cwargs, CWInfo cwinfo) {
     System snapshot;
     Metrics metrics;
     bool look_started = false;
-    short total_lines = 14 + (short)cwargs.processes;
-    if(!cwargs.display.processes) {
-        total_lines -= (short)cwargs.processes;
-        total_lines -= 3;
-    }
-    if(!cwargs.display.network && !cwargs.display.io) {
-        total_lines -= 4;
-    }
-    if(!cwargs.display.resources && !cwargs.display.load) {
-        total_lines -= 5;
-    }
-
     CWData *cwdata = openSHM(cwinfo);
     if (cwdata == NULL) {
         _log(
@@ -81,7 +69,8 @@ void startRender(CWArgs cwargs, CWInfo cwinfo) {
         if(!look_started) { 
             look_started = true;
         } else {
-            clearLines(total_lines);
+            clear();
+            // clearLines(total_lines);
         }
 
         readDaemonSM(cwinfo, cwdata, &snapshot, &metrics);
@@ -92,8 +81,8 @@ void startRender(CWArgs cwargs, CWInfo cwinfo) {
         FD_SET(STDIN_FILENO, &set);
 
         struct timeval tv = {
-            .tv_sec = cwargs.sleep,
-            .tv_usec = 0
+            .tv_sec = (time_t)cwargs.sleep,
+            .tv_usec = (long)((cwargs.sleep - (time_t)cwargs.sleep) * 1000000L)
         };
 
         int r = select(STDIN_FILENO + 1, &set, NULL, NULL, &tv);

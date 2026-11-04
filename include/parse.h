@@ -91,7 +91,7 @@ typedef struct {
     char cpu_model[256];
     char desktop[256];
     char session[256];
-    unsigned cores;
+    uint8_t cores;
 
     OS os;
     Kernel kernel;
@@ -109,11 +109,11 @@ typedef struct {
     Network network;
 
     Process processes[MAX_PROCESSES];
-    unsigned processes_count;
-    unsigned process_count;
+    uint16_t processes_count;
+    uint16_t process_count;
 
     uint64_t uptime;
-    unsigned temp;
+    uint8_t temp;
 } System;
 
 typedef struct {
@@ -142,10 +142,10 @@ extern IP parseIp(char *hostname);
 
 extern uint64_t parseMemoryKey(char *buffer, char *target_key);
 extern uint64_t parseUptime(size_t size, char *buffer);
-extern unsigned parseTemp();
+extern uint8_t parseTemp();
 
 extern float parseCpuUsage(Cpu snapshot2, Cpu snapshot1);
-extern unsigned getProcesses(CWInfo cwinfo, Process processes[], CWArgs args);
+extern uint8_t getProcesses(CWInfo cwinfo, Process processes[], CWArgs args);
 extern int getProcess(CWInfo cwinfo, Process *process, pid_t pid);
 extern pid_t getPidByName(char *name);
 

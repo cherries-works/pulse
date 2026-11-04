@@ -46,11 +46,11 @@ Cpu getCpu(size_t size, char *buffer) {
     uint64_t guest = 0;
     uint64_t guest_nice = 0;
 
-    unsigned number_position = 0;
-    unsigned i = 0;
-    unsigned number_index = 0;
+    uint16_t number_position = 0;
+    uint16_t i = 0;
+    uint16_t number_index = 0;
     
-    unsigned number_size = 16;
+    uint16_t number_size = 16;
     char number[number_size];
     while(i < size) {
         char character = buffer[i];

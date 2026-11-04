@@ -40,7 +40,7 @@ System getSystem(
     readFile(PROC_UPTIME_FILE, uptime_buffer_size, uptime_buffer);
     uint64_t uptime = parseUptime(uptime_buffer_size, uptime_buffer);
 
-    unsigned temp = parseTemp();
+    uint8_t temp = parseTemp();
 
     System system = { 
         .cpu = cpu, 
@@ -80,8 +80,8 @@ Metrics getMetrics(System system2, System system1) {
         .cpuUsage = cpuUsage,
         .ramUsage = ramUsage,
         .diskUsage = diskUsage,
-        .rx = networkUsage.rx / 1024.0f,
-        .tx = networkUsage.tx / 1024.0f,
+        .rx = networkUsage.rx, // / 1024.0f,
+        .tx = networkUsage.tx, // / 1024.0f,
         .read = (ioUsage.r * 512.0f) / 1024.0f,
         .write = (ioUsage.w * 512.0f) / 1024.0f
     };

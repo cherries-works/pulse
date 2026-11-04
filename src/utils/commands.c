@@ -204,7 +204,7 @@ void top(CWArgs cwargs, CWInfo cwinfo) {
             time(NULL)
         );
 
-        for(unsigned i = 0; i < cwargs.processes; i++) {
+        for(uint8_t i = 0; i < cwargs.processes; i++) {
             if(i != 0) {
                 top_json_len += (size_t)snprintf(top_json + top_json_len, sizeof(top_json) - top_json_len, ",");
             }
@@ -229,7 +229,7 @@ void top(CWArgs cwargs, CWInfo cwinfo) {
 
     printf("%s%sCherries Pulse%s ───────────────────────────────────────────────────────────┐\n", BOLD, RED, RESET);
     printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
-    for(unsigned i = 0; i < cwargs.processes; i++) {
+    for(uint8_t i = 0; i < cwargs.processes; i++) {
         Process process = system.processes[i];
         printProcess(process, system);
     }
@@ -390,19 +390,19 @@ void prune(CWArgs cwargs, CWInfo cwinfo) {
     );
 
     Prune prune = cwargs.prune;
-    unsigned keep = cwargs.keep;
+    uint8_t keep = cwargs.keep;
     uint64_t until = unformatTime(cwargs.until);
 
     size_t path_size = BUFFER_ONE_KB;
-    unsigned history_deleted = 0;
-    unsigned logs_deleted = 0;
+    uint16_t history_deleted = 0;
+    uint16_t logs_deleted = 0;
 
     if(prune == HISTORY || prune == ALL) {
         char path[path_size];
         snprintf(path, path_size, "%s/history", cwinfo.pulse);
 
-        unsigned path_entries_count = countDir(path);
-        unsigned path_entries_deleted = 0;
+        uint16_t path_entries_count = countDir(path);
+        uint16_t path_entries_deleted = 0;
 
         char entry_path[path_size];
 
@@ -433,8 +433,8 @@ void prune(CWArgs cwargs, CWInfo cwinfo) {
         char path[path_size];
         snprintf(path, path_size, "%s/logs", cwinfo.pulse);
 
-        unsigned path_entries_count = countDir(path);
-        unsigned path_entries_deleted = 0;
+        uint16_t path_entries_count = countDir(path);
+        uint16_t path_entries_deleted = 0;
 
         char entry_path[path_size];
 
@@ -599,7 +599,7 @@ void snapshot(CWArgs cwargs, CWInfo cwinfo) {
             system_snapshot.load.load15
         );
     
-        for (unsigned i = 0; i < system_snapshot.processes_count; i++) {
+        for (uint16_t i = 0; i < system_snapshot.processes_count; i++) {
             if (i != 0) {
                 snapshot_json_len += (size_t)snprintf(snapshot_json + snapshot_json_len, sizeof(snapshot_json) - snapshot_json_len, ",");
             }

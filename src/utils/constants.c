@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <inttypes.h>
 
 const char *PROC_DIR = "/proc";
 const char *PROC_UPTIME_FILE = "/proc/uptime";
@@ -21,7 +22,7 @@ const char *OS_TYPE_SETTINGS[] = {
 };
 
 const char SPACE_IN_ASCII = ' ';
-const unsigned ASCII_INT_TO_STRING_NUMNER = 48;
+const uint8_t ASCII_INT_TO_STRING_NUMNER = 48;
 const size_t BUFFER_ONE_KB = 1024;
 const size_t BUFFER_ONE_MB = BUFFER_ONE_KB * BUFFER_ONE_KB;
 

@@ -12,7 +12,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 #include <time.h>
-#include <fcntl.h>
 
 #include "config.h"
 #include "setup.h"
@@ -30,7 +29,7 @@ extern const char *ETC_OS_RELEASE;
 extern const char *OS_TYPE_SETTINGS[];
 
 extern const char SPACE_IN_ASCII;
-extern const unsigned ASCII_INT_TO_STRING_NUMNER;
+extern const uint8_t ASCII_INT_TO_STRING_NUMNER;
 extern const size_t BUFFER_ONE_KB;
 extern const size_t BUFFER_ONE_MB;
 
@@ -48,8 +47,9 @@ extern uint64_t unformatTime(char *buffer);
 extern size_t readFile(const char *file_name, size_t size, char *buffer);
 extern size_t sizeFile(const char *file_name);
 
+#define clear() printf("\033[H\033[J")
 extern void cleanDir(char *path);
-extern unsigned countDir(char *path);
+extern uint16_t countDir(char *path);
 
 extern const char* CHERRIES_FOLDER;
 extern const char* CHERRIES_FOLDER_PULSE;
@@ -119,16 +119,16 @@ typedef struct {
 
     uint8_t style; // for the MONITOR command (1/2/3)
 
+    uint8_t processes; // for the MONITOR / TOP command
     uint16_t port; // for the MONITOR command
-    unsigned sleep; // for the MONITOR command
-    unsigned processes; // for the MONITOR / TOP command
-    unsigned history_snapshot_interval; // for the MONITOR command
+    float sleep; // for the MONITOR command
+    float history_snapshot_interval; // for the MONITOR command
  
     pid_t pid; // for the PROCESS / WATCH command
     char name[256]; // for the PROCESS / WATCH command
 
     Prune prune; // for the PRUNE command
-    unsigned keep; // for the PRUNE command
+    uint8_t keep; // for the PRUNE command
     char until[64]; // for the PRUNE command
 } CWArgs;
 

@@ -49,7 +49,7 @@ Info getInfo() {
         printf("Reading hostname failed.");
     }
 
-    info.cores = (unsigned)sysconf(_SC_NPROCESSORS_ONLN);
+    info.cores = (uint8_t)sysconf(_SC_NPROCESSORS_ONLN);
 
     size_t cpu_buffer_size = BUFFER_ONE_KB * 6;
     char cpu_buffer[cpu_buffer_size];

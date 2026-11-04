@@ -3,7 +3,6 @@
 
 #include "parse.h"
 #include "render.h"
-#include "os.h"
 
 void disableColors(void) {
     RED       = "";
@@ -196,7 +195,7 @@ void renderSnapshot(
     if(cwargs.display.processes) {
         printf("┌── PROCESSES ────────────────────────────────────────────────────────────┐\n");
         printf("│ Running processes: %-52u │\n", system.process_count);
-        for(unsigned i = 0; i < cwargs.processes; i++) {
+        for(uint8_t i = 0; i < cwargs.processes; i++) {
             Process process = system.processes[i];
             printProcess(process, system);
         }

@@ -1,10 +1,10 @@
 #include <sys/statvfs.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 
 #include "utils.h"
 #include "parse.h"
-#include "log.h"
 
 Disk getDisk(size_t size, char *buffer) {
     struct statvfs stat;
@@ -18,17 +18,20 @@ Disk getDisk(size_t size, char *buffer) {
 
     char *line = buffer;
 
-    //  nvme0n1 41230 7077 4819387 43278 ... 0 3400608 1777 2509 930
-    int SECTORS_READ = 6;
-    int SECTORS_WRITTEN = 10;
+    //  259        0 nvme0n1 41230 7077 4819387 43278 ... 0 3400608 1777 2509 930
+    // + 2 to skip the first number, the nvme number, and the nvme name
+    int SECTORS_READ = 6 + 2;
+    int SECTORS_WRITTEN = 10 + 2;
     for(int i = 0; i <= SECTORS_WRITTEN; i++) {
         while (*line == ' ') line++;
         if(*line == '\0' || *line == '\n') break;
 
         char *next = strchr(line, ' ');
         if(next) *next = '\0';
-        else line = line + strlen(line);
-
+        else {
+            line = line + strlen(line);
+            break;
+        } 
     
         if(SECTORS_READ == i) {
             read = strtoull(line, NULL, 10);
@@ -36,9 +39,7 @@ Disk getDisk(size_t size, char *buffer) {
             written = strtoull(line, NULL, 10);
         }
 
-        if(next) {
-            line = next + 1;
-        }
+        line = next + 1;
     }
 
     Disk snapshot = { disk_total, disk_available, read, written };

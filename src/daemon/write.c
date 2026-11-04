@@ -87,7 +87,7 @@ void writeHistoryS(System system, CWInfo cwinfo) {
     snprintf(buffer, buffer_size, "%" PRIu64 "\n", system.network.tx);
     fwrite(buffer, strlen(buffer), 1, f);
 
-    for (unsigned i = 0; i < system.processes_count; i++) {
+    for (uint16_t i = 0; i < system.processes_count; i++) {
         snprintf(buffer, buffer_size, "%s\n", system.processes[i].name);
         fwrite(buffer, strlen(buffer), 1, f);
 

@@ -40,8 +40,8 @@ void cleanDir(char *path) {
     return;
 }
 
-unsigned countDir(char *path) {
-    unsigned file_count = 0;
+uint16_t countDir(char *path) {
+    uint16_t file_count = 0;
 
     if(strlen(path) == 0) return file_count;
     if(strcmp(path, ".") == 0) return file_count;

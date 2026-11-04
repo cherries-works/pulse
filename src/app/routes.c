@@ -109,7 +109,7 @@ JSON_ROUTE(APIMetrics, {
         info.hostname
     );
 
-    for (unsigned i = 0; i < snapshot.processes_count; i++) {
+    for (uint16_t i = 0; i < snapshot.processes_count; i++) {
         if (i != 0) {
             json_len += (size_t)snprintf(json + json_len, sizeof(json) - json_len, ",");
         }

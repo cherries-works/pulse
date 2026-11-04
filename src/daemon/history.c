@@ -65,8 +65,8 @@ void _archiveHistory(CWInfo cwinfo, char *type) {
         if(strcmp(entry_name, ".") == 0) continue;
         if(strcmp(entry_name, "..") == 0) continue;
 
-        unsigned long timestamp = strtoul(entry_name, NULL, 10);
-        if((unsigned long)current_interval - timestamp >= ARCHIVE_INTERVAL) {
+        uint64_t timestamp = strtoul(entry_name, NULL, 10);
+        if((uint64_t)current_interval - timestamp >= ARCHIVE_INTERVAL) {
             size_t full_entry_path_size = BUFFER_ONE_KB;
             char full_entry_path[full_entry_path_size];
 
@@ -108,7 +108,7 @@ void _archiveHistory(CWInfo cwinfo, char *type) {
             );
 
             gzFile file = gzopen(archived_path, "wb");
-            int _gzwrite = gzwrite(file, file_buffer, (unsigned)file_size);
+            int _gzwrite = gzwrite(file, file_buffer, (uint32_t)file_size);
             if(_gzwrite < 0) {
                 _log(cwinfo, L_ERROR, "Writing gzip file failed for archiving.");
                 fclose(hf);
@@ -159,8 +159,8 @@ void _deleteHistoryArchives(CWInfo cwinfo, char *type) {
         if(strcmp(entry_name, ".") == 0) continue;
         if(strcmp(entry_name, "..") == 0) continue;
 
-        unsigned long timestamp = strtoul(entry_name, NULL, 10);
-        if((unsigned long)current_interval - (timestamp + ARCHIVE_INTERVAL) >= DELETION_INTERVAL) {
+        uint64_t timestamp = strtoul(entry_name, NULL, 10);
+        if((uint64_t)current_interval - (timestamp + ARCHIVE_INTERVAL) >= DELETION_INTERVAL) {
             size_t full_entry_path_size = BUFFER_ONE_KB;
             char full_entry_path[full_entry_path_size];
 

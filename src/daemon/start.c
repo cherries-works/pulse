@@ -189,11 +189,17 @@ pid_t startDaemon(CWArgs cwargs, CWConfig cwconfig, CWInfo cwinfo) {
         pthread_mutex_init(&shmp->lock, &attr);
         pthread_mutexattr_destroy(&attr);
 
-        unsigned long repetition = 0;
-        unsigned long archiving = 0;
-        unsigned long deletion = 0;
+
+        struct timespec req = {
+            .tv_sec = (time_t)cwargs.sleep,
+            .tv_nsec = (long)((cwargs.sleep - (time_t)cwargs.sleep) * 1000000000L)
+        };
+
+        uint16_t repetition = 0;
+        uint16_t archiving = 0;
+        uint16_t deletion = 0;
         while(true) {
-            if (repetition % cwargs.history_snapshot_interval == 0) {
+            if (repetition * cwargs.sleep > cwargs.history_snapshot_interval) {
                 writeHistoryM(metrics, cwinfo);
                 writeHistoryS(system_snapshot, cwinfo);
 
@@ -222,7 +228,8 @@ pid_t startDaemon(CWArgs cwargs, CWConfig cwconfig, CWInfo cwinfo) {
             pthread_mutex_unlock(&shmp->lock);
 
             checkAlerts(cwinfo, &metrics, &cwargs, &cwconfig);
-            sleep(cwargs.sleep);
+            // sleep(cwargs.sleep);
+            nanosleep(&req, NULL);
         }
 
         shm_unlink(CHERRIES_PULSE_SHM);

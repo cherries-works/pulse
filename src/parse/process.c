@@ -8,7 +8,7 @@
 #include "parse.h"
 #include "log.h"
 
-unsigned getProcesses(
+uint8_t getProcesses(
     CWInfo cwinfo,
     Process processes[],
     CWArgs cwargs
@@ -24,8 +24,8 @@ unsigned getProcesses(
         return 0;
     }
 
-    int keys_until_utime = 14;
-    unsigned process_count = 0;
+    uint8_t keys_until_utime = 14;
+    uint8_t process_count = 0;
     
     size_t proc_file_name_size = 32;
     char proc_file_name[proc_file_name_size];
@@ -63,7 +63,7 @@ unsigned getProcesses(
         readFile(proc_file_name, processes_buffer_size, processes_buffer);
         cursor = processes_buffer;
 
-        for(int i = 0; i < keys_until_utime; i++) {
+        for(uint8_t i = 0; i < keys_until_utime; i++) {
             char *next = strchr(cursor, ' ');
             if(!next) break;
             cursor = next + 1;
@@ -100,12 +100,12 @@ unsigned getProcesses(
             proc_name[name_size - 1] = '\0';
         }
 
-        for(unsigned i = 0; i < cwargs.processes; i++) {
+        for(uint8_t i = 0; i < cwargs.processes; i++) {
             bool t = processes[i].ram < proc_ram;
             if(cwargs.sort == CPU) t = processes[i].cpu < proc_cpu;
 
             if(t) {
-                for(unsigned j = 1; j > i; j--) {
+                for(uint8_t j = 1; j > i; j--) {
                     processes[j] = processes[j - 1];
                 }
 
