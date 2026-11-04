@@ -198,6 +198,114 @@ JSON_ROUTE(APIHistoryCPU, {
     );
 });
 
+JSON_ROUTE(APIHistoryNetworkRX, {
+    size_t path_size = BUFFER_ONE_KB;
+    char path[path_size];
+
+    size_t time_buffer_size = BUFFER_ONE_KB;
+    char time_buffer[time_buffer_size];
+    formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
+
+    int _snprintf = snprintf(path, path_size - 1, "%s/history/%s/metric", cwinfo.pulse, time_buffer);
+    if(_snprintf < 0) {
+        _log(cwinfo, L_ERROR, "snprintf failed for APIHistoryNetworkRX");
+        return;
+    }
+
+    size_t entry_storer_size = BUFFER_ONE_KB * 2;
+    char entry_storer[entry_storer_size];
+    entry_storer[0] = '\0';
+
+    readHistoryM(
+        cwinfo,
+        5,  // RX
+        entry_storer,
+        entry_storer_size
+    );
+
+    char json[BUFFER_ONE_KB * 32];
+    _snprintf = snprintf(
+        json,
+        sizeof(json),
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: application/json; charset=UTF-8\r\n\r\n"
+        "{"
+        "\"error\":null,"
+        "\"success\":true,"
+        "\"timestamp\":%" PRIu64 ","
+        "\"data\": [%s]"
+        "}",
+        time(NULL),
+        entry_storer
+    );
+
+    if (_snprintf == -1 || (size_t)_snprintf >= sizeof(json)) {
+        _log(cwinfo, L_ERROR, "Finalizing snprintf failed or response was truncated [APIHistoryCPU].");
+        return;
+    }
+
+    routeJSON(
+        socket,
+        response,
+        response_size,
+        json
+    );
+});
+
+JSON_ROUTE(APIHistoryNetworkTX, {
+    size_t path_size = BUFFER_ONE_KB;
+    char path[path_size];
+
+    size_t time_buffer_size = BUFFER_ONE_KB;
+    char time_buffer[time_buffer_size];
+    formatTime(cwinfo.started_at, time_buffer, time_buffer_size);
+
+    int _snprintf = snprintf(path, path_size - 1, "%s/history/%s/metric", cwinfo.pulse, time_buffer);
+    if(_snprintf < 0) {
+        _log(cwinfo, L_ERROR, "snprintf failed for APIHistoryNetworkTX");
+        return;
+    }
+
+    size_t entry_storer_size = BUFFER_ONE_KB * 2;
+    char entry_storer[entry_storer_size];
+    entry_storer[0] = '\0';
+
+    readHistoryM(
+        cwinfo,
+        6,  // TX
+        entry_storer,
+        entry_storer_size
+    );
+
+    char json[BUFFER_ONE_KB * 32];
+    _snprintf = snprintf(
+        json,
+        sizeof(json),
+        "HTTP/1.1 200 OK\r\n"
+        "Content-Type: application/json; charset=UTF-8\r\n\r\n"
+        "{"
+        "\"error\":null,"
+        "\"success\":true,"
+        "\"timestamp\":%" PRIu64 ","
+        "\"data\": [%s]"
+        "}",
+        time(NULL),
+        entry_storer
+    );
+
+    if (_snprintf == -1 || (size_t)_snprintf >= sizeof(json)) {
+        _log(cwinfo, L_ERROR, "Finalizing snprintf failed or response was truncated [APIHistoryCPU].");
+        return;
+    }
+
+    routeJSON(
+        socket,
+        response,
+        response_size,
+        json
+    );
+});
+
 JSON_ROUTE(APIHistoryRAM, {
     size_t path_size = BUFFER_ONE_KB;
     char path[path_size];
@@ -323,4 +431,6 @@ void initRoutes(RouteHandler *rh) {
     route("/api/history/cpu", APIHistoryCPU, GET, rh);
     route("/api/history/ram", APIHistoryRAM, GET, rh);
     route("/api/history/disk", APIHistoryDisk, GET, rh);
+    route("/api/history/network/rx", APIHistoryNetworkRX, GET, rh);
+    route("/api/history/network/tx", APIHistoryNetworkTX, GET, rh);
 }

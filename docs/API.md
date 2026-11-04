@@ -115,6 +115,8 @@ percentages. The top-level `process_count` is the current process count.
 GET /api/history/cpu
 GET /api/history/ram
 GET /api/history/disk
+GET /api/history/nextwork/rx
+GET /api/history/nextwork/tx
 ```
 
 Each route returns saved samples for the requested resource:
