@@ -12,6 +12,13 @@ const parser = (
     const c = element.querySelector("canvas");
     if (c) c.remove();
 
+    let DATA_MAX_VALUE = 0
+    for(const d of data) {
+        if(d > DATA_MAX_VALUE) DATA_MAX_VALUE = d;
+    }
+
+    if(DATA_MAX_VALUE < 100) DATA_MAX_VALUE = 100;
+    
     const size = 500
 
     const canvas = document.createElement("canvas");
@@ -75,7 +82,7 @@ const parser = (
     // start at the first data point
     for (let i = 0; i < data.length; i++) {
         const x = canvasWidth * (i / (Math.max(data.length, 5))) + canvasXOffset;
-        const y = (yAxisHeight - yAxisHeight * (data[i] / 100)) + yAxisStart;
+        const y = (yAxisHeight - yAxisHeight * (data[i] / DATA_MAX_VALUE)) + yAxisStart;
 
         if (i === 0) {
             ctx.moveTo(x, y);
