@@ -1,4 +1,10 @@
-#!/usr/bin/env bash
+#!/bin/sh
+# ==============================================================================
+# Organization  : cherries-works (https://github.com/cherries-works)
+# Description   : Testing Process whether or not is found
+# License       : MIT
+# ==============================================================================
+
 set -euo pipefail
 
 binary=${1:-./dist/pulse}
