@@ -97,7 +97,16 @@ void serverLaunch(Server *server, CWInfo cwinfo, CWArgs cwargs) {
 
         ssize_t bytes_read = read(new_socket, buffer, buffer_size);
         
-        if((size_t)bytes_read < buffer_size && bytes_read >= 0) {
+        if(bytes_read >= 0) {
+            if((size_t)bytes_read >= buffer_size) {
+                _log(
+                    cwinfo,
+                    L_ERROR,
+                    "Request too large"
+                );
+                close(new_socket);
+                continue;
+            }
             buffer[bytes_read] = '\0';
         } else {
             _log(
@@ -105,7 +114,8 @@ void serverLaunch(Server *server, CWInfo cwinfo, CWArgs cwargs) {
                 L_ERROR,
                 "Failed to read buffer"
             );
-            continue;;
+            close(new_socket);
+            continue;
         }
 
         Request request = parseRequest(buffer);
