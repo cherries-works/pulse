@@ -113,7 +113,7 @@ typedef struct {
     uint16_t process_count;
 
     uint64_t uptime;
-    uint8_t temp;
+    uint16_t temp;
 } System;
 
 typedef struct {
@@ -142,11 +142,11 @@ extern IP parseIp(char *hostname);
 
 extern uint64_t parseMemoryKey(char *buffer, char *target_key);
 extern uint64_t parseUptime(size_t size, char *buffer);
-extern uint8_t parseTemp();
+extern uint16_t parseTemp();
+extern uint16_t getProcesses(CWInfo cwinfo, Process processes[], CWArgs args);
+extern int getProcess(CWInfo cwinfo, Process *process, pid_t pid);
 
 extern float parseCpuUsage(Cpu snapshot2, Cpu snapshot1);
-extern uint8_t getProcesses(CWInfo cwinfo, Process processes[], CWArgs args);
-extern int getProcess(CWInfo cwinfo, Process *process, pid_t pid);
 extern pid_t getPidByName(char *name);
 
 #endif

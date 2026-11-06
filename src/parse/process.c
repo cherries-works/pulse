@@ -8,7 +8,7 @@
 #include "parse.h"
 #include "log.h"
 
-uint8_t getProcesses(
+uint16_t getProcesses(
     CWInfo cwinfo,
     Process processes[],
     CWArgs cwargs
@@ -25,7 +25,7 @@ uint8_t getProcesses(
     }
 
     uint8_t keys_until_utime = 14;
-    uint8_t process_count = 0;
+    uint16_t process_count = 0;
     
     size_t proc_file_name_size = 32;
     char proc_file_name[proc_file_name_size];

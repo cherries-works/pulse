@@ -40,7 +40,7 @@ System getSystem(
     readFile(PROC_UPTIME_FILE, uptime_buffer_size, uptime_buffer);
     uint64_t uptime = parseUptime(uptime_buffer_size, uptime_buffer);
 
-    uint8_t temp = parseTemp();
+    uint16_t temp = parseTemp();
 
     System system = { 
         .cpu = cpu, 
