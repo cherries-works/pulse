@@ -1,3 +1,5 @@
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -16,20 +18,20 @@ void cleanDir(char *path) {
     DIR *dir = opendir(path);
     if(!dir) return;
 
-    char newPath[BUFFER_ONE_KB];
+    char new_path[BUFFER_ONE_KB];
     while((entry = readdir(dir)) != NULL) {
         size_t len = strlen(path) + strlen(entry->d_name) + 1; // dir length + file name length + /
         if(strcmp(entry->d_name, ".") == 0) continue;
         if(strcmp(entry->d_name, "..") == 0) continue;
 
-        sprintf(newPath, "%s/%s", path, entry->d_name);
-        newPath[len] = '\0';
+        snprintf(new_path, BUFFER_ONE_KB, "%s/%s", path, entry->d_name);
+        new_path[len] = '\0';
 
         if(entry->d_type == DT_DIR) {
-            cleanDir(newPath);
+            cleanDir(new_path);
             continue;
         } else if(entry->d_type == DT_REG) {
-            remove(newPath);
+            remove(new_path);
             continue;
         }
     }
