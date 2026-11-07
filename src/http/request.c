@@ -5,8 +5,8 @@
 
 Request parseRequest(char *buffer) {
     Request req = {
-        .method = GET,
-        .path = "/"
+        .method = INVALID,
+        .path = ""
     };
 
     if(buffer == NULL) return req;

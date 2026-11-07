@@ -14,6 +14,7 @@ typedef enum {
     PUT,
     DELETE,
     PATCH,
+    INVALID,
 } REQUEST_METHOD;
 
 typedef struct {
