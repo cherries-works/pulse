@@ -167,8 +167,8 @@ void routeJSON(
     snprintf(
         response,
         response_size,
-        json,
-        NULL
+        "%s",
+        json
     );
 
     ssize_t result = write(new_socket, response, strlen(response));
