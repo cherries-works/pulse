@@ -1,5 +1,5 @@
 Name:           pulse
-Version:        0.6.1
+Version:        0.6.2
 Release:        1%{?dist}
 Summary:        Lightweight Linux process monitoring tool
 
