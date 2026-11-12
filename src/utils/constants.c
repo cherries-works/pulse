@@ -9,7 +9,7 @@ const char *PROC_LOAD_FILE = "/proc/loadavg";
 const char *PROC_STAT_FILE = "/proc/stat";
 const char *PROC_DISK_FILE = "/proc/diskstats";
 const char *PROC_NET_FILE = "/proc/net/dev";
-
+const char *BAD_REQUEST = "HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\n\r\n";
 const char *ETC_OS_RELEASE = "/etc/os-release";
 
 const char *SYS_THERMAL_ZONE = "/sys/class/thermal/thermal_zone";
