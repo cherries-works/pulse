@@ -60,7 +60,6 @@ Server serverContsructor(
     return server;
 };
 
-static const char BAD[] = "HTTP/1.1 400 Bad Request\r\nContent-Length: 0\r\n\r\n";
 void serverLaunch(Server *server, CWInfo cwinfo, CWArgs cwargs) {
     size_t buffer_size = BUFFER_ONE_MB;
     char buffer[buffer_size];
@@ -121,8 +120,9 @@ void serverLaunch(Server *server, CWInfo cwinfo, CWArgs cwargs) {
 
         Request request = parseRequest(buffer);
         if(request.method == INVALID) {
-            write(new_socket, BAD, sizeof(BAD) - 1);
-            close(new_socket);
+            ssize_t _write = write(new_socket, BAD_REQUEST, sizeof(BAD_REQUEST) - 1);
+            int _close = close(new_socket);
+            if(_write == -1 || _close == -1) continue;
             continue;
         }
 

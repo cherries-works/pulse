@@ -24,6 +24,7 @@ extern const char *PROC_STAT_FILE;
 extern const char *PROC_DISK_FILE;
 extern const char *PROC_LOAD_FILE;
 extern const char *PROC_NET_FILE;
+extern const char *BAD_REQUEST;
 
 extern const char *ETC_OS_RELEASE;
 extern const char *OS_TYPE_SETTINGS[];
