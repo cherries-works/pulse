@@ -22,7 +22,7 @@ Pulse is a lightweight Linux process and system monitoring tool.
 %make_build
 
 %install
-%make_install PREFIX=%{_prefix}
+%make_install destdir=%{buildroot} prefix=%{_prefix}
 
 %files
 %license LICENSE
