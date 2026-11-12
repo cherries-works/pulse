@@ -11,6 +11,9 @@ Source0:        %{name}-%{version}.tar.gz
 
 BuildRequires:  gcc
 BuildRequires:  make
+BuildRequires:  zlib-devel
+
+Requires:       zlib
 
 %description
 Pulse is a lightweight Linux process and system monitoring tool.
