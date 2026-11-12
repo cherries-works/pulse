@@ -1,5 +1,5 @@
 Name:           pulse
-Version:        %{_pulse_version}
+Version:        0.6.1
 Release:        1%{?dist}
 Summary:        Lightweight Linux process monitoring tool
 
@@ -10,6 +10,7 @@ URL:            https://github.com/cherries-works/pulse
 Source0:        %{name}-%{version}.tar.gz
 
 BuildRequires:  gcc
+BuildRequires:  make
 
 %description
 Pulse is a lightweight Linux process and system monitoring tool.
@@ -18,12 +19,10 @@ Pulse is a lightweight Linux process and system monitoring tool.
 %autosetup
 
 %build
-make
+%make_build
 
 %install
-rm -rf %{buildroot}
-
-make install destdir=%{buildroot} prefix=%{_prefix}
+%make_install PREFIX=%{_prefix}
 
 %files
 %license LICENSE
@@ -32,5 +31,3 @@ make install destdir=%{buildroot} prefix=%{_prefix}
 %{_datadir}/bash-completion/completions/pulse
 
 %changelog
-* Wed Sep 23 2026 Mert <mail@mertk.uk> - %{version}
-- Initial RPM package
