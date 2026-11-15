@@ -3,6 +3,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <sys/mman.h>
+#include <sys/time.h>
 
 #include "http.h"
 #include "log.h"
@@ -95,28 +96,45 @@ void serverLaunch(Server *server, CWInfo cwinfo, CWArgs cwargs) {
         );
         if(new_socket < 0) continue;
 
+        struct timeval timeout;
+        timeout.tv_sec = 1;
+        timeout.tv_usec = 0;
+        setsockopt(
+            new_socket,
+            SOL_SOCKET,
+            SO_RCVTIMEO,
+            &timeout,
+            sizeof(timeout)
+        );
+
         ssize_t bytes_read = read(new_socket, buffer, buffer_size);
         
-        if(bytes_read >= 0) {
-            if((size_t)bytes_read >= buffer_size) {
-                _log(
-                    cwinfo,
-                    L_ERROR,
-                    "Request too large"
-                );
-                close(new_socket);
-                continue;
-            }
-            buffer[bytes_read] = '\0';
-        } else {
+        if(bytes_read == 0) {
             _log(
                 cwinfo,
                 L_ERROR,
-                "Failed to read buffer"
+                "Client closed"
+            );
+            close(new_socket);
+            continue;
+        } else if(bytes_read < 0) {
+            _log(
+                cwinfo,
+                L_ERROR,
+                "Invalid request"
+            );
+            close(new_socket);
+            continue;
+        } else if((size_t)bytes_read >= buffer_size) {
+            _log(
+                cwinfo,
+                L_ERROR,
+                "Request too large"
             );
             close(new_socket);
             continue;
         }
+        buffer[bytes_read] = '\0';
 
         Request request = parseRequest(buffer);
         if(request.method == INVALID) {
