@@ -8,6 +8,7 @@
 
 #include "http.h"
 #include "log.h"
+#include "args.h"
 
 char *getFileExtension(char *file_path) {
     char *dot = strrchr(file_path, '.');

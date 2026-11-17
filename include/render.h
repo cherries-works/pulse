@@ -1,7 +1,7 @@
 #ifndef RENDER_H
 #define RENDER_H
 
-#include "utils.h"
+#include "args.h"
 #include "parse.h"
 
 extern void startRender(CWArgs args, CWInfo cwinfo);

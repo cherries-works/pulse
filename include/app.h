@@ -2,8 +2,7 @@
 #define APP_H
 
 #include "http.h"
-#include "utils.h"
-#include "setup.h"
+#include "args.h"
 
 extern pid_t startWebsite(CWArgs args, CWInfo cwinfo);
 

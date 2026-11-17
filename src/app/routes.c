@@ -9,7 +9,7 @@
 #include "daemon.h"
 #include "log.h"
 #include "parse.h"
-#include "setup.h"
+#include "args.h"
 #include "utils.h"
 
 #define STATIC_ROUTE(fnName, filePath) \

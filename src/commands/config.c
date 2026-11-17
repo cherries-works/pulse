@@ -8,6 +8,7 @@
 #include "log.h"
 #include "config.h"
 #include "setup.h"
+#include "args.h"
 
 void config(CWArgs cwargs, CWInfo cwinfo) {
     _log(

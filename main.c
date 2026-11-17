@@ -19,6 +19,7 @@
 #include "setup.h"
 #include "config.h"
 #include "commands.h"
+#include "args.h"
 
 CWInfo *_cwinfo = NULL;
 

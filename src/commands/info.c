@@ -13,6 +13,7 @@
 #include "log.h"
 #include "app.h"
 #include "setup.h"
+#include "args.h"
 
 void info(CWArgs cwargs, CWInfo cwinfo) {
     _log(

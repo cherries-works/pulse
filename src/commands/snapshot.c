@@ -12,6 +12,7 @@
 #include "daemon.h"
 #include "app.h"
 #include "setup.h"
+#include "args.h"
 
 void snapshot(CWArgs cwargs, CWInfo cwinfo) {
     System system_snapshot = getSystem(cwinfo, cwargs);

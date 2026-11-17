@@ -15,6 +15,7 @@
 #include "log.h"
 #include "app.h"
 #include "setup.h"
+#include "args.h"
 
 void top(CWArgs cwargs, CWInfo cwinfo) {
     _log(

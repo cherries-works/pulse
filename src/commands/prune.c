@@ -14,6 +14,7 @@
 #include "log.h"
 #include "app.h"
 #include "setup.h"
+#include "args.h"
 
 void prune(CWArgs cwargs, CWInfo cwinfo) {
     _log(

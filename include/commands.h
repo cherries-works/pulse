@@ -2,7 +2,7 @@
 #define COMMANDS_H
 
 #include "config.h"
-#include "utils.h"
+#include "args.h"
 
 extern void handler(CWArgs cwargs, CWConfig cwconfig, CWInfo cwinfo);
 extern void stop(CWInfo cwinfo);

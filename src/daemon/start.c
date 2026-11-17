@@ -15,6 +15,7 @@
 #include "daemon.h"
 #include "log.h"
 #include "setup.h"
+#include "args.h"
 
 void setupDaemon(pid_t pid, CWInfo cwinfo) {
     _log(cwinfo, L_INFO, "Preparing Daemon.");

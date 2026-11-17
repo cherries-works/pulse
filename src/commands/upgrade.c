@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "utils.h"
+#include "args.h"
 
 void upgrade(CWArgs cwargs) {
     if(cwargs.json) {

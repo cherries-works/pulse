@@ -9,6 +9,7 @@
 #include "app.h"
 #include "config.h"
 #include "setup.h"
+#include "args.h"
 
 void monitor(CWArgs cwargs, CWConfig cwconfig, CWInfo cwinfo) {
     _log(

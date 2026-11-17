@@ -10,6 +10,7 @@
 #include "render.h"
 #include "log.h"
 #include "commands.h"
+#include "args.h"
 
 void startRender(CWArgs cwargs, CWInfo cwinfo) {
     _log(

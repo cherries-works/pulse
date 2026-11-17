@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "utils.h"
+#include "args.h"
 
 void version(CWArgs cwargs) {
     if(cwargs.json) {

@@ -8,6 +8,7 @@
 #include "parse.h"
 #include "utils.h"
 #include "config.h"
+#include "args.h"
 
 // Counts per second.
 //

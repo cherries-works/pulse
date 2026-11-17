@@ -10,6 +10,7 @@
 #include "app.h"
 #include "log.h"
 #include "setup.h"
+#include "args.h"
 
 void setupWebsite(CWInfo cwinfo, pid_t pid) {
     char *home = getenv("HOME");

@@ -7,6 +7,7 @@
 #include "setup.h"
 #include "daemon.h"
 #include "utils.h"
+#include "args.h"
 
 typedef enum {
     GET,

@@ -7,6 +7,7 @@
 #include "utils.h"
 #include "parse.h"
 #include "log.h"
+#include "args.h"
 
 uint16_t getProcesses(
     CWInfo cwinfo,

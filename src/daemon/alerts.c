@@ -14,6 +14,7 @@
 #include "utils.h"
 #include "daemon.h"
 #include "log.h"
+#include "args.h"
 
 void formatMessage(
     char *out, 

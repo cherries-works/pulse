@@ -6,6 +6,7 @@
 
 #include "utils.h"
 #include "os.h"
+#include "args.h"
 
 typedef struct {
     uint64_t idle;

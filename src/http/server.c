@@ -7,6 +7,7 @@
 
 #include "http.h"
 #include "log.h"
+#include "args.h"
 
 Server serverContsructor(
     RouteHandler *routeHandler,

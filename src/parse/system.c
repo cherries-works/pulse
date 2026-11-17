@@ -5,6 +5,7 @@
 #include "utils.h"
 #include "parse.h"
 #include "log.h"
+#include "args.h"
 
 System getSystem(
     CWInfo cwinfo,

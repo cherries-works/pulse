@@ -1,6 +1,7 @@
 #include <stdio.h>
 
 #include "http.h"
+#include "args.h"
 
 void list(CWArgs cwargs) {
     if(cwargs.json) {

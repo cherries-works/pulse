@@ -8,6 +8,7 @@
 #include "utils.h"
 #include "log.h"
 #include "setup.h"
+#include "args.h"
 
 const char *commands[] = {
     "MONITOR",

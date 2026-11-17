@@ -1,6 +1,7 @@
 #include <criterion/criterion.h>
 
 #include "parse.h"
+#include "args.h"
 
 Test(process, counts_running_processes_independently_of_display_limit) {
     Process processes[MAX_PROCESSES] = {0};

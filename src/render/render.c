@@ -3,6 +3,7 @@
 
 #include "parse.h"
 #include "render.h"
+#include "args.h"
 
 void disableColors(void) {
     RED       = "";
