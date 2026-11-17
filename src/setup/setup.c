@@ -13,6 +13,7 @@ CWInfo setup() {
     CWInfo cwinfo = {
         .home = "",
         .pulse = "",
+        .installations = "",
         .log = "",
         .history = "",
         .started_at = time(NULL),
@@ -78,8 +79,8 @@ CWInfo setup() {
         closedir(dir);
     }
 
-    snprintf(path, BUFFER_ONE_KB, "%s/history", cwinfo.pulse);
-    strcpy(cwinfo.history, path);
+    snprintf(path, BUFFER_ONE_KB, "%s/installations", cwinfo.pulse);
+    strcpy(cwinfo.installations, path);
 
     dir = opendir(path);
     if(!dir) {

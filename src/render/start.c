@@ -9,6 +9,7 @@
 #include "daemon.h"
 #include "render.h"
 #include "log.h"
+#include "commands.h"
 
 void startRender(CWArgs cwargs, CWInfo cwinfo) {
     _log(
