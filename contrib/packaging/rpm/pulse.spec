@@ -25,7 +25,7 @@ Pulse is a lightweight Linux process and system monitoring tool.
 %make_build
 
 %install
-%make_install destdir=%{buildroot} prefix=%{_prefix}
+%make_install destdir=%{buildroot} prefix=%{_prefix} -DPULSE_VERSION="v%{version}" -DPULSE_COMMIT="5379d08"
 
 %files
 %license LICENSE

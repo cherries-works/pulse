@@ -3,13 +3,9 @@
 #include <string.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <stdbool.h>
 #include <signal.h>
-#include <dirent.h>
 #include <sys/types.h>
-#include <sys/stat.h>
 #include <sys/mman.h>
-#include <fcntl.h>
 #include <termios.h>
 
 #include "parse.h"
@@ -22,6 +18,7 @@
 #include "app.h"
 #include "setup.h"
 #include "config.h"
+#include "commands.h"
 
 CWInfo *_cwinfo = NULL;
 
@@ -49,7 +46,7 @@ int main(int argc, char* argv[]) {
 
     CWArgs cwargs = parseArgs(cwinfo, argc, argv);
     CWConfig cwconfig = parseToml(cwinfo);
-    handle(cwargs, cwconfig, cwinfo);
+    handler(cwargs, cwconfig, cwinfo);
 
     tcsetattr(STDIN_FILENO, TCSANOW, &oldt);
     return 0;

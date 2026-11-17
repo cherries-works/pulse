@@ -17,7 +17,8 @@ bin = dist
 target = $(bin)/$(progname)
 
 main = main.c
-utils = src/utils/constants.c src/utils/file.c src/utils/terminal.c src/utils/strings.c src/utils/format.c src/utils/args.c src/utils/commands.c src/utils/dir.c
+utils = src/utils/constants.c src/utils/file.c src/utils/terminal.c src/utils/strings.c src/utils/format.c src/utils/args.c src/utils/dir.c
+commands = src/commands/config.c src/commands/handler.c src/commands/help.c src/commands/info.c src/commands/list.c src/commands/monitor.c src/commands/process.c src/commands/prune.c src/commands/snapshot.c src/commands/stop.c src/commands/top.c src/commands/upgrade.c src/commands/version.c
 parse = src/parse/cpu.c src/parse/disk.c src/parse/load.c src/parse/memory.c src/parse/network.c src/parse/process.c src/parse/system.c src/parse/uptime.c src/parse/info.c src/parse/temp.c src/parse/ip.c
 http = src/http/server.c src/http/request.c src/http/routes.c
 render = src/render/render.c src/render/utils.c src/render/start.c
@@ -27,7 +28,7 @@ app = src/app/routes.c src/app/start.c
 setup = src/setup/setup.c
 config = src/config/toml.c
 
-src = $(render) $(parse) $(utils) $(http) $(setup) $(daemon) $(log) $(config) $(app) $(main)
+src = $(render) $(parse) $(utils) $(http) $(commands) $(setup) $(daemon) $(log) $(config) $(app) $(main)
 
 obj = $(src:%.c=$(build)/%.o)
 dep = $(obj:.o=.d)
