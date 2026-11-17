@@ -9,6 +9,7 @@ typedef struct {
     char pulse[256];
     char log[256];
     char history[256];
+    char installations[256];
 } CWInfo;
 
 extern CWInfo setup();
