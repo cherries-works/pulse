@@ -30,6 +30,7 @@ typedef enum {
     VERSION,
     WATCH,
     REMOTE,
+    UPGRADE,
 } Command;
 
 typedef struct {

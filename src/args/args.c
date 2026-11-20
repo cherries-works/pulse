@@ -21,6 +21,7 @@ const char *commands[] = {
     "CONFIG",
     "SNAPSHOT",
     "VERSION",
+    "UPGRADE",
 };
 
 CWArgs parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
@@ -79,6 +80,7 @@ CWArgs parseArgs(CWInfo cwinfo, int argc, char* argv[]) {
             else if(strcmp(arg, "version") == 0) p.command = VERSION;
             else if(strcmp(arg, "watch") == 0) p.command = WATCH;
             else if(strcmp(arg, "remote") == 0) p.command = REMOTE;
+            else if(strcmp(arg, "upgrade") == 0) p.command = UPGRADE;
             else {
                 printf("Invalid command.\n");
                 return p;
