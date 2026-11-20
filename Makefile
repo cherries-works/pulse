@@ -1,5 +1,5 @@
 CC=gcc
-LIBS=-lpthread -lz
+LIBS=-lpthread -lz -lcurl
 INCLUDES=-Iinclude
 
 EXTRA_FLAGS_DEBUG = -fsanitize=address -fno-omit-frame-pointer
