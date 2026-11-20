@@ -33,6 +33,8 @@ const char* R_CHERRIES_FOLDER_PULSE = ".cherries-works/pulse";
 
 const char* CHERRIES_PULSE_SHM = "/cherries_pulse";
 const char* CHERRIES_PULSE_READY_SEM = "/cherries_pulse_ready";
+const char *CHERRIES_PULSE_LATEST_URL_HOST = "raw.githubusercontent.com";
+const char *CHERRIES_PULSE_LATEST_URL_PATH = "/cherries-works/pulse/refs/heads/main/LATEST";
 
 const char *CHERRIES_DEFAULT_TOML =
     "[alerts]\n"

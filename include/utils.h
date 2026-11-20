@@ -60,5 +60,7 @@ extern const char* CHERRIES_PULSE_SHM;
 extern const char* CHERRIES_PULSE_READY_SEM;
 
 extern const char* CHERRIES_DEFAULT_TOML;
+extern const char* CHERRIES_PULSE_LATEST_URL_HOST;
+extern const char* CHERRIES_PULSE_LATEST_URL_PATH;
 
 #endif
