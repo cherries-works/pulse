@@ -15,6 +15,7 @@ extern void prune(CWArgs cwargs, CWInfo cwinfo);
 extern void config(CWArgs cwargs, CWInfo cwinfo);
 extern void snapshot(CWArgs cwargs, CWInfo cwinfo);
 extern void version(CWArgs cwargs);
+extern void upgrade(CWArgs cwargs);
 extern void handle(CWArgs cwargs, CWConfig cwconfig, CWInfo cwinfo);
 
 #endif

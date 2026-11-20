@@ -58,7 +58,11 @@ void handler(CWArgs cwargs, CWConfig cwconfig, CWInfo cwinfo) {
         case VERSION:
             version(cwargs);
             break;
-        
+
+        case UPGRADE:
+            upgrade(cwargs);
+            break;
+
         default:
             break;
     }
